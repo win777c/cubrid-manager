@@ -1,0 +1,10 @@
+task:createdb
+token:*
+dbname:numpage0db
+numpage:0
+pagesize:4096
+logsize:100
+genvolpath:/opt/frameworks/cubrid/databases/numpage0db
+logvolpath:/opt/frameworks/cubrid/databases/numpage0db
+overwrite_config_file:YES
+

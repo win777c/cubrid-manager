@@ -1,0 +1,176 @@
+Join graph segments (f indicates final):
+seg[0]: [0]
+seg[1]: groups[0]
+seg[2]: name[0]
+seg[3]: g[1]
+seg[4]: name[2] (f)
+seg[5]: [2]
+Join graph nodes:
+node[0]: db_user u(2/1) (sargs 2)
+node[1]: t(5/1)
+node[2]: db_user db_user(2/1)
+Join graph equivalence classes:
+eqclass[0]: g[1] [2]
+Join graph edges:
+term[0]: table(0) -> t node[1] (sel 1) (dep term) (inner-join) (loc 0)
+term[1]: t node[1] g -> db_user node[2] (sel -1) (path term) (mergeable) (left-join) (loc 0)
+Join graph terms:
+term[2]: u.[name]= CURRENT_USER  (sel 0.001) (rank 2) (sarg term) (not-join eligible) (indexable name[0]) (loc 0)
+
+Query plan:
+
+follow
+    edge:  t node[1] g -> db_user node[2]
+    head:  nl-join (inner join)
+              edge:  table(0) -> t node[1]
+              outer: iscan
+                         class: u node[0]
+                         index: i_db_user_name term[2]
+                         cost:  1 card 1
+              inner: sscan
+                         class: t node[1]
+                         sargs: table(0) -> t node[1]
+                         cost:  1 card 5
+              cost:  2 card 5
+    cost:  3 card 5
+
+Query stmt:
+
+(select set{ CURRENT_USER }+coalesce(sum(set{t.g.[name]}), set{}) from db_user u, table(u.[groups]) t (g) where u.[name]= CURRENT_USER )
+
+Join graph segments (f indicates final):
+seg[0]: [0]
+seg[1]: groups[0]
+seg[2]: name[0]
+seg[3]: g[1]
+seg[4]: name[2] (f)
+seg[5]: [2]
+Join graph nodes:
+node[0]: db_user u(2/1) (sargs 2)
+node[1]: t(5/1)
+node[2]: db_user db_user(2/1)
+Join graph equivalence classes:
+eqclass[0]: g[1] [2]
+Join graph edges:
+term[0]: table(0) -> t node[1] (sel 1) (dep term) (inner-join) (loc 0)
+term[1]: t node[1] g -> db_user node[2] (sel -1) (path term) (mergeable) (left-join) (loc 0)
+Join graph terms:
+term[2]: u.[name]= CURRENT_USER  (sel 0.001) (rank 2) (sarg term) (not-join eligible) (indexable name[0]) (loc 0)
+
+Query plan:
+
+follow
+    edge:  t node[1] g -> db_user node[2]
+    head:  nl-join (inner join)
+              edge:  table(0) -> t node[1]
+              outer: iscan
+                         class: u node[0]
+                         index: i_db_user_name term[2]
+                         cost:  1 card 1
+              inner: sscan
+                         class: t node[1]
+                         sargs: table(0) -> t node[1]
+                         cost:  1 card 5
+              cost:  2 card 5
+    cost:  3 card 5
+
+Query stmt:
+
+(select set{ CURRENT_USER }+coalesce(sum(set{t.g.[name]}), set{}) from db_user u, table(u.[groups]) t (g) where u.[name]= CURRENT_USER )
+
+Join graph segments (f indicates final):
+seg[0]: [0]
+seg[1]: class_of[0] (f)
+seg[2]: grantee[0]
+seg[3]: auth_type[0]
+seg[4]: [1]
+seg[5]: name[1]
+Join graph nodes:
+node[0]: _db_auth au(27/1) (sargs 2)
+node[1]: db_user db_user(2/1) (sargs 1)
+Join graph equivalence classes:
+eqclass[0]: grantee[0] [1]
+Join graph edges:
+term[0]: au node[0] grantee -> db_user node[1] (sel -1) (path term) (mergeable) (left-join) (loc 0)
+Join graph terms:
+term[1]: {[name]} subseteq (select set{ CURRENT_USER }+coalesce(sum(set{t.g.[name]}), set{}) from db_user u, table(u.[groups]) t (g) where u.[name]= CURRENT_USER ) (sel 0.1) (rank 6) (sarg term) (not-join eligible) (loc 0)
+term[2]: au.auth_type='SELECT' (sel 0.001) (sarg term) (not-join eligible) (loc 0)
+
+Query plan:
+
+follow
+    edge:  au node[0] grantee -> db_user node[1]
+    head:  sscan
+              class: au node[0]
+              sargs: term[2]
+              cost:  1 card 1
+    sargs: term[1]
+    cost:  2 card 1
+
+Query stmt:
+
+(select sum(set{au.class_of}) from [_db_auth] au where {[name]} subseteq (select set{ CURRENT_USER }+coalesce(sum(set{t.g.[name]}), set{}) from db_user u, table(u.[groups]) t (g) where u.[name]= CURRENT_USER ) and au.auth_type= ?:2 )
+
+Join graph segments (f indicates final):
+seg[0]: [0]
+seg[1]: grantor[0]
+seg[2]: grantee[0]
+seg[3]: class_of[0]
+seg[4]: auth_type[0] (f)
+seg[5]: is_grantable[0] (f)
+seg[6]: class_name[1] (f)
+seg[7]: owner[1]
+seg[8]: [1]
+seg[9]: [2]
+seg[10]: name[2]
+seg[11]: name[3] (f)
+seg[12]: [3]
+seg[13]: name[4] (f)
+seg[14]: [4]
+Join graph nodes:
+node[0]: _db_auth db_auth(db_auth)(27/1)
+node[1]: _db_class _db_class(52/2)
+node[2]: db_user db_user(2/1)
+node[3]: db_user db_user_1(2/1)
+node[4]: db_user db_user(2/1)
+Join graph equivalence classes:
+eqclass[0]: grantor[0] [4]
+eqclass[1]: grantee[0] [3]
+eqclass[2]: class_of[0] [1]
+eqclass[3]: owner[1] [2]
+Join graph edges:
+term[0]: ( CURRENT_USER ='DBA' or {db_auth.class_of.[owner].[name]} subseteq (select set{ CURRENT_USER }+coalesce(sum(set{t.g.[name]}), set{}) from db_user u, table(u.[groups]) t (g) where u.[name]= CURRENT_USER ) or {db_auth.class_of} subseteq (select sum(set{au.class_of}) from [_db_auth] au where {[name]} subseteq (select set{ CURRENT_USER }+coalesce(sum(set{t.g.[name]}), set{}) from db_user u, table(u.[groups]) t (g) where u.[name]= CURRENT_USER ) and au.auth_type='SELECT')) (sel 0.19081) (rank 2) (join term) (inner-join) (loc 0)
+term[1]: db_auth node[0] class_of -> _db_class node[1] (sel -1) (path term) (mergeable) (left-join) (loc 0)
+term[2]: db_auth node[0] grantee -> db_user_1 node[3] (sel -1) (path term) (mergeable) (left-join) (loc 0)
+term[3]: db_auth node[0] grantor -> db_user node[4] (sel -1) (path term) (mergeable) (left-join) (loc 0)
+term[4]: _db_class node[1] owner -> db_user node[2] (sel -1) (path term) (mergeable) (left-join) (loc 0)
+Join graph terms:
+term[5]: (rownum range (1 ge_le 100)) (sel 0.1) (rank 3) (instnum term) (not-join eligible) (loc 0)
+
+Query plan:
+
+follow
+    edge:  db_auth node[0] grantor -> db_user node[4]
+    head:  follow
+              edge:  db_auth node[0] grantee -> db_user_1 node[3]
+              head:  follow
+                        edge:  _db_class node[1] owner -> db_user node[2]
+                        head:  follow
+                                  edge:  db_auth node[0] class_of -> _db_class node[1]
+                                  head:  sscan
+                                            class: db_auth node[0]
+                                            sargs: term[5]
+                                            cost:  1 card 27
+                                  sargs: term[5]
+                                  cost:  3 card 27
+                        sargs: term[0] AND term[5]
+                        cost:  4 card 27
+              sargs: term[5]
+              cost:  5 card 27
+    sargs: term[5]
+    cost:  6 card 27
+
+Query stmt:
+
+select ( cast(db_auth.grantor.[name] as varchar(255))), ( cast(db_auth.grantee.[name] as varchar(255))), db_auth.class_of.class_name, db_auth.auth_type, ( cast(case when db_auth.is_grantable=0 then 'NO' else 'YES' end as varchar(3))) from [_db_auth] db_auth where (rownum>= ?:0  and rownum<= ?:1 ) and ( CURRENT_USER ='DBA' or {db_auth.class_of.[owner].[name]} subseteq (select set{ CURRENT_USER }+coalesce(sum(set{t.g.[name]}), set{}) from db_user u, table(u.[groups]) t (g) where u.[name]= CURRENT_USER ) or {db_auth.class_of} subseteq (select sum(set{au.class_of}) from [_db_auth] au where {[name]} subseteq (select set{ CURRENT_USER }+coalesce(sum(set{t.g.[name]}), set{}) from db_user u, table(u.[groups]) t (g) where u.[name]= CURRENT_USER ) and au.auth_type= ?:2 ))
+

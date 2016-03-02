@@ -1,0 +1,4 @@
+task:deletedb
+status:failure
+note:Unable to mount disk volume "/opt/frameworks/cubrid2/databases/activedb/activedb_lgat". The database "/opt/frameworks/cubrid2/databases/activedb/activedb", to which the disk volume belongs, is in use by user root on process 381 of host localhost.localdomain since Sat Jun 27 22:31:07 2009.
+

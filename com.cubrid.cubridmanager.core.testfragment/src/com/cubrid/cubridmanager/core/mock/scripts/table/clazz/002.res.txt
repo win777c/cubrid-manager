@@ -1,0 +1,4 @@
+task:class
+status:failure
+note:Failed to connect to database server, 'notexist', on the following host(s): localhost
+

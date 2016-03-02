@@ -1,0 +1,12 @@
+task:executecasrunner
+token:cdfb4c5717170c5ebfe87e622309762cd86d130e637ad0e7dd09d278d033f7f77926f07dd201b6aa
+dbname:demodb
+brokername:query_editor
+username:dba
+passwd:
+num_thread:1
+repeat_count:1
+executelogfile:yes
+logfile:/home/newbie/cubrid-8.2.2/log/broker/sql_log/query_editor_5.sql.log
+show_queryresult:no
+

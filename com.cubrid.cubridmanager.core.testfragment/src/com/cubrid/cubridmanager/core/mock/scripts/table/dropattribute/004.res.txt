@@ -1,0 +1,4 @@
+task:dropattribute
+status:failure
+note:Attribute "notexistcloumn" was not found.
+

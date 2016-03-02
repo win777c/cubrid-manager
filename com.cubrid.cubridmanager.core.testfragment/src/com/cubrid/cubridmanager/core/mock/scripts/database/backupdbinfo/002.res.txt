@@ -1,0 +1,6 @@
+task:backupdbinfo
+status:success
+note:none
+dbdir:/opt/frameworks/cubrid2/databases/nobackupdb/backup
+freespace:15216
+

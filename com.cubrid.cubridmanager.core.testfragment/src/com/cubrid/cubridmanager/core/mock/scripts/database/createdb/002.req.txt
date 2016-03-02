@@ -1,0 +1,10 @@
+task:createdb
+token:*
+dbname:noextravoldb
+numpage:100
+pagesize:4096
+logsize:100
+genvolpath:/opt/frameworks/cubrid/databases/noextravoldb
+logvolpath:/opt/frameworks/cubrid/databases/noextravoldb
+overwrite_config_file:YES
+

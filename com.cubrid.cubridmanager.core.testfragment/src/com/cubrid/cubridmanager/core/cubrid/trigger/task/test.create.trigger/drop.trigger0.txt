@@ -1,0 +1,20 @@
+drop trigger "testtrigger1";
+drop trigger "testtrigger2";
+drop trigger "testtrigger3";
+drop trigger "testtrigger4";
+drop trigger "testtrigger5";
+drop trigger "testtrigger6";           
+drop trigger "testtrigger7";
+drop trigger "testtrigger8";
+drop trigger "testtrigger9";
+
+drop trigger "testtrigger10";
+drop trigger "testtrigger11";
+drop trigger "testtrigger12";
+drop trigger "testtrigger13";
+drop trigger "testtrigger14";
+drop trigger "testtrigger15";
+drop trigger "testtrigger16";
+drop trigger "testtrigger18";
+
+drop table "testtable1";

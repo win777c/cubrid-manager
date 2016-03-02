@@ -1,0 +1,13 @@
+task:startinfo
+status:success
+note:none
+open:dblist
+dbname:ndb
+dbdir:/opt/frameworks/cubrid2/databases/ndb
+dbname:demodb
+dbdir:/opt/frameworks/cubrid2/databases/demodb
+close:dblist
+open:activelist
+dbname:demodb
+close:activelist
+

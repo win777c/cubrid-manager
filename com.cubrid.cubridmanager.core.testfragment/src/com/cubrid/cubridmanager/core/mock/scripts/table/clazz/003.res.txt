@@ -1,0 +1,4 @@
+task:class
+status:failure
+note:Unknown class "notexisttbl".
+

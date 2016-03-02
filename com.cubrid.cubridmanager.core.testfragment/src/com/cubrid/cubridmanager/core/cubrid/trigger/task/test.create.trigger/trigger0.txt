@@ -1,0 +1,102 @@
+CREATE CLASS "testtable1"( a int , b string );
+
+CREATE TRIGGER "testtrigger1" 
+BEFORE update on "testtable1"("a")
+execute update "testtable1" set a = new.a + 1
+          where b = 'counter'; 
+
+CREATE TRIGGER "testtrigger2" 
+BEFORE update on "testtable1"("a")
+execute after update "testtable1" set a = obj.a + 1
+          where b = 'counter';           
+  
+CREATE TRIGGER "testtrigger3" 
+before update on "testtable1"("a")
+execute deferred update "testtable1" set a = 3
+          where b = 'counter'; 
+                 
+CREATE TRIGGER "testtrigger4" 
+after update on "testtable1"("a")
+execute update "testtable1" set a = old.a + 1
+          where b = 'counter'; 
+          
+CREATE TRIGGER "testtrigger5" 
+after update on "testtable1"("a")
+execute after update "testtable1" set a = 3
+          where b = 'counter';  
+          
+CREATE TRIGGER "testtrigger6" 
+after update on "testtable1"("a")
+execute deferred update "testtable1" set a = 3
+          where b = 'counter'; 
+                             
+CREATE TRIGGER "testtrigger7" 
+deferred update on "testtable1"("a")
+execute update "testtable1" set a = 3
+          where b = 'counter'; 
+          
+CREATE TRIGGER "testtrigger8" 
+deferred update on "testtable1"("a")
+execute after update "testtable1" set a = 3
+          where b = 'counter';          
+
+CREATE TRIGGER "testtrigger9" 
+deferred update on "testtable1"("a")
+execute deferred update "testtable1" set a = 3
+          where b = 'counter'; 
+          
+          
+CREATE TRIGGER "testtrigger10" 
+BEFORE update on "testtable1"("a")
+if new.a>10
+execute update "testtable1" set a = new.a + 1
+          where b = 'counter'; 
+
+CREATE TRIGGER "testtrigger11" 
+BEFORE update on "testtable1"("a")
+if new.a>10
+execute after update "testtable1" set a = obj.a + 1
+          where b = 'counter';           
+  
+CREATE TRIGGER "testtrigger12" 
+before update on "testtable1"("a")
+if new.a>10
+execute deferred update "testtable1" set a = 3
+          where b = 'counter'; 
+                 
+CREATE TRIGGER "testtrigger13" 
+after update on "testtable1"("a")
+if old.a>10
+execute update "testtable1" set a = old.a + 1
+          where b = 'counter'; 
+          
+CREATE TRIGGER "testtrigger14" 
+after update on "testtable1"("a")
+if old.a>10
+execute after update "testtable1" set a = 3
+          where b = 'counter';  
+          
+CREATE TRIGGER "testtrigger15" 
+after update on "testtable1"("a")
+if old.a>10
+execute deferred update "testtable1" set a = 3
+          where b = 'counter'; 
+                             
+CREATE TRIGGER "testtrigger16" 
+deferred update on "testtable1"("a")
+if obj.a>10
+execute update "testtable1" set a = 3
+          where b = 'counter';           
+      
+
+CREATE TRIGGER "testtrigger18" 
+deferred update on "testtable1"("a")
+if obj.a>10
+execute deferred update "testtable1" set a = 3
+          where b = 'counter';   
+          
+CREATE TRIGGER "testtrigger17" 
+deferred update on "testtable1"("a")
+if obj.a>10
+execute after update "testtable1" set a = 3
+          where b = 'counter';

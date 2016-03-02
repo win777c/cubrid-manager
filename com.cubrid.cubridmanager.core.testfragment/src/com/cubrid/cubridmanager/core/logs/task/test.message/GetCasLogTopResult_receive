@@ -1,0 +1,9 @@
+task:getcaslogtopresult
+status:success
+note:none
+logstringlist:start
+logstring:/home/newbie/cubrid-8.2.2/log/broker/sql_log/query_editor_2.sql.log:35
+logstring:11/24 09:44:29.559 (2) execute srv_h_id 1 select * from "master_info"  where rownum between 1 and 5000;
+logstring:11/24 09:44:29.560 (2) execute 0 tuple 1 time 0.000
+logstring:
+logstringlist:end

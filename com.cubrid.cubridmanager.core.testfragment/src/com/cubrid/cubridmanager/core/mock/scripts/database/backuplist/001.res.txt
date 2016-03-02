@@ -1,0 +1,7 @@
+task:getbackuplist
+status:success
+note:none
+level0:/opt/frameworks/cubrid2/databases/demodb/backup/demodb_backup_lv0
+level1:/opt/frameworks/cubrid2/databases/demodb/backup/demodb_backup_lv1
+level2:/opt/frameworks/cubrid2/databases/demodb/backup/demodb_backup_lv2
+

@@ -1,0 +1,4 @@
+task:addattribute
+status:failure
+note:Class (null) does not exist.
+

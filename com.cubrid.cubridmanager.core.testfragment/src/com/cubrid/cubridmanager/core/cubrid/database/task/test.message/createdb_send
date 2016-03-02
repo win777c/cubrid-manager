@@ -1,0 +1,15 @@
+task:createdb
+token:8ec1ab8a91333c78c773a7f02d44cb7c10617e63ee349d7428d5f0d1c9c94e377926f07dd201b6aa
+dbname:testDb1
+numpage:10240
+pagesize:4096
+logpagesize:1024
+logsize:10240
+genvolpath:D:\CUBRID\databases\testDb1
+logvolpath:D:\CUBRID\databases\testDb1
+open:exvol
+testDb1_data_x001:data;10240;D:\CUBRID\databases\testDb1
+testDb1_index_x001:index;10240;D:\CUBRID\databases\testDb1
+close:exvol
+overwrite_config_file:YES
+

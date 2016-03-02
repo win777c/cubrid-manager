@@ -1,0 +1,16 @@
+task:cmtask_change_param
+token:8ec1ab8a91333c78c3add559568a9735ac3797d549ff3a798e8872611ffbf3937926f07dd201b6aa
+master_db_name:wings_mdb
+slave_db_name:wings_sdb
+dist_db_name:wings_dist
+dist_db_password:123456
+perf_poll_interval:30
+size_of_log_buffer:200
+size_of_cache_buffer:300
+size_of_copylog:2000
+index_replication:Y
+for_recovery:Y
+log_apply_interval:40
+restart_interval:50
+mode:S
+

@@ -1,0 +1,55 @@
+task:getaddbrokerinfo
+status:success
+note:none
+confname:broker
+open:conflist
+confdata:
+confdata:#
+confdata:# Copyright (C) 2008 Search Solution Corporation. All rights reserved by Search Solution. 
+confdata:#
+confdata:#   This program is free software; you can redistribute it and/or modify 
+confdata:#   it under the terms of the GNU General Public License as published by 
+confdata:#   the Free Software Foundation; version 2 of the License. 
+confdata:#
+confdata:#  This program is distributed in the hope that it will be useful, 
+confdata:#  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+confdata:#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+confdata:#  GNU General Public License for more details. 
+confdata:#
+confdata:#  You should have received a copy of the GNU General Public License 
+confdata:#  along with this program; if not, write to the Free Software 
+confdata:#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+confdata:#
+confdata:
+confdata:[broker]
+confdata:MASTER_SHM_ID           =31235
+confdata:ADMIN_LOG_FILE          =log/broker/cubrid_broker.log
+confdata:
+confdata:[%query_editor]
+confdata:SERVICE                 =ON
+confdata:BROKER_PORT             =41223
+confdata:MIN_NUM_APPL_SERVER     =5
+confdata:MAX_NUM_APPL_SERVER     =40
+confdata:APPL_SERVER_SHM_ID      =41223
+confdata:LOG_DIR                 =log/broker/sql_log
+confdata:ERROR_LOG_DIR           =log/broker/error_log
+confdata:SQL_LOG                 =ON
+confdata:TIME_TO_KILL            =120
+confdata:SESSION_TIMEOUT         =300
+confdata:KEEP_CONNECTION         =AUTO
+confdata:
+confdata:[%BROKER1]
+confdata:SERVICE                 =ON
+confdata:BROKER_PORT             =53222
+confdata:MIN_NUM_APPL_SERVER     =5
+confdata:MAX_NUM_APPL_SERVER     =40
+confdata:APPL_SERVER_SHM_ID      =53222
+confdata:LOG_DIR                 =log/broker/sql_log
+confdata:ERROR_LOG_DIR           =log/broker/error_log
+confdata:SQL_LOG                 =ON
+confdata:TIME_TO_KILL            =120
+confdata:SESSION_TIMEOUT         =300
+confdata:KEEP_CONNECTION         =AUTO
+confdata:
+close:conflist
+__EXEC_TIME:0 ms

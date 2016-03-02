@@ -1,0 +1,4 @@
+task:classinfo
+token:*
+dbstatus:off
+

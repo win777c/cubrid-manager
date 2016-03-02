@@ -1,0 +1,4 @@
+task:stopdb
+token:*
+dbname:notexistdb
+

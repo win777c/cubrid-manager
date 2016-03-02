@@ -1,0 +1,6 @@
+task:backupvolinfo
+token:*
+dbname:notexistdb
+level:1
+pathname:/opt/frameworks/cubrid/databases/notexistdb/backup/notexistdb_backup_lv0
+

@@ -1,0 +1,5 @@
+task:cmtask_repl_server_start
+token:8ec1ab8a91333c78c3add559568a9735ac3797d549ff3a798e8872611ffbf3937926f07dd201b6aa
+master_db_name:mdb
+server_port:23421
+

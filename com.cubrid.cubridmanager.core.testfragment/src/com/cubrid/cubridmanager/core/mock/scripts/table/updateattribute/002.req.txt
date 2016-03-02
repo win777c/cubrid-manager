@@ -1,0 +1,12 @@
+task:updateattribute
+token:*
+dbname:notexistdb
+classname:code
+oldattributename:inpt_name
+newattributename:new_inpt_name
+category:instance
+index:x
+notnull:y
+unique:n
+default:''
+

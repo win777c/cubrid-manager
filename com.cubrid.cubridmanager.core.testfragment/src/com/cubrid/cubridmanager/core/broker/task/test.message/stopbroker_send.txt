@@ -1,0 +1,3 @@
+task:broker_stop
+token:8ec1ab8a91333c78a52f8032c595421e894c4019790e78ca72296b2bd287b49d7926f07dd201b6aa
+bname:broker1

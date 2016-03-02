@@ -1,0 +1,4 @@
+task:createclass
+token:*
+dbname:demodb
+

@@ -1,0 +1,4 @@
+task:deletebackupinfo
+token:*
+backupid:bak_daily
+

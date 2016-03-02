@@ -1,0 +1,4 @@
+task:getbackupinfo
+token:*
+dbname:demodb
+

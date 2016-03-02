@@ -1,0 +1,4 @@
+task:deletebackupinfo
+status:success
+note:none
+

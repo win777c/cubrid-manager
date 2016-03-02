@@ -1,0 +1,5 @@
+CREATE CLASS "testtable1"( a int , b string );
+
+CREATE TRIGGER "testtrigger1" 
+BEFORE INSERT ON "testtable1" 
+EXECUTE REJECT;

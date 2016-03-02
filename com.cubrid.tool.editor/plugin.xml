@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.cubrid.tool.editor.xml.XMLEditor"
+            contributorClass="com.cubrid.tool.editor.TextEditorContributor"
+            default="false"
+            icon="icons/xml_editor.gif"
+            id="com.cubrid.tool.editor.xml.XMLEditor"
+            name="Cubrid XML Editor">
+      </editor>
+      <editor
+            class="com.cubrid.tool.editor.property.PropEditor"
+            contributorClass="com.cubrid.tool.editor.TextEditorContributor"
+            default="false"
+            icon="icons/prop_editor.png"
+            id="com.cubrid.tool.editor.property.PropEditor"
+            name="Cubrid Properties Editor">
+      </editor>
+   </extension>
+</plugin>

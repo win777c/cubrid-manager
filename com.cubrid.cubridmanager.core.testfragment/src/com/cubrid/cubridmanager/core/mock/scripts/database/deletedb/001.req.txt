@@ -1,0 +1,5 @@
+task:deletedb
+token:*
+dbname:notexistdb
+delbackup:y
+

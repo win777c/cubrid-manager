@@ -1,0 +1,74 @@
+task:loadaccesslog
+status:success
+note:none
+open:accesslog
+user:admin
+taskname:deleteerrorlog
+time:2010/01/11 14:03:01
+taskname:deletebackupinfo
+time:2010/01/11 14:03:02
+user:admin
+taskname:setautoexecquery
+time:2010/01/11 14:03:02
+user:admin
+taskname:broker_setparam
+time:2010/01/11 14:03:10
+user:admin
+taskname:createuser
+time:2010/01/11 14:03:10
+user:admin
+taskname:updateuser
+time:2010/01/11 14:03:10
+user:admin
+taskname:deleteuser
+time:2010/01/11 14:03:10
+user:admin
+taskname:addvoldb
+time:2010/01/11 14:03:11
+user:admin
+taskname:addbackupinfo
+time:2010/01/11 14:04:44
+user:admin
+taskname:setautoaddvol
+time:2010/01/11 14:04:44
+user:admin
+taskname:updatedbmtuser
+time:2010/01/11 15:11:04
+close:accesslog
+open:errorlog
+user:admin
+taskname:class
+time:2010/01/11 14:03:09
+errornote:Failed to connect to database server, 'dbName', on the following host(s): localhost
+taskname:class
+time:2010/01/11 14:03:11
+errornote:Unknown class "sup1".
+user:admin
+taskname:class
+time:2010/01/11 14:03:11
+errornote:Unknown class "sup2".
+user:admin
+taskname:class
+time:2010/01/11 14:03:11
+errornote:Unknown class "sup3".
+user:admin
+taskname:class
+time:2010/01/11 14:03:11
+errornote:Unknown class "testschemaalterddltest".
+user:admin
+taskname:resetlog
+time:2010/01/11 14:03:11
+errornote:File(/home/daniel/CUBRID/log/broker/sql_log/fdsf_1.sql.log) open error
+user:admin
+taskname:dbspaceinfo
+time:2010/01/11 14:04:06
+errornote:Database "xxxxxxxxxxx" is unknown, or the file "databases.txt" cannot be accessed.
+user:admin
+taskname:userinfo
+time:2010/01/11 14:04:25
+errornote:Failed to connect to database server, 'demodb', on the following host(s): localhost
+user:admin
+taskname:getbackupinfo
+time:2010/01/11 14:04:43
+errornote:Parameter(database name) missing in the request
+close:errorlog

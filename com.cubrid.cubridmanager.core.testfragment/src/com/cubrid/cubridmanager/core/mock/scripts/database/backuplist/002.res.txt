@@ -1,0 +1,4 @@
+task:getbackuplist
+status:failure
+note:Can not find the directory database(notexistdb) is located
+

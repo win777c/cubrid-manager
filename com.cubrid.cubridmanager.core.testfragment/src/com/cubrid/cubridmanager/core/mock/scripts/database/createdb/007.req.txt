@@ -1,0 +1,9 @@
+task:createdb
+token:*
+dbname:demodb
+numpage:100
+pagesize:4096
+logsize:100
+genvolpath:/opt/frameworks/cubrid/databases/demodb
+logvolpath:/opt/frameworks/cubrid/databases/demodb
+

@@ -1,0 +1,10 @@
+task:addattribute
+token:*
+dbname:demodb
+attributename:expdate
+type:CHAR(8)
+default:'99991231'
+category:instance
+unique:no
+notnull:yes
+

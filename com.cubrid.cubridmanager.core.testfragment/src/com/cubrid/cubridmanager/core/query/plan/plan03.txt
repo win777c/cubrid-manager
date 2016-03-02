@@ -1,0 +1,25 @@
+Join graph segments (f indicates final):
+seg[0]: [0]
+seg[1]: host_year[0] (f)
+seg[2]: event_code[0] (f)
+seg[3]: athlete_code[0] (f)
+seg[4]: stadium_code[0] (f)
+seg[5]: nation_code[0] (f)
+seg[6]: medal[0] (f)
+seg[7]: game_date[0] (f)
+Join graph nodes:
+node[0]: (game, game__p__medal1, game__p__medal2) as game(5663/245) (sargs 0)
+Join graph terms:
+term[0]: game.medal range ('G' =  or 'S' = ) (sel 0.001999) (rank 2) (sarg term) (not-join eligible) (loc 0)
+
+Query plan:
+
+sscan
+    class: game node[0]
+    sargs: term[0]
+    cost:  fixed 0(0.0/0.0) var 259(14.2/245.0) card 11
+
+Query stmt:
+
+select game.host_year, game.event_code, game.athlete_code, game.stadium_code, game.nation_code, game.medal, game.game_date from (game, game__p__medal1, game__p__medal2) game where ((game.medal='G') or (game.medal='S'))
+

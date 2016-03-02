@@ -1,0 +1,15 @@
+task:cmtask_make_distdb
+token:8ec1ab8a91333c78c3add559568a9735ac3797d549ff3a798e8872611ffbf3937926f07dd201b6aa
+dist_db_name:distdb1
+dist_db_path:/home/agent0/cubrid/databases/distdb1
+dba_pass:123456
+repl_agent_status_port:5555
+master_db_name:mdb
+master_db_ip:192.168.1.123
+repl_server_port:66666
+copy_log_path:/home/agent0/cubrid/databases/distdb1
+trail_log_path:/home/agent0/cubrid/databases/distdb1
+error_log_path:/home/agent0/cubrid/databases/distdb1
+delay_time_log_size:100
+restart_flag:y
+

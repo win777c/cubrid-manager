@@ -1,0 +1,40 @@
+CREATE TABLE "testgetschematask"
+(
+"smallint" smallint AUTO_INCREMENT PRIMARY KEY,
+"smallint2" smallint,
+"integer" integer AUTO_INCREMENT(2,1),
+"bigint" bigint,
+"numeric1" numeric(15,0) AUTO_INCREMENT UNIQUE,
+"numeric2" numeric(17,2) DEFAULT 12.50,
+"float" float DEFAULT 12 NOT NULL,
+"date" date DEFAULT DATE'12/12/2009',
+"datetime" datetime DEFAULT DATETIME'2009-12-12 12:12:12.333',
+"timestamp" timestamp DEFAULT TIMESTAMP'12/01/2009 03:07:51',
+"time" time DEFAULT TIME'00:00:12',
+"char" character(10) DEFAULT 'aa        ',
+"varchar" character varying(10) DEFAULT '77',
+"setint" set_of(smallint) DEFAULT {1, 2},
+"multisetchar" multiset_of(character varying(10)) DEFAULT {'12', '13'},
+"shared" character varying(1073741823) SHARED 'sharedvalue',
+"bit" bit(1),
+"bitv" bit varying(100),
+"nchar" national character(1),
+"varnchar" national character varying(100),
+"sequence_numeric" sequence_of(numeric(15,1)),
+"set_bigint" set_of(bigint),
+"multiset_float" multiset_of(float),
+"sequence_nchar" sequence_of(national character(2)),
+"set_vnchar" set_of(national character varying(100)),
+"set_time" set_of(time),
+"multiset_date" multiset_of(date),
+"sequence_datetime" sequence_of(datetime),
+"set_timestamp" set_of(timestamp),
+"multiset_monetary" multiset_of(monetary),
+"sequence_bit" sequence_of(bit(2)),
+"set_varbit" set_of(bit varying(120))
+)
+
+CREATE  UNIQUE INDEX ON "testgetschematask"("numeric2" DESC,"float" ASC,"date" DESC);
+CREATE  REVERSE UNIQUE INDEX ON "testgetschematask"("integer" DESC,"bigint" ASC);
+CREATE  INDEX ON "testgetschematask"("smallint" DESC,"smallint2" DESC);
+CREATE  REVERSE INDEX ON "testgetschematask"("numeric1" ASC,"numeric2" DESC);

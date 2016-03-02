@@ -1,0 +1,9 @@
+task:restoredb
+token:*
+dbname:notexistdb
+date:backuptime
+level:0
+partial:n
+pathname:/opt/frameworks/cubrid/databases/notexistdb/backup/notexistdb_backup_lv0
+recoverypath:none
+

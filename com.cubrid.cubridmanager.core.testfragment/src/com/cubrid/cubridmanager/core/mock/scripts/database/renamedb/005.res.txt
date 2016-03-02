@@ -1,0 +1,4 @@
+task:renamedb
+status:failure
+note:Parameter(new database name) missing in the request
+

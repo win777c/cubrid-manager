@@ -1,0 +1,4 @@
+task:createclass
+status:failure
+note:Class game already exists.
+

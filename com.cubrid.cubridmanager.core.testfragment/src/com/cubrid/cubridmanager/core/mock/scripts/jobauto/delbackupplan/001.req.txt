@@ -1,0 +1,5 @@
+task:deletebackupinfo
+token:*
+dbname:demodb
+backupid:notexistbackupid
+

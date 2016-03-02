@@ -1,0 +1,7 @@
+task:executecasrunner
+status:success
+note:none
+result_list:start
+result_list:end
+query_result_file:/home/newbie/cubrid-8.2.2/tmp/log_run_24415.res
+query_result_file_num:1

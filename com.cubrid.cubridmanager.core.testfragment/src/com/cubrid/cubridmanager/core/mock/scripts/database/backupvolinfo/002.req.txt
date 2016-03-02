@@ -1,0 +1,6 @@
+task:backupvolinfo
+token:*
+dbname:activedb
+level:0
+pathname:/opt/frameworks/cubrid/databases/activedb/backup/activedb_backup_lv0
+

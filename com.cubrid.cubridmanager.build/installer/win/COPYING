@@ -1,0 +1,199 @@
+Copyright (C) 2012-2015 Search Solution Corporation. All rights reserved.
+CUBRID is registered trademark of Search Solution Corporation.
+
+CUBRID Tools are free software. It also repackages other free software. This section explains what you can and cannot do with CUBRID Tools and the software included with it.
+For more information, please refer to the CUBRID home page(http://www.cubrid.org/wiki_tools/entry/cubrid-tools-license).
+
+
+CUBRID Manager, CUBRID Query Browser License
+============================================
+
+Copyright (c) 2012-2015, Search Solution Corporation. All rights reserved.
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+
+3rd Party Licenses
+==================
+
+SLF4J
+-----
+Homepage http://www.slf4j.org/
+License (MIT) http://www.slf4j.org/license.html
+Component slf4j-api-1.6.6.jar, slf4j-log4j12-1.6.6.jar
+
+
+Apache Commons
+--------------
+Homepage http://commons.apache.org/
+License (Apache Software License Version 2.0) http://www.apache.org/licenses/LICENSE-2.0
+Component commons-net-3.0.1.jar, commons-lang, commons-codec-1.6.jar, commons-logging-1.1.1.jar,
+          org.apache.commons.el_1.0.0.v201004212143.jar, org.apache.commons.httpclient_3.1.0.v201005080502.jar,
+          org.apache.commons.logging_1.0.4.v201005080501.jar
+
+
+Apache HttpClient
+-----------------
+Homepage http://hc.apache.org/
+License (Apache Software License Version 2.0) http://www.apache.org/licenses/LICENSE-2.0
+Component httpclient-4.2.1.jar, httpclient-cache-4.2.1.jar, httpcore-4.2.1.jar, httpmime-4.2.1.jar,
+fluent-hc-4.2.1.jar
+
+
+Apache Ant
+----------
+Homepage http://ant.apache.org/
+License (Apache Software License Version 2.0) http://www.apache.org/licenses/LICENSE-2.0
+Component org.apache.ant_1.7.1.v20100518-1145
+
+
+Apache POI
+----------
+Homepage http://poi.apache.org/
+License (Apache Software License Version 2.0) http://www.apache.org/licenses/LICENSE-2.0
+Component poi-3.6-20091214.jar, poi-ooxml-3.6-20091214.jar, poi-ooxml-schemas-3.6-20091214.jar,
+poi-scratchpad-3.6-20091214.jar,
+
+
+Apache Tomcat
+-------------
+Homepage http://tomcat.apache.org/
+License (Apache Software License Version 2.0) http://www.apache.org/licenses/LICENSE-2.0
+Component org.apache.jasper_5.5.17.v201004212143.jar, javax.servlet.jsp_2.0.0.v200806031607.jar,
+          javax.servlet_2.5.0.v200910301333.jar
+
+
+Apache Log4J
+------------
+Homepage http://logging.apache.org/log4j/1.2/
+License (Apache Software License Version 2.0) http://www.apache.org/licenses/LICENSE-2.0
+Component org.apache.log4j_1.2.13.v200806030600.jar
+
+
+Apache Lucene
+-------------
+Homepage http://lucene.apache.org/core/
+License (Apache Software License Version 2.0) http://www.apache.org/licenses/LICENSE-2.0
+Component org.apache.lucene.analysis_1.9.1.v20100518-1140.jar, org.apache.lucene_1.9.1.v20100518-1140.jar,
+          org.eclipse.ant.core_3.2.200.v20100427.jar,
+
+
+Jetty
+-----
+Homepage http://www.eclipse.org/jetty/
+License (Apache Software License Version 2.0) http://www.apache.org/licenses/LICENSE-2.0
+     or (Eclipse Public License 1.0) http://www.eclipse.org/legal/epl-v10.html
+Component org.mortbay.jetty.server_6.1.23.v201004211559.jar, org.mortbay.jetty.util_6.1.23.v201004211559.jar
+
+
+json-simple
+-----------
+Homepage https://code.google.com/p/json-simple/
+License (Apache Software License Version 2.0) http://www.apache.org/licenses/LICENSE-2.0
+Component json-simple-1.1.1.jar
+
+
+Xerces
+------
+Homepage http://xerces.apache.org/xerces-j/
+License (Apache Software License Version 2.0) http://www.apache.org/licenses/LICENSE-2.0
+Component org.apache.xerces_2.9.0.v200909240008.jar
+
+
+Apache XMLBeans
+---------------
+Homepage http://xmlbeans.apache.org/
+License (Apache Software License Version 2.0) http://www.apache.org/licenses/LICENSE-2.0
+Component xmlbeans-2.3.0.jar
+
+
+Rome
+----
+Homepage https://github.com/rometools/rome
+License (Apache Software License Version 2.0) https://github.com/rometools/rome/blob/master/LICENSE
+Component rome-1.0.jar
+
+
+Geronimo-stax-api
+-----------------
+Homepage http://geronimo.apache.org/
+License (Apache Software License Version 2.0) http://www.apache.org/licenses/LICENSE-2.0
+Component geronimo-stax-api_1.0_spec-1.0.jar
+
+
+google-gson
+-----------
+Homepage https://code.google.com/p/google-gson
+License (Apache Software License Version 2.0) http://www.apache.org/licenses/LICENSE-2.0
+Component gson-2.2.4.jar
+
+
+ANTLR
+-----
+Homepage http://www.antlr.org/
+License (BSD License) http://www.antlr.org/license.html
+Component antlr-3.3-complete.jar
+
+
+jdom
+----
+Homepage https://github.com/hunterhacker/jdom
+License (BSD License) https://github.com/hunterhacker/jdom/blob/master/LICENSE.txt
+Component jdom.jar
+
+
+dom4j
+-----
+Homepage http://dom4j.sourceforge.net/
+License (BSD style license) http://dom4j.sourceforge.net/dom4j-1.6.1/license.html
+Component dom4j-1.6.1.jar
+
+
+JExcelApi
+---------
+Homepage http://jexcelapi.sourceforge.net/
+License LGPL License. See the http://www.gnu.org/licenses/lgpl.html
+Component jxl.jar
+
+
+JFree Chart
+-----------
+Homepage http://www.jfree.org/jfreechart/
+License (LGPL License) http://www.gnu.org/licenses/lgpl.html
+Component jcommon-1.0.16.jar, jfreechart-1.0.13-experimental.jar, jfreechart-1.0.13.jar, swt_jfreechart-1.0.13.jar
+
+
+SAT4J
+-----
+Homepage http://www.sat4j.org/
+License (EPL License) http://www.eclipse.org/legal/epl-v10.html
+     or (LGPL License) http://www.gnu.org/licenses/lgpl.html
+Component org.sat4j.core_2.2.0.v20100429.jar, org.sat4j.pb_2.2.0.v20100429.jar
+
+
+ICU
+---
+License (ICU License)
+ICU license - ICU 1.8.1 and later
+Copyright (c) 1995-2009 International Business Machines Corporation and others
+All rights reserved.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, provided that the above copyright notice(s) and this permission notice appear in all copies of the Software and that both the above copyright notice(s) and this permission notice appear in supporting documentation.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF THIRD PARTY RIGHTS. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+Except as contained in this notice, the name of a copyright holder shall not be used in advertising or otherwise to promote the sale, use or other dealings in this Software without prior written authorization of the copyright holder.
+Component com.ibm.icu_4.2.1.v20100412.jar
+
+
+Eclipse RCP/SWT/JFACE platforms
+-------------------------------
+Homepage http://www.eclipse.org
+License (EPL License) http://www.eclipse.org/legal/epl-v10.html
+
+
+CUBRID JDBC drivers
+-------------------
+Homepage http://www.cubrid.org
+License (BSD License)

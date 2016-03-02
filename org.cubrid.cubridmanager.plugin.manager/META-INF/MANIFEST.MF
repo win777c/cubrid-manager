@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: org.cubrid.cubridmanager.plugin.manager;singleton:=true
+Bundle-Version: 9.3.1.qualifier
+Bundle-Activator: org.cubrid.cubridmanager.plugin.manager.Activator
+Bundle-Vendor: CUBRID
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ com.cubrid.common.core;bundle-version="9.3.1",
+ com.cubrid.cubridmanager.core;bundle-version="9.3.1",
+ com.cubrid.common.ui;bundle-version="9.3.1",
+ com.cubrid.cubridmanager.ui;bundle-version="9.3.1",
+ com.cubrid.common.configuration;bundle-version="9.3.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

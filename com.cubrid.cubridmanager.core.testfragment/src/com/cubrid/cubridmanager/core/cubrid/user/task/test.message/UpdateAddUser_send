@@ -1,0 +1,17 @@
+dbname:demodb
+username:pang
+userpass:123456
+open:groups
+group:public
+close:groups
+open:addmembers
+member:wang
+close:addmembers
+open:removemembers
+member:qi
+close:removemembers
+open:authorization
+athlete:1
+testdropviewtask:1
+close:authorization
+

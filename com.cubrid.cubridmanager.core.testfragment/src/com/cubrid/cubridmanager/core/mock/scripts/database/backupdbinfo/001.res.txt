@@ -1,0 +1,11 @@
+task:backupdbinfo
+status:success
+note:none
+dbdir:/opt/frameworks/cubrid2/databases/demodb/backup
+open:level0
+path:/opt/frameworks/cubrid2/databases/demodb/backup/demodb_backup_lv0
+size:5256192
+data:2009.06.26.22.37
+close:level0
+freespace:15216
+

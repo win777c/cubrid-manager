@@ -1,0 +1,4 @@
+task:deletebackupinfo
+status:failure
+note:Parameter(database name) missing in the request
+

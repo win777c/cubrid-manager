@@ -1,0 +1,11 @@
+task:cmtask_make_slavedb
+token:8ec1ab8a91333c78c3add559568a9735ac3797d549ff3a798e8872611ffbf3937926f07dd201b6aa
+slave_db_name:sdb
+backupfile_path:/home/biaozhang/cubrid/databases/dest_biaodb
+master_db_name:mdb
+master_dba_pass:123456
+dist_db_name:dist1
+dist_dba_pass:123456
+repluser_id:dba
+repluser_passwd:123456
+

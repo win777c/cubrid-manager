@@ -1,0 +1,46 @@
+task:updateattribute
+status:success
+note:none
+open:classinfo
+dbname:demodb
+classname:code
+type:user
+owner:PUBLIC
+virtual:normal
+open:attribute
+name:s_name
+type:character(1)
+inherit:code
+indexed:n
+notnull:n
+shared:n
+unique:n
+default:
+close:attribute
+open:attribute
+name:f_name
+type:character varying(6)
+inherit:code
+indexed:n
+notnull:n
+shared:n
+unique:n
+default:
+close:attribute
+open:attribute
+name:new_inpt_name
+type:character varying(20)
+inherit:code
+indexed:n
+notnull:y
+shared:n
+unique:n
+default:
+close:attribute
+open:constraint
+type:NOT NULL
+name:n_code_new_inpt_name
+attribute:new_inpt_name
+close:constraint
+close:classinfo
+

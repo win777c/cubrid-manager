@@ -1,0 +1,7 @@
+task:getallsysparam
+status:success
+note:none
+confname:cubridconf
+open:conflist
+close:conflist
+

@@ -1,0 +1,4 @@
+task:addattribute
+status:failure
+note:Execute: Cannot coerce 99991231 to type char. alter class code add attribute expdate2 char(8) default 99991231 not null 
+

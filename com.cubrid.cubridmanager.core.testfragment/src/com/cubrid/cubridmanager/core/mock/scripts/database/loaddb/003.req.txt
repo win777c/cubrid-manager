@@ -1,0 +1,15 @@
+task:loaddb
+token:*
+dbname:demodb
+checkoption:both
+period:10000
+user:dba
+estimated:5000
+oiduse:yes
+nolog:no
+schema:/opt/frameworks/cubrid2/databases/demodb/demodb_schema
+object:/opt/frameworks/cubrid2/databases/demodb/demodb_objects
+index:none
+errorcontrolfile:none
+ignoreclassfile:none
+

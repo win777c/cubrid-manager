@@ -1,0 +1,15 @@
+task:loaddb
+token:*
+dbname:activedb
+checkoption:both
+period:none
+user:dba
+estimated:none
+oiduse:yes
+nolog:no
+schema:/opt/frameworks/cubrid2/databases/activedb/activedb_schema
+object:/opt/frameworks/cubrid2/databases/activedb/activedb_objects
+index:none
+errorcontrolfile:none
+ignoreclassfile:none
+

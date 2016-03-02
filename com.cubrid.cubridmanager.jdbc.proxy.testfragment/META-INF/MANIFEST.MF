@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: proxy Testfragment
+Bundle-SymbolicName: com.cubrid.cubridmanager.jdbc.proxy.testfragment
+Bundle-Version: 9.3.1
+Bundle-Vendor: CUBRID
+Fragment-Host: com.cubrid.cubridmanager.jdbc.proxy;bundle-version="8.4.1"
+Require-Bundle: org.junit

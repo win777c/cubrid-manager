@@ -1,0 +1,4 @@
+task:addattribute
+status:failure
+note:Failed to connect to database server, 'notexistdb', on the following host(s): localhost
+

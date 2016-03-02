@@ -1,0 +1,10 @@
+task:cmtask_change_master
+token:8ec1ab8a91333c78c3add559568a9735ac3797d549ff3a798e8872611ffbf3937926f07dd201b6aa
+old_master_name:demodb
+old_master_host:192.168.1.132
+new_master_name:testdb
+new_master_host:192.168.1.222
+dist_name:distdb
+dist_host:192.168.1.222
+dist_password:123456
+

@@ -1,0 +1,19 @@
+task:errortrace
+status:success
+note:none
+open:errbloc
+line:01/31 10:07:21.135 (0) STATE idle
+line:01/31 14:13:33.638 (0) CLIENT IP 10.34.63.153
+line:01/31 14:13:34.280 (0) connect db testdb@10.34.63.132 user dba url jdbc:cubrid:10.34.63.132:45000:testdb@10.34.63.132:dba:1111:?charset=GBK
+line:01/31 14:13:34.280 (0) DEFAULT isolation_level 3, lock_timeout -1
+line:01/31 14:13:34.281 (0) check_cas 0
+line:01/31 14:13:34.281 (0) set_db_parameter lock_timeout 1000
+line:01/31 14:13:34.281 (0) get_db_parameter isolation_level
+line:01/31 14:13:34.282 (3) prepare 0 
+line:insert into dfadfa VALUES (aaa)
+line:01/31 14:13:34.358 (3) prepare srv_h_id error:-493, EID = 10
+line:01/31 14:13:34.358 (0) auto_rollback
+line:01/31 14:13:34.359 (0) auto_rollback 0
+line:01/31 14:13:34.359 (0) *** elapsed time 0.079
+close:errbloc
+

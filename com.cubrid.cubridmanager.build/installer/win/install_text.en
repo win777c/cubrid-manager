@@ -1,0 +1,56 @@
+###################################################
+# Install text 
+###################################################
+
+;-------------------------------
+; OS Arch Error
+;-------------------------------
+
+LangString msgWindowsArchError ${LANG_ENGLISH} 'This installation package is not supported by this Windows Architecture'
+LangString msgWindowsArchError2 ${LANG_ENGLISH} 'This installation package is not suitable by 32bit JVM. You should need to install 32bit JVM after installing this package.'
+
+;-------------------------------
+; CUBRIDManager already install
+;-------------------------------
+
+LangString msgAlreadyInstalled ${LANG_ENGLISH} 'Current ${PRODUCT_NAME} (${PRODUCT_VERSION}) is already \
+             installed. Do you want to continue?'
+
+;-------------------------------
+; JAVA Check
+;-------------------------------
+
+LangString msgJAVANotInstall ${LANG_ENGLISH} 'JRE version 1.6 or later (${INSTALLER_ARCH}) may be not installed. Do you want to continue?'
+LangString msgJAVAVersionError ${LANG_ENGLISH} 'JRE version 1.6 or later (${INSTALLER_ARCH}) needed. Do you want to continue?'
+
+;-------------------------------
+; directory page settings
+;-------------------------------
+
+LangString msgDirTextTop ${LANG_ENGLISH} 'Setup will install ${PRODUCT_NAME} \
+             (${PRODUCT_VERSION}) in the following folder. click Browse and select another \
+             folder. Click Install to start the installation' 
+
+;-------------------------------
+; finish page readme text
+;-------------------------------
+
+LangString textShowReadme ${LANG_ENGLISH} 'Show release note' 
+
+;--------------------------------
+; section descriptions
+;--------------------------------
+
+LangString descSec_Driver ${LANG_ENGLISH} '${PRODUCT_NAME} ${PRODUCT_VERSION}'
+LangString descSec_ReleaseNotes ${LANG_ENGLISH} '${PRODUCT_NAME} ${PRODUCT_VERSION} Release Notes'
+LangString descSec_Doc ${LANG_ENGLISH} '${PRODUCT_NAME} ${PRODUCT_VERSION} doc'
+LangString descSec_Shortcuts ${LANG_ENGLISH} 'Shortcut'
+LangString descSec_DesktopShortcut ${LANG_ENGLISH} 'Desktop Shortcut'
+LangString descSec_StartmenuShortcut ${LANG_ENGLISH} 'Startmenu Shortcut'
+LangString descSec_QuicklaunchShortcut ${LANG_ENGLISH} 'Quick Launch Shortcut'
+
+;-------------------------------
+; still running when uninstall
+;-------------------------------
+
+LangString msgStillRunning ${LANG_ENGLISH} '${PRODUCT_NAME} ${PRODUCT_VERSION} is still running now, please stop it before uninstall.' 

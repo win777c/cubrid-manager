@@ -1,0 +1,11 @@
+task:copydb
+token:*
+srcdbname:demodb
+destdbname:newdb
+destdbpath:/opt/frameworks/cubrid/databases/newdb
+exvolpath:/opt/frameworks/cubrid/databases/newdb
+logpath:/opt/frameworks/cubrid/databases/newdb
+overwrite:n
+move:n
+advanced:off
+

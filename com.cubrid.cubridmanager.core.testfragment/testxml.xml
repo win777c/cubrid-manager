@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<hosts>
+  <host address="192.168.0.1" id="localhost" isLocal="true" name="localhost" port="8001" user="admin">Text data</host>
+</hosts>

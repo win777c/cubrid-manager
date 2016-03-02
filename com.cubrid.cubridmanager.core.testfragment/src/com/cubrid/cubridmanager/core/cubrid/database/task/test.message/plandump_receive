@@ -1,0 +1,18 @@
+task:plandump
+status:success
+note:none
+open:log
+line:
+line:CACHE        MAX        NUM     LOOKUP        HIT       MISS       FULL
+line:entry       1000          0        106         62         44          0
+line:
+line:HTABLE NAME = XASL stream cache (query string), SIZE = 1039, REHASH_AT = 727,
+line:NENTRIES = 0, NPREALLOC = 16, NCOLLISIONS = 0
+line:
+line:HTABLE NAME = XASL stream cache (xasl file id), SIZE = 1039, REHASH_AT = 727,
+line:NENTRIES = 0, NPREALLOC = 16, NCOLLISIONS = 0
+line:
+line:HTABLE NAME = XASL stream cache (class oid), SIZE = 1039, REHASH_AT = 727,
+line:NENTRIES = 0, NPREALLOC = 56, NCOLLISIONS = 0
+line:
+close:log

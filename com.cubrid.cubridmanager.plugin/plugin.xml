@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="%perspectiveName"
+            class="com.cubrid.cubridmanager.plugin.Perspective"
+            id="com.cubrid.cubridmanager.plugin.Perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="com.cubrid.cubridmanager.ui.view.category"
+            name="%viewCategory"/>
+      <view
+            allowMultiple="false"
+            category="com.cubrid.cubridmanager.ui.view.category"
+            name="%hostNavigatorViewName"
+            icon="icons/host.png"
+            class="com.cubrid.cubridmanager.plugin.CubridPluginHostNavigatorView"
+            id="com.cubrid.cubridmanager.host.navigator">
+      </view>
+   </extension>
+   <extension
+          point="org.eclipse.ui.preferencePages">
+        <page
+             class="com.cubrid.common.ui.common.control.NullCategoryPreferencePage"
+             id="com.cubrid.common.ui.preference.category"
+             name="%preferencePageCategory">
+       </page>
+    </extension>
+</plugin>

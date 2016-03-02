@@ -1,0 +1,12 @@
+task:cmtask_get_repl_params
+status:success
+note:none
+perf_poll_interval:30
+size_of_log_buffer:200
+size_of_cache_buffer:300
+size_of_copylog:2000
+index_replication:Y
+for_recovery:Y
+log_apply_interval:40
+restart_interval:50
+

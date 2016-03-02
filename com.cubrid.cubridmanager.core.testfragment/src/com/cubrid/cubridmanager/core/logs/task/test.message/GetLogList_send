@@ -1,0 +1,7 @@
+task:viewlog
+token:cdfb4c5717170c5ebfe87e622309762cd86d130e637ad0e7dd09d278d033f7f77926f07dd201b6aa
+dbname:aa
+path:/home/newbie/cubrid-8.2.2/log/broker/sql_log/broker1_1.sql.log
+start:1
+end:100
+

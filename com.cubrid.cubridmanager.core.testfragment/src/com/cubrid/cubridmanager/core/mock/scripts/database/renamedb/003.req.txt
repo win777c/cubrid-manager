@@ -1,0 +1,8 @@
+task:renamedb
+token:*
+dbname:existdb
+rename:newdb
+exvolpath:/opt/frameworks/cubrid/databases/newdb
+advanced:off
+forcedel:y
+

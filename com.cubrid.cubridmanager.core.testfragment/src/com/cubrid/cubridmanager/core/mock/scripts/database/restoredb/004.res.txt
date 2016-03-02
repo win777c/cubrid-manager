@@ -1,0 +1,6 @@
+task:restoredb
+status:failure
+note:Unable to mount disk volume "/opt/frameworks/cubrid/databases/demodb/backup/backup_lv0_notexist".... No such file or directory
+Please consult error_log file = /opt/frameworks/cubrid/log/demodb_restoredb.err for additional information
+... ABORT/EXIT IMMEDIATELY ...<<<---
+

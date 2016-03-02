@@ -1,0 +1,21 @@
+task:unloaddb
+status:success
+note:none
+open:result
+stadium:141 (100%/0%)
+code:7 (100%/0%)
+nation:215 (100%/1%)
+event:422 (100%/4%)
+athlete:6677 (100%/38%)
+participant:916 (100%/43%)
+olympic:25 (100%/43%)
+game:8653 (100%/88%)
+record:2000 (100%/99%)
+history:147 (100%/99%)
+t_cat:11 (100%/99%)
+glo_name:0 (100%/99%)
+glo_holder:0 (100%/99%)
+glo:0 (100%/99%)
+dual:1 (100%/100%)
+close:result
+

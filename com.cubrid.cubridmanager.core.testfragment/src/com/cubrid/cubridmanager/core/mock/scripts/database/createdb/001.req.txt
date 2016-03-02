@@ -1,0 +1,16 @@
+task:createdb
+token:*
+dbname:fulldb
+numpage:100
+pagesize:4096
+logsize:100
+genvolpath:/opt/frameworks/cubrid/databases/fulldb
+logvolpath:/opt/frameworks/cubrid/databases/fulldb
+overwrite_config_file:YES
+open:exvol
+demodb4_data_x001:data;100;/opt/frameworks/cubrid/databases/fulldb
+demodb4_index_x001:index;100;/opt/frameworks/cubrid/databases/fulldb
+demodb4_temp_x001:temp;100;/opt/frameworks/cubrid/databases/fulldb
+demodb4_generic_x001:generic;100;/opt/frameworks/cubrid/databases/fulldb
+close:exvol
+

@@ -1,0 +1,8 @@
+task:backupdbinfo
+status:success
+note:none
+dbdir:/home/biaozhang/cubrid/databases/distdb_pang/backup
+open:level0
+close:level0
+freespace:814952
+

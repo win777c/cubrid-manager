@@ -1,0 +1,9 @@
+task:cmtask_get_repl_group_tables
+status:success
+note:none
+open:repl_group_tablelist
+class_name:test1
+class_name:test2
+close:repl_group_tablelist
+all_repl:N
+

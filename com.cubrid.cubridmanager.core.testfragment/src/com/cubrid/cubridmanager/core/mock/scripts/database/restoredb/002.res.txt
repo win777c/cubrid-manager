@@ -1,0 +1,4 @@
+task:restoredb
+status:failure
+note:Database(activedb) is active state.
+

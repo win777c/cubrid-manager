@@ -1,0 +1,4 @@
+task:createclass
+token:*
+classname:new_class3
+

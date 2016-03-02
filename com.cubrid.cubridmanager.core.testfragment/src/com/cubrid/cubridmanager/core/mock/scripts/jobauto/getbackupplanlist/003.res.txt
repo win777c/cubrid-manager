@@ -1,0 +1,5 @@
+task:getbackupinfo
+status:success
+note:none
+dbname:notexistdb
+

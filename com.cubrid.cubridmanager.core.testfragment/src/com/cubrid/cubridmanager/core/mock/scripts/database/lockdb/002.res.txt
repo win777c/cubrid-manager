@@ -1,0 +1,80 @@
+task:lockdb
+status:success
+note:none
+open:lockinfo
+esc:100000
+dinterval:1
+open:transaction
+index:0
+pname:(unknown)
+uid:(unknown)
+host:(unknown)
+pid:-1
+isolevel:REPEATABLE CLASSES AND READ UNCOMMITTED INSTANCES
+timeout:-1
+close:transaction
+open:transaction
+index:1
+pname:csql
+uid:dba
+host:localhost.localdomain
+pid:10731
+isolevel:REPEATABLE CLASSES AND READ UNCOMMITTED INSTANCES
+timeout:-1
+close:transaction
+open:transaction
+index:2
+pname:csql
+uid:dba
+host:localhost.localdomain
+pid:10786
+isolevel:REPEATABLE CLASSES AND READ UNCOMMITTED INSTANCES
+timeout:-1
+close:transaction
+open:transaction
+index:3
+pname:lockdb
+uid:dba
+host:localhost.localdomain
+pid:10987
+isolevel:READ COMMITTED CLASSES AND READ UNCOMMITTED INSTANCES
+timeout:-2
+close:transaction
+open:lot
+numlocked:2
+maxnumlock:10000
+open:entry
+oid:0|354|2
+ob_type:Class = dual
+num_holders:1
+num_b_holders:0
+num_waiters:0
+open:lock_holders
+tran_index:2
+granted_mode:IS_LOCK
+count:2
+nsubgranules:0
+close:lock_holders
+close:entry
+open:entry
+oid:0|60|1
+ob_type:Root class
+num_holders:1
+num_b_holders:0
+num_waiters:1
+open:lock_holders
+tran_index:2
+granted_mode:IS_LOCK
+count:1
+nsubgranules:1
+close:lock_holders
+open:waiters
+tran_index:1
+b_mode:IX_LOCK
+start_at:Mon Jun 29 21:29:12 2009       
+waitfornsec:-1
+close:waiters
+close:entry
+close:lot
+close:lockinfo
+

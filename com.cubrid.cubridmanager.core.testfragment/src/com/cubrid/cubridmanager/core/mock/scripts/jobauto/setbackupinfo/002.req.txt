@@ -1,0 +1,17 @@
+task:setbackupinfo
+token:*
+dbname:demodb
+backupid:notexistplan
+path:/opt/frameworks/cubrid/databases/demodb/backup
+period_type:Daily
+period_date:nothing
+time:1230
+level:1
+archivedel:ON
+updatestatus:OFF
+storeold:ON
+onoff:ON
+zip:y
+check:y
+mt:0
+

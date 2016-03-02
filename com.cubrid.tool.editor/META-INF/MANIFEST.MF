@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CUBRID Editor Tool
+Bundle-SymbolicName: com.cubrid.tool.editor;singleton:=true
+Bundle-Version: 9.3.1.qualifier
+Bundle-Activator: com.cubrid.tool.editor.CUBRIDTextEditorPlugin
+Bundle-Vendor: Search Solution Corporation
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.jface.text
+Bundle-ActivationPolicy: lazy 
+Export-Package: com.cubrid.tool.editor,
+ com.cubrid.tool.editor.dialog,
+ com.cubrid.tool.editor.property,
+ com.cubrid.tool.editor.xml
+Bundle-ClassPath: .,
+ lib/dom4j-1.6.1.jar,
+ lib/commons-lang-2.6.jar

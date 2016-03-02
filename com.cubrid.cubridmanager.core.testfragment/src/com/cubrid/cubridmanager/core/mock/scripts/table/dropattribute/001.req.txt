@@ -1,0 +1,6 @@
+task:dropattribute
+token:*
+dbname:demodb
+classname:code
+attributename:inpt_name
+

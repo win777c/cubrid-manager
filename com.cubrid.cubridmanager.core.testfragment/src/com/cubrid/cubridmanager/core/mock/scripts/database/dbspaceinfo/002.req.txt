@@ -1,0 +1,4 @@
+task:dbspaceinfo
+token:*
+dbname:notexistdb
+

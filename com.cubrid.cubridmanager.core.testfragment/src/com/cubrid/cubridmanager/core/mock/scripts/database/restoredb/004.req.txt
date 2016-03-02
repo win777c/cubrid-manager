@@ -1,0 +1,9 @@
+task:restoredb
+token:*
+dbname:demodb
+date:backuptime
+level:0
+partial:n
+pathname:/opt/frameworks/cubrid/databases/demodb/backup/backup_lv0_notexist
+recoverypath:none
+

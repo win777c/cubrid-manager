@@ -1,0 +1,12 @@
+task:viewlog
+status:success
+note:none
+path:/home/biaozhang/cubrid/databases/dist_wings/dist_wings.perf
+open:log
+line:-01      mdb_wings              -1 ----/--/-- --:--:-- 2009/12/01 10:53:44  0
+line:1      mdb_pang              73 2009/10/22 16:15:30 2009/10/29 16:08:22  604372
+line:--------------------------------------------------------------------------------
+line: No. master_db_name     tran_index        master_time         slave_time     delay
+line:--------------------------------------------------------------------------------
+close:log
+total:5

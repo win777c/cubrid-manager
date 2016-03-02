@@ -1,0 +1,5 @@
+task:deletebackupinfo
+token:*
+dbname:notexistdb
+backupid:bak_daily
+

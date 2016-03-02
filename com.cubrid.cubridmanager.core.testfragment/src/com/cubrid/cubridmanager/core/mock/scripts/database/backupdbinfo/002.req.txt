@@ -1,0 +1,4 @@
+task:backupdbinfo
+token:*
+dbname:nobackupdb
+

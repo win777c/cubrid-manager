@@ -1,0 +1,5 @@
+task:restoredb
+status:failure
+note:Database "notexistdb" is unknown, or the file "databases.txt" cannot be accessed.
+Restoredb cancelled or an error occurred.
+

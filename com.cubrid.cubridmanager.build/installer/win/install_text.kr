@@ -1,0 +1,53 @@
+﻿###################################################
+# Install text
+###################################################
+
+;-------------------------------
+; OS Arch Error
+;-------------------------------
+
+LangString msgWindowsArchError ${LANG_KOREAN} '이 설치 패키지는 현재 윈도우 시스템을 지원하지 않습니다.'
+LangString msgWindowsArchError2 ${LANG_KOREAN} '이 설치 패키지는 32비트 JVM에 최적화되어 있습니다. 설치후 32비트 JVM이 없을 경우 실행되지 않습니다.'
+
+;-------------------------------
+; CUBRIDManager already install
+;-------------------------------
+
+LangString msgAlreadyInstalled ${LANG_KOREAN} '현재 ${PRODUCT_NAME} (${PRODUCT_VERSION})는 이미 설치되어 있습니다. 계속하시겠습니까?'
+
+;-------------------------------
+; JAVA Check
+;-------------------------------
+
+LangString msgJAVANotInstall ${LANG_KOREAN} 'JRE 1.6 (${INSTALLER_ARCH}) 이상의 버전이 설치되어 있지 않습니다. 계속하시겠습니까?'
+LangString msgJAVAVersionError ${LANG_KOREAN} 'JRE 1.6 (${INSTALLER_ARCH}) 이상의 버전이 요구됩니다. 계속하시겠습니까?'
+
+;-------------------------------
+; directory page settings
+;-------------------------------
+
+LangString msgDirTextTop ${LANG_KOREAN} '아래 디렉터리에 ${PRODUCT_NAME} (${PRODUCT_VERSION})를 설치할 것입니다. 찾아보기 버튼을 클릭하여 다른 디렉터리를 선택할 수 있습니다. 설치를 클릭하면 설치가 시작됩니다.'
+
+;-------------------------------
+; finish page readme text
+;-------------------------------
+
+LangString textShowReadme ${LANG_KOREAN} '추가정보 보기'
+
+;--------------------------------
+; section descriptions
+;--------------------------------
+
+LangString descSec_Driver ${LANG_KOREAN} '${PRODUCT_NAME} ${PRODUCT_VERSION} X86'
+LangString descSec_ReleaseNotes ${LANG_KOREAN} '${PRODUCT_NAME} ${PRODUCT_VERSION} 릴리스 노트'
+LangString descSec_Doc ${LANG_KOREAN} '${PRODUCT_NAME} ${PRODUCT_VERSION} 문서'
+LangString descSec_Shortcuts ${LANG_KOREAN} '바로가기'
+LangString descSec_DesktopShortcut ${LANG_KOREAN} '바탕화면 아이콘 생성'
+LangString descSec_StartmenuShortcut ${LANG_KOREAN} '시작메뉴 아이콘 생성'
+LangString descSec_QuicklaunchShortcut ${LANG_KOREAN} '빠른실행 아이콘 생성'
+
+;-------------------------------
+; still running when uninstall
+;-------------------------------
+
+LangString msgStillRunning ${LANG_KOREAN} '${PRODUCT_NAME} ${PRODUCT_VERSION}이(가) 아직 구동 중입니다. 프로그램을 제거하기 전에 정지하십시오.' 

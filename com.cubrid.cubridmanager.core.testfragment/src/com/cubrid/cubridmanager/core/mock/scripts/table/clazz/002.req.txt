@@ -1,0 +1,5 @@
+task:class
+token:*
+dbname:notexist
+classname:code
+

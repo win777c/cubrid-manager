@@ -1,0 +1,6 @@
+task:startdb
+status:success
+note:none
+open:log
+line:aaa
+close:log

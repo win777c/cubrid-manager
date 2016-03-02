@@ -1,0 +1,4 @@
+task:backupvolinfo
+status:failure
+note:Database(activedb) is active state.
+

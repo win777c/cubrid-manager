@@ -1,0 +1,20 @@
+task:backupvolinfo
+status:success
+note:none
+line:Unable to mount disk volume "/opt/frameworks/cubrid/databases/demodb/backup/demodb_backup_lv3".... No such file or directory
+line:
+line:*************************************************************************
+line:The following database backup volume is needed to continue restoring:
+line:
+line:Database Name: /opt/frameworks/cubrid2/databases/demodb/demodb
+line:     Volume Name: /opt/frameworks/cubrid/databases/demodb/backup/demodb_backup_lv3
+line:        Unit Num: 0
+line:    Backup Level: 0 (FULL LEVEL)
+line:Enter one of the following options:
+line:Type
+line:   -  0 to quit.
+line:   -  1 to continue after the volume is mounted/loaded. (retry) 
+line:   -  2 to continue after changing the volume's directory or device.
+line:
+line:*************************************************************************
+

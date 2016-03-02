@@ -1,0 +1,6 @@
+task:backupvolinfo
+token:*
+dbname:demodb
+level:0
+pathname:/opt/frameworks/cubrid/databases/demodb/backup/demodb_backup_lv0
+

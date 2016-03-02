@@ -1,0 +1,15 @@
+task:executecasrunner
+status:success
+note:none
+result_list:start
+result:
+result:********************************
+result:Error : Cannot connect to CUBRID CAS
+result:********************************
+result:min : 0.000000
+result:max : 0.000000
+result:avg : 0.000000
+result:stddev : 0.000000
+result_list:end
+query_result_file:/home/newbie/cubrid-8.2.2/tmp/log_run_22412.res
+query_result_file_num:1

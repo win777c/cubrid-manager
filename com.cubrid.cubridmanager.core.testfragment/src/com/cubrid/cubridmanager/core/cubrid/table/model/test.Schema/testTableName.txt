@@ -1,0 +1,15 @@
+create table testTableName
+ under 
+testSuperTableName
+(
+a integer DEFAULT 1,
+b character varying(1073741823),
+aaa set_of(integer) DEFAULT {1},
+CONSTRAINT  "fk1" FOREIGN KEY ("a") REFERENCES "test"("id") ON DELETE RESTRICT ON UPDATE RESTRICT
+)
+INHERIT 
+gender OF  testSuperTableName ,
+code OF  testSuperTableName ,
+name OF  testSuperTableName ,
+nation_code OF  testSuperTableName ;
+CREATE  UNIQUE INDEX "index" ON "testtablename"("a","b" DESC);

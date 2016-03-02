@@ -1,0 +1,6 @@
+task:renamedb
+token:*
+dbname:demodb
+exvolpath:/opt/frameworks/cubrid/databases/newdb
+advanced:off
+forcedel:y

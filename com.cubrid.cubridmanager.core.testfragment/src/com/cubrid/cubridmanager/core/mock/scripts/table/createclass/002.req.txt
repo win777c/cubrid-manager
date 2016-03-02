@@ -1,0 +1,5 @@
+task:createclass
+token:*
+dbname:demodb
+classname:game
+

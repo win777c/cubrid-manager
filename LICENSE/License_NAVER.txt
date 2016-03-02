@@ -1,0 +1,2 @@
+Copyright 2014-2016 NAVER Corp. All rights Reserved.
+NAVER PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.

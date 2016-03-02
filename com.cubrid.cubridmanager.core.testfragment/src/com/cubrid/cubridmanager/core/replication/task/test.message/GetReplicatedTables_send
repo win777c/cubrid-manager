@@ -1,0 +1,8 @@
+task:cmtask_get_repl_group_tables
+token:8ec1ab8a91333c78c3add559568a9735ac3797d549ff3a798e8872611ffbf3937926f07dd201b6aa
+dist_db_name:distdb
+master_db_name:mdb
+slave_db_name:sdb
+dist_dba_pass:123456
+mode:C
+

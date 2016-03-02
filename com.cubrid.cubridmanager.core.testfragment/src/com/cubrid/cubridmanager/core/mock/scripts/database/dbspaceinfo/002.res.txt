@@ -1,0 +1,7 @@
+task:dbspaceinfo
+status:failure
+note:Database "notexistdb" is unknown, or the file "databases.txt" cannot be accessed.
+
+dbname:notexistdb
+pagesize:-1
+

@@ -1,0 +1,7 @@
+create table testSuperTableName
+(
+code integer,
+name character varying(40) NOT NULL,
+gender character(1),
+nation_code character(3)
+);

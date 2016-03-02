@@ -1,0 +1,15 @@
+task:unloadinfo
+status:success
+note:none
+open:database
+dbname:demodb
+schema:/opt/frameworks/cubrid/databases/demodb/demodb_schema;2009.07.05 10:57
+object:/opt/frameworks/cubrid/databases/demodb/demodb_objects;2009.07.05 10:57
+close:database
+open:database
+dbname:ndb
+schema:/opt/frameworks/cubrid/databases/ndb/ndb_schema;2009.07.19 13:58
+object:/opt/frameworks/cubrid/databases/ndb/ndb_objects;2009.07.19 13:58
+index:/opt/frameworks/cubrid/databases/ndb/ndb_indexes;2009.07.19 13:58
+close:database
+

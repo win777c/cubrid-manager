@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="CUBRID Manager" id="com.cubrid.cubridmanager.app.product" application="com.cubrid.cubridmanager.app.application" version="9.3.1.qualifier" useFeatures="true" includeLaunchers="true">
+
+   <aboutInfo>
+      <image path="icons/cubridmanager16.gif"/>
+   </aboutInfo>
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <vmArgs>-Xms40M
+-Xmx800M
+-XX:PermSize=64M
+-XX:MaxPermSize=256M</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages i16="icons/cubridmanager16.gif" i32="icons/cubridmanager32.gif" i48="icons/cubridmanager48.gif" i64="icons/cubridmanager64.gif"/>
+
+   <splash
+      location="com.cubrid.cubridmanager.app"
+      startupProgressRect="5,380,557,15"
+      startupMessageRect="230,280,557,15"
+      startupForegroundColor="C0C0C0" />
+   <launcher name="cubridmanager">
+      <linux icon="/com.cubrid.cubridmanager.app/icons/cubridmanager.xpm"/>
+      <macosx icon="/com.cubrid.cubridmanager.app/icons/cubridmanager.icns"/>
+      <solaris/>
+      <win useIco="true">
+         <ico path="/com.cubrid.cubridmanager.app/icons/cubridmanager.ico"/>
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="com.cubrid.cubridmanager.app" version="9.3.1.qualifier"/>
+      <feature id="com.cubrid.cubridmanager.dependence" version="9.3.1.qualifier"/>
+      <feature id="com.cubrid.common.update" version="9.3.1.qualifier"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+   </configurations>
+
+</product>

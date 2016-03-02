@@ -1,0 +1,9 @@
+task:restoredb
+token:*
+dbname:activedb
+date:backuptime
+level:0
+partial:n
+pathname:/opt/frameworks/cubrid/databases/activedb/backup/activedb_backup_lv0
+recoverypath:none
+

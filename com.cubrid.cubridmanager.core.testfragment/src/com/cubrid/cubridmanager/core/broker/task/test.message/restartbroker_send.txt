@@ -1,0 +1,5 @@
+task:broker_restart
+token:cdfb4c5717170c5e12e77d863d1dd521dd52944d68204341a0099f40488e8c047926f07dd201b6aa
+bname:broker1
+asnum:1
+

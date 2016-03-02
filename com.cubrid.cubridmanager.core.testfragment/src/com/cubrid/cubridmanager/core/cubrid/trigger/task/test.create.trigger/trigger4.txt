@@ -1,0 +1,6 @@
+CREATE CLASS "testtable1"( a int , b string );
+
+CREATE TRIGGER "testtrigger1" 
+BEFORE delete on "testtable1"
+IF a > 100
+execute INVALIDATE TRANSACTION;

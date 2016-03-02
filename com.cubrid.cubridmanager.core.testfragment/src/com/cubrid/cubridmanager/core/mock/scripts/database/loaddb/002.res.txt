@@ -1,0 +1,11 @@
+task:loaddb
+status:success
+note:none
+line:
+line:Start schema loading.
+line:ERROR: Serial "event_no" already exist.
+line:
+line:Error occurred during schema loading.
+line:Aborting current transaction... done.
+line:
+

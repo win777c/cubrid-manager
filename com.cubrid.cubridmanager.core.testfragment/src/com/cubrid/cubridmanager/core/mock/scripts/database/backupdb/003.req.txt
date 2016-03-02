@@ -1,0 +1,12 @@
+task:backupdb
+token:*
+dbname:demodb
+level:2
+volname:demodb_backup_lv2
+backupdir:/opt/frameworks/cubrid/databases/demodb/backup
+removelog:n
+check:y
+mt:0
+zip:y
+safereplication:n
+

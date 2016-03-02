@@ -1,0 +1,17 @@
+task:cmtask_get_repl_info
+status:success
+note:none
+master_db_name:src_biaodb
+master_ip:192.168.1.132
+repl_server_port:5555
+copy_log_path:/home/biaozhang/cubrid/databases/dist_biaodb
+slave_db_name:dest_biaodb
+slave_ip:192.168.1.212
+slave_userid:dba
+slave_pass:123456
+trail_log_path:/home/biaozhang/cubrid/databases/dist_biaodb
+error_log_path:/home/biaozhang/cubrid/databases/dist_biaodb
+delay_time_log_size:1090
+retry_connect:y
+agent_port:6443
+

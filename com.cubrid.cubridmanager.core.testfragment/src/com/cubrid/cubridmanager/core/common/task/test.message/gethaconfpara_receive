@@ -1,0 +1,99 @@
+task:getallsysparam
+status:success
+note:none
+confname:haconf
+open:conflist
+confdata:#
+
+confdata:# Copyright (C) 2008 Search Solution Corporation. All rights reserved by Search Solution. 
+
+confdata:#
+
+confdata:#   This program is free software; you can redistribute it and/or modify 
+
+confdata:#   it under the terms of the GNU General Public License as published by 
+
+confdata:#   the Free Software Foundation; version 2 of the License. 
+
+confdata:#
+
+confdata:#  This program is distributed in the hope that it will be useful, 
+
+confdata:#  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+
+confdata:#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+
+confdata:#  GNU General Public License for more details. 
+
+confdata:#
+
+confdata:#  You should have received a copy of the GNU General Public License 
+
+confdata:#  along with this program; if not, write to the Free Software 
+
+confdata:#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+
+confdata:#
+
+confdata:
+
+confdata:#
+
+confdata:# cubrid_ha.conf
+
+confdata:#
+
+confdata:
+
+confdata:# For complete information on parameters, see the CUBRID
+
+confdata:# Database Administration Guide chapter on System Parameters
+
+confdata:
+
+confdata:#[common]
+
+confdata:ha_mode=yes
+
+confdata:ha_port_id=46667
+
+confdata:ha_node_list=yangming@tooldev01:dbms3
+
+confdata:ha_replica_list=yangming@dbms1
+
+confdata:ha_db_list=db_ha
+
+confdata:ha_apply_max_mem_size=300
+
+confdata:ha_copy_sync_mode=sync:sync
+
+confdata:
+
+confdata:# '[%host-name|user-name]' type of section is available
+
+confdata:# '*' is special type of user-name that means the all users.
+
+confdata:# Parameters in each section can redefine the all parameters for CUBRID HA.
+
+confdata:
+
+confdata:#[%apple|*]
+
+confdata:#ha_copy_sync_mode=sync:async
+
+confdata:
+
+confdata:#[%banana|*]
+
+confdata:#ha_copy_sync_mode=sync:async
+
+confdata:
+
+confdata:#[%banana|monkey]
+
+confdata:#ha_copy_sync_mode=sync:semi-sync
+
+confdata:
+
+close:conflist
+

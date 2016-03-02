@@ -1,0 +1,30 @@
+task:lockdb
+status:success
+note:none
+open:lockinfo
+esc:100000
+dinterval:1
+open:transaction
+index:0
+pname:(unknown)
+uid:(unknown)
+host:(unknown)
+pid:-1
+isolevel:REPEATABLE CLASSES AND READ UNCOMMITTED INSTANCES
+timeout:-1
+close:transaction
+open:transaction
+index:1
+pname:lockdb
+uid:dba
+host:localhost.localdomain
+pid:5334
+isolevel:READ COMMITTED CLASSES AND READ UNCOMMITTED INSTANCES
+timeout:-2
+close:transaction
+open:lot
+numlocked:0
+maxnumlock:10000
+close:lot
+close:lockinfo
+

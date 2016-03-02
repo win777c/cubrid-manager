@@ -1,0 +1,5 @@
+task:createclass
+token:*
+dbname:notexistdb
+classname:new_class2
+

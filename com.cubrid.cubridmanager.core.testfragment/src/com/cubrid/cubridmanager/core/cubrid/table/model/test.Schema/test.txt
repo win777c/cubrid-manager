@@ -1,0 +1,5 @@
+CREATE TABLE "test"(
+"id" integer DEFAULT 1,
+"name" character varying(1073741823),
+CONSTRAINT pk_test_id PRIMARY KEY("id")
+);

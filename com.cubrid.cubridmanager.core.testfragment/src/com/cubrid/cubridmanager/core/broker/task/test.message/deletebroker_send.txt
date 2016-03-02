@@ -1,0 +1,3 @@
+task:deletebroker
+token:8ec1ab8a91333c784ab511a8482265064ea86d4c6c404cdbfbf92edf3754dc3f7926f07dd201b6aa
+bname:broker2

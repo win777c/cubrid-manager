@@ -1,0 +1,10 @@
+task:analyzecaslog
+status:success
+note:none
+resultlist:start
+result:start
+qindex:[Q1]
+exec_time:001
+result:end
+resultlist:end
+resultfile:/home/newbie/cubrid-8.2.2/tmp/analyzelog_25362.res

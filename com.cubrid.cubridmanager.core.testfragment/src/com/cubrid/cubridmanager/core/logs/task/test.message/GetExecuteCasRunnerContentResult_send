@@ -1,0 +1,14 @@
+task:executecasrunner
+token:cdfb4c5717170c5ebfe87e622309762cd86d130e637ad0e7dd09d278d033f7f77926f07dd201b6aa
+dbname:demodb
+brokername:query_editor
+username:dba
+passwd:
+num_thread:1
+repeat_count:1
+executelogfile:no
+open:logstring
+logstring:/home/newbie/cubrid-8.2.2/log/broker/sql_log/query_editor_1.sql.log:17\r\n11/24 09:43:25.144 (1) execute srv_h_id 1 select class_name,owner_name,class_type,is_system_class,partitioned from db_class as a where a.class_name not in (select partition_class_name from db_partition) and is_system_class='NO' and class_type='CLASS'\r\n11/24 09:43:25.146 (1) execute 0 tuple 8 time 0.002
+close:logstring
+show_queryresult:yes
+

@@ -1,0 +1,11 @@
+task:transferfile
+token:8ec1ab8a91333c78c3add559568a9735ac3797d549ff3a798e8872611ffbf3937926f07dd201b6aa
+masterdbdir:/home/cubrid/databases/master
+open:backupfilelist
+backupfilename:biaodb_src_bkvinf
+backupfilename:biaodb_src_bk0v000
+close:backupfilelist
+slavedbhost:192.168.0.1
+slavecmserverport:8001
+slavedbdir:/home/cubrid/databases/slave
+

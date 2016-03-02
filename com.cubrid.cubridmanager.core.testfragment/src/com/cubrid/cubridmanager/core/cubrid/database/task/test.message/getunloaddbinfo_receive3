@@ -1,0 +1,15 @@
+task:unloadinfo
+status:success
+note:none
+open:database
+dbname:demodb
+schema:C:\CUBRID\DATABA~1\demodb_load/demodb_schema
+object:C:\CUBRID\DATABA~1\demodb_load/demodb_objects
+index:C:\CUBRID\DATABA~1\demodb_load/demodb_indexs
+trigger:C:\CUBRID\DATABA~1\demodb_load/demodb_triggers
+schema:C:\CUBRID\DATABA~1\demodb/demodb_schema
+object:C:\CUBRID\DATABA~1\demodb/demodb_objects
+index:C:\CUBRID\DATABA~1\demodb/demodb_indexs
+trigger:C:\CUBRID\DATABA~1\demodb/demodb_triggers
+close:database
+

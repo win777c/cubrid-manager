@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.cubrid.cubridmanager.plugin.manager.Perspective"
+            id="org.cubrid.cubridmanager.plugin.manager.Perspective"
+            name="Manager plugin">
+      </perspective>
+   </extension>
+
+</plugin>

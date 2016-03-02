@@ -1,0 +1,14 @@
+task:view_transfer_progress
+status:success
+note:none
+transfer_status:success
+transfer_note:none
+src_dir:/tmp
+dest_host:192.168.1.220
+dest_dir:/home/biaozhang/new_build_cubrid32/databases/target_dir
+open:progress_file_list
+biaodb_src_bk0v000:100%
+biaodb_src_bkvinf:100%
+close:progress_file_list
+num_of_file:2
+

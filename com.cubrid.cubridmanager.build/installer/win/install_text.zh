@@ -1,0 +1,53 @@
+﻿###################################################
+# Install text 
+###################################################
+
+;-------------------------------
+; OS Arch Error
+;-------------------------------
+
+LangString msgWindowsArchError ${LANG_SIMPCHINESE} '当前的Windows架构不支持该安装包程序'
+LangString msgWindowsArchError2 ${LANG_SIMPCHINESE} 'This installation package is not suitable by 32bit JVM. You should need to install 32bit JVM after installing this package.'
+
+;-------------------------------
+; CUBRIDManager already install
+;-------------------------------
+
+LangString msgAlreadyInstalled ${LANG_SIMPCHINESE} '当前版本的${PRODUCT_NAME} (${PRODUCT_VERSION}) 已经安装。继续继续安装吗？'
+
+;-------------------------------
+; JAVA Check
+;-------------------------------
+
+LangString msgJAVANotInstall ${LANG_SIMPCHINESE} '系统可能尚未安装1.6或1.6以上(${INSTALLER_ARCH})版本的JRE. 是否继续?'
+LangString msgJAVAVersionError ${LANG_SIMPCHINESE} 'JRE版本较低，需要1.6或1.6以上(${INSTALLER_ARCH})版本的JRE. 是否继续?'
+
+;-------------------------------
+; directory page settings
+;-------------------------------
+
+LangString msgDirTextTop ${LANG_SIMPCHINESE} '${PRODUCT_NAME} (${PRODUCT_VERSION}) 将被安装到如下文件夹中. 点击“选择”选择另外的文件夹. 点击“安装”开始安装' 
+
+;-------------------------------
+; finish page readme text
+;-------------------------------
+
+LangString textShowReadme ${LANG_SIMPCHINESE} '显示更新说明' 
+
+;--------------------------------
+; section descriptions
+;--------------------------------
+
+LangString descSec_Driver ${LANG_SIMPCHINESE} '${PRODUCT_NAME} ${PRODUCT_VERSION}'
+LangString descSec_ReleaseNotes ${LANG_SIMPCHINESE} '${PRODUCT_NAME} ${PRODUCT_VERSION} 更新说明'
+LangString descSec_Doc ${LANG_SIMPCHINESE} '${PRODUCT_NAME} ${PRODUCT_VERSION} 文档'
+LangString descSec_Shortcuts ${LANG_SIMPCHINESE} '快捷方式'
+LangString descSec_DesktopShortcut ${LANG_SIMPCHINESE} '桌面快捷方式'
+LangString descSec_StartmenuShortcut ${LANG_SIMPCHINESE} '开始菜单快捷方式'
+LangString descSec_QuicklaunchShortcut ${LANG_SIMPCHINESE} '快速启动栏快捷方式'
+
+;-------------------------------
+; still running when uninstall
+;-------------------------------
+
+LangString msgStillRunning ${LANG_SIMPCHINESE} '${PRODUCT_NAME} ${PRODUCT_VERSION} 正在运行，卸载前请先关闭应用程序。' 

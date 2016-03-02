@@ -1,0 +1,15 @@
+task:unloaddb
+token:*
+dbname:demodb
+targetdir:/opt/frameworks/cubrid2/databases/demodb
+usehash:yes
+hashdir:/opt/frameworks/cubrid2/databases/demodb/hashfile
+target:both
+ref:yes
+classonly:no
+delimit:yes
+estimate:10000
+prefix:demodb
+cach:100
+lofile:100
+

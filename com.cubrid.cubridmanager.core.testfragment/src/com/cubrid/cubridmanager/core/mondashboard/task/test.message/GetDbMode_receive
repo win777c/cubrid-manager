@@ -1,0 +1,14 @@
+task:getdbmode
+status:success
+note:none
+open:dbserver
+dbname:ha_test
+server_mode:standby
+server_msg:none
+close:dbserver
+open:dbserver
+dbname:ha_test1
+server_mode:unknown
+server_err:The status is error
+close:dbserver
+
