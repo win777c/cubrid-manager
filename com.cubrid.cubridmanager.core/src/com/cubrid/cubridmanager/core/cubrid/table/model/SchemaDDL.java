@@ -54,7 +54,6 @@ import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.PartitionUtil;
 import com.cubrid.common.core.util.QuerySyntax;
 import com.cubrid.common.core.util.StringUtil;
-import com.cubrid.cubridmanager.core.common.jdbc.DBConnection;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.model.SchemaChangeLog.SchemeInnerType;
@@ -2467,15 +2466,15 @@ public class SchemaDDL {
 			String incrementby, String minValue) {
 		StringBuilder ddl = new StringBuilder();
 		long max = 0;
-		DBConnection connection = null;
+		Connection connection = null;
 		CUBRIDResultSetProxy rs = null;
 		CUBRIDPreparedStatementProxy pStmt = null;
 		
 		try {
 			String sql = "SELECT MAX(" + QuerySyntax.escapeKeyword(columnName) + ") + 1 "
 					+ "FROM " + QuerySyntax.escapeKeyword(tableName);
-			connection = (DBConnection)JDBCConnectionManager.getConnection(databaseInfo, true);
-			pStmt = (CUBRIDPreparedStatementProxy)((Connection)connection).prepareStatement(sql);
+			connection = JDBCConnectionManager.getConnection(databaseInfo, true);
+			pStmt = (CUBRIDPreparedStatementProxy)connection.prepareStatement(sql);
 			rs = (CUBRIDResultSetProxy)pStmt.executeQuery();
 			if (rs.next()) max = rs.getLong(1);
 		} catch (SQLException e) {
