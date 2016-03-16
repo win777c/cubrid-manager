@@ -53,6 +53,7 @@ import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.PartitionUtil;
 import com.cubrid.common.core.util.QuerySyntax;
+import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
@@ -2480,13 +2481,7 @@ public class SchemaDDL {
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage(), e);
 		} finally {
-			try {
-				if (rs != null) rs.close();
-				if (pStmt != null) pStmt.close();
-				if (connection != null) connection.close();
-			} catch (SQLException e) {
-				LOGGER.error(e.getMessage(), e);
-			}
+			QueryUtil.freeQuery(connection, pStmt, rs);
 		}
 		if (max > 0) {
 			ddl.append("ALTER TABLE ").append(QuerySyntax.escapeKeyword(tableName)).append(" AUTO_INCREMENT=" )
