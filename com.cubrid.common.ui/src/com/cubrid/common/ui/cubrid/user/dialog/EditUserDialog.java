@@ -28,6 +28,7 @@
 package com.cubrid.common.ui.cubrid.user.dialog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1213,7 +1214,7 @@ public class EditUserDialog extends CMTrayDialog {
 
 			userInfo = bean;
 			List<String> oldGoupsList = bean.getGroups().getGroup();
-			result = StringUtil.compare(newGroupList, oldGoupsList);
+			result = Arrays.equals(newGroupList.toArray(), oldGoupsList.toArray());
 			break;
 		}
 		return result;

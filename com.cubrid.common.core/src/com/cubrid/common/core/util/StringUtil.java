@@ -747,6 +747,7 @@ public final class StringUtil {
 	 * @param strList2 List<String>
 	 * @return boolean
 	 */
+	@Deprecated
 	public static boolean compare(List<String> strList1, List<String> strList2) {
 		List<String> list1 = strList1 == null ? new ArrayList<String>()
 				: strList1;
