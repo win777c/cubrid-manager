@@ -67,12 +67,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 * Followings may be contained for this software independently (without modification)
 
-- JFreeChart from http://sourceforge.net/projects/jfreechart
-
 - Jexcelapi from http://sourceforge.net/projects/jexcelapi
 
 
-* Followings may be modified for this software
+* Followings are modified for this software and attached source codes in this project
 
-- JFreeChart was added modified source code because Korean font problem. (28-Apr-2016)
-	- Replaced font name from Tahoma to Sansserif in StandartChartThema.java
+- JFreeChart 28-Apr-2016 modified due to Korean font problem (use Sansserif instead of Tahoma in StandartChartThema.java)
+
