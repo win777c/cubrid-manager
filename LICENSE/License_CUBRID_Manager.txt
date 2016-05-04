@@ -28,25 +28,29 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 * Followings may be contained for this software:
 
+- Apache Commons BeanUtils from http://commons.apache.org/proper/commons-beanutils/index.html
+
+- JFlex from https://github.com/jflex-de/jflex
+
 - Apache Commons Lang from http://commons.apache.org/proper/commons-lang/index.html
+
+- Apache Commons Net from http://commons.apache.org/proper/commons-net/
 
 - Dom4j from http://dom4j.sourceforge.net
 
-- Apache Commons Net from http://commons.apache.org/proper/commons-net
-
 - SLF4J from http://www.slf4j.org
-
-- JSON-js from https://github.com/douglascrockford/JSON-js
 
 - ANTLR from http://www.antlr.org
 
+- Apache Commons Logging from http://commons.apache.org/proper/commons-logging
+
 - Apache Geronimo http://geronimo.apache.org
 
-- Google-gson from https://code.google.com/p/google-gson
+- gson from https://github.com/google/gson
 
 - JDOM from https://github.com/hunterhacker/jdom
 
-- Apache xerces	from http://xerces.apache.org
+- Apache xerces from http://xerces.apache.org
 
 - Apache POI from http://poi.apache.org
 
@@ -56,21 +60,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - Apache Commons Codec from http://commons.apache.org/proper/commons-codec
 
-- Apache Commons Logging from http://commons.apache.org/proper/commons-logging
+- Apache HttpComponents Client from https://hc.apache.org/httpcomponents-client-4.2.x/index.html
 
-- Apache Components Httpclient from https://hc.apache.org/httpcomponents-client-4.2.x/index.html
-
-- Apache Components HttpCore from https://hc.apache.org/httpcomponents-core-4.2.x/index.html
+- Apache HttpComponents Core from https://hc.apache.org/httpcomponents-core-4.2.x/index.html
 
 - Json-simple from http://code.google.com/p/json-simple
 
+* Followings may be contained for this software independently 
 
-* Followings may be contained for this software independently (without modification)
+- Jexcelapi(without modification) from http://sourceforge.net/projects/jexcelapi
 
-- Jexcelapi from http://sourceforge.net/projects/jexcelapi
-
-
-* Followings are modified for this software and attached source codes in this project
-
-- JFreeChart 28-Apr-2016 modified due to Korean font problem (use Sansserif instead of Tahoma in StandartChartThema.java)
+- JFreeChart from http://sourceforge.net/projects/jfreechart
+You can download our modified JFreeChart source code from https://github.com/CUBRID/cubrid-manager-jfreechart/blob/master/src/org/jfree/chart/StandardChartTheme.java
 
