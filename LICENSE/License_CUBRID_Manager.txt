@@ -73,3 +73,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - JFreeChart from http://sourceforge.net/projects/jfreechart
 You can download our modified JFreeChart source code from https://github.com/CUBRID/cubrid-manager-jfreechart/blob/master/src/org/jfree/chart/StandardChartTheme.java
 
+- Hyperlink.java from novocode http://www.novocode.com/swt
+You can download our modified Hyperlink.java source code from https://github.com/CUBRID/cubrid-manager-lib/blob/master/external-lib/src/com/novocode/naf/swt/custom/Hyperlink.java
+
+- Modified some SWT, JFace classes from Eclipse project http://www.eclipse.org/
+You can download our modified source codes from https://github.com/CUBRID/cubrid-manager-lib
+
