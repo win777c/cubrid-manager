@@ -73,9 +73,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - JFreeChart from http://sourceforge.net/projects/jfreechart
 You can download our modified JFreeChart source code from https://github.com/CUBRID/cubrid-manager-jfreechart/blob/master/src/org/jfree/chart/StandardChartTheme.java
 
-- Hyperlink.java from novocode http://www.novocode.com/swt
-You can download our modified Hyperlink.java source code from https://github.com/CUBRID/cubrid-manager-lib/blob/master/external-lib/src/com/novocode/naf/swt/custom/Hyperlink.java
+- novocode swt from http://www.novocode.com/swt/
+You can download our modified novocode swt source code from https://github.com/CUBRID/cubrid-manager-lib/blob/master/external-lib/src/com/novocode/naf/swt/custom/Hyperlink.java
 
-- Modified some SWT, JFace classes from Eclipse project http://www.eclipse.org/
-You can download our modified source codes from https://github.com/CUBRID/cubrid-manager-lib
-
+- Eclipse project from http://projects.eclipse.org/
+You can download our modified Eclipse project source code 
+ * swt widgets from https://github.com/CUBRID/cubrid-manager-lib/blob/master/external-lib/src/com/cubrid/common/ui/cubrid/table/editor/DataTypeCombo.java
+ * gef from https://github.com/CUBRID/cubrid-manager-lib/tree/master/external-lib/src/com/cubrid/common/ui/er
+ * jface text from https://github.com/CUBRID/cubrid-manager-lib/tree/master/external-lib/src/com/cubrid/common/ui/query/control/jface
+ * swf snippets from https://github.com/CUBRID/cubrid-manager-lib/blob/master/external-lib/src/org/eclipse/swt/BufferedImageUtil.java
+ * equinox from https://github.com/CUBRID/cubrid-manager-lib/blob/master/external-update-lib/src/com/cubrid/common/update/p2/handler/PreloadingRepositoryHandler.java
