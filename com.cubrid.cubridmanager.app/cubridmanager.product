@@ -162,7 +162,6 @@
       <plugin id="org.eclipse.ui.views.nl_ko" fragment="true"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.ui.workbench.nl_ko" fragment="true"/>
-      <plugin id="org.hamcrest.core"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
       <plugin id="org.sat4j.core"/>
