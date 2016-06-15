@@ -1214,6 +1214,10 @@ public class EditUserDialog extends CMTrayDialog {
 
 			userInfo = bean;
 			List<String> oldGoupsList = bean.getGroups().getGroup();
+			// When only Change the user's password, oldGroup object is set to be null.
+			if (oldGoupsList == null) {
+				return true;
+			}
 			result = Arrays.equals(newGroupList.toArray(), oldGoupsList.toArray());
 			break;
 		}
