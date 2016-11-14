@@ -51,6 +51,7 @@ import com.cubrid.common.core.util.QuerySyntax;
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.model.SchemaChangeLog.SchemeInnerType;
+import com.cubrid.cubridmanager.core.cubrid.table.task.GetRecordCountTask;
 
 /**
  * This class provide a serial of methods to generate DDL of a schema or alter
@@ -1252,9 +1253,7 @@ public class SchemaDDL {
 		SerialInfo newAutoIncrement = newAttr.getAutoIncrement();
 
 		if (null != newAutoIncrement && !newAutoIncrement.equals(oldAutoIncrement)) {
-			String increment = getAlterAutoIncrementDDL(tableName, newColumnName,
-					newAutoIncrement.getStartedValue(), newAutoIncrement.getIncrementValue(),
-					newAutoIncrement.getMinValue());
+			String increment = getAlterAutoIncrementDDL(tableName, newColumnName);
 			ddlBuffer.append(increment);
 		}
 
@@ -1330,9 +1329,7 @@ public class SchemaDDL {
 		SerialInfo newAutoIncrement = newAttr.getAutoIncrement();
 
 		if (null != newAutoIncrement && !newAutoIncrement.equals(oldAutoIncrement)) {
-			String increment = getAlterAutoIncrementDDL(tableName, newAttr.getName(),
-					newAutoIncrement.getStartedValue(), newAutoIncrement.getIncrementValue(),
-					newAutoIncrement.getMinValue());
+			String increment = getAlterAutoIncrementDDL(tableName, newAttr.getName());
 			sb.append(increment);
 		}
 
@@ -2453,14 +2450,20 @@ public class SchemaDDL {
 	 * @param minValue String the given columnName
 	 * @return String a string that indicates the DDL of alter auto increment
 	 */
-	public String getAlterAutoIncrementDDL(String tableName, String columnName, String startWith,
-			String incrementby, String minValue) {
+	public String getAlterAutoIncrementDDL(String tableName, String columnName) {
 		StringBuilder ddl = new StringBuilder();
-		String escapedSerialName = QuerySyntax.escapeKeyword(tableName + "_ai_" + columnName);
-		ddl.append("ALTER SERIAL ").append(escapedSerialName);
-		ddl.append(" START WITH ").append(startWith).append(" INCREMENT BY ").append(incrementby).append(
-				" MINVALUE ").append(minValue).append(endLineChar).append(StringUtil.NEWLINE);
-		return ddl.toString();
+		int autoIncrementSeed = new GetRecordCountTask(databaseInfo)
+			.getRecordCount(tableName, columnName, null) + 1;
+		boolean isSupportAlterAutoIncrement = CompatibleUtil.isAfter840(databaseInfo);
+		if (isSupportAlterAutoIncrement) {
+            ddl.append("ALTER TABLE ").append(QuerySyntax.escapeKeyword(tableName)).append(" AUTO_INCREMENT=" )
+            .append(autoIncrementSeed).append(endLineChar).append(StringUtil.NEWLINE);
+            
+            return ddl.toString();
+		} else {
+			ddl.append("--NotSupportAlterAutoIncrement");
+			return ddl.toString();
+		}
 	}
 }
 
