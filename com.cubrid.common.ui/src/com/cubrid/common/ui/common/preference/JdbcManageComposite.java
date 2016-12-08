@@ -30,6 +30,7 @@ package com.cubrid.common.ui.common.preference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -139,12 +140,39 @@ public class JdbcManageComposite extends
 	private void createJdbcTableGroup(Composite composite) {
 		final String[] columnNameArr = new String[]{
 				Messages.tblColDriverVersion, Messages.tblColJarPath };
+		
 		TableViewerSorter sorter = new TableViewerSorter();
+		sorter.setColumnComparator(0, new Comparator<Object>(){
+			public int compare(Object o1, Object o2){
+				if(o1 instanceof String && o2 instanceof String){
+					String s1 = (String)o1;
+					String s2 = (String)o2;
+				
+					String[] version1Tokens = s1.substring(s1.lastIndexOf('-')+1).split("\\.");
+					String[] version2Tokens = s2.substring(s2.lastIndexOf('-')+1).split("\\.");
+					
+					int size = Math.min(version1Tokens.length, version2Tokens.length);
+					
+					for(int i = 0; i < size; i++){
+						Integer first = Integer.parseInt(version1Tokens[i]);
+						Integer second = Integer.parseInt(version2Tokens[i]);
+						if(first != second){
+							return first-second;
+						}
+					}
+					return version1Tokens.length - version2Tokens.length;
+				} else {
+					return 0;
+				}
+			}
+		});
 		sorter.setAsc(false);
 		jdbcInfoTv = CommonUITool.createCommonTableViewer(composite, sorter,
 				columnNameArr,
 				CommonUITool.createGridData(GridData.FILL_BOTH, 3, 1, -1, 200));
 		jdbcInfoTv.setInput(jdbcListData);
+		jdbcInfoTv.getTable().setSortColumn(jdbcInfoTv.getTable().getColumn(0));
+		jdbcInfoTv.getTable().setSortDirection(sorter.isAsc() ? SWT.UP : SWT.DOWN);
 
 		TableLayout tableLayout = new TableLayout();
 		jdbcInfoTv.getTable().setLayout(tableLayout);
