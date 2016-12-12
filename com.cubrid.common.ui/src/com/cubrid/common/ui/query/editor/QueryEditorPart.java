@@ -998,6 +998,7 @@ public class QueryEditorPart extends
 		subQueryEditorTabItem.addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent e) {
 				if (!willClose && combinedQueryEditortabFolder.getItemCount() == 0) {
+					sqlEditorCounter = 1;
 					addEditorTab();
 				}
 			}
