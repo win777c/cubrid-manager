@@ -28,8 +28,8 @@ LangString msgJAVAVersionError ${LANG_ENGLISH} 'JRE version 1.6 or later (${INST
 ;-------------------------------
 
 LangString msgDirTextTop ${LANG_ENGLISH} 'Setup will install ${PRODUCT_NAME} \
-             (${PRODUCT_VERSION}) in the following folder. click Browse and select another \
-             folder. Click Install to start the installation' 
+             (${PRODUCT_VERSION}) in the following folder. Click Browse and select another \
+             folder. Click Install to start the installation.' 
 
 ;-------------------------------
 ; finish page readme text
