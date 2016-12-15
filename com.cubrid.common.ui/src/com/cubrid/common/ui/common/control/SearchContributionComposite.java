@@ -29,8 +29,6 @@
  */
 package com.cubrid.common.ui.common.control;
 
-import static com.cubrid.common.ui.spi.util.CommonUITool.createSpaceRow;
-
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -38,13 +36,11 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -81,25 +77,14 @@ public class SearchContributionComposite extends
 
 		boolean isMac = Util.isMac();
 		final Composite group = isMac ? new Composite(this, SWT.None) : new Group(this, SWT.None);
-		group.setLayout(new FormLayout());
+		group.setLayout(new GridLayout(5, false));
 
-		text = new Text(group, SWT.SEARCH | SWT.ICON_SEARCH | SWT.ICON_CANCEL);
+		text = new Text(group, SWT.FILL | SWT.SEARCH | SWT.ICON_SEARCH | SWT.ICON_CANCEL);
 		text.setToolTipText(Messages.lblSearchDesc);
+		final GridData gridData = new GridData();
+		gridData.widthHint = 190;
+		text.setLayoutData(gridData);
 		text.setMessage(Messages.msgSearchKeyword);
-
-		final FormData textData = new FormData();
-		if (isMac) {
-			textData.top = new FormAttachment(0, -25);
-			textData.bottom = new FormAttachment(100, 0);
-			textData.left = new FormAttachment(0, 10);
-			textData.right = new FormAttachment(100, 0);
-		} else {
-			textData.top = new FormAttachment(0, 0);
-			textData.bottom = new FormAttachment(0, 21);
-			textData.left = new FormAttachment(0, 3);
-			textData.right = new FormAttachment(100, -31);
-		}
-		text.setLayoutData(textData);
 
 		text.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
@@ -113,34 +98,14 @@ public class SearchContributionComposite extends
 		});
 
 		if (!isMac) {
-			createSpaceRow(group);
-
 			searchButton = new Button(group, SWT.None);
 			searchButton.setImage(CommonUIPlugin.getImage("icons/control/search.png"));
-			final FormData buttonData = new FormData();
-			buttonData.top = new FormAttachment(0, -3);
-			buttonData.bottom = new FormAttachment(0, 20);
-			buttonData.left = new FormAttachment(100, -28);
-			buttonData.right = new FormAttachment(100, -3);
-			searchButton.setLayoutData(buttonData);
 			searchButton.setToolTipText(Messages.btnSearchTooltip);
 			searchButton.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					processSearch();
 				}
 			});
-
-			createSpaceRow(group);
-
-			final Label descLabel = new Label(group, SWT.None);
-			descLabel.setAlignment(SWT.CENTER);
-			final FormData descLabelData = new FormData();
-			descLabelData.top = new FormAttachment(0, 22);
-			descLabelData.bottom = new FormAttachment(100, 0);
-			descLabelData.left = new FormAttachment(0, 0);
-			descLabelData.right = new FormAttachment(100, 0);
-			descLabel.setLayoutData(descLabelData);
-			descLabel.setText(Messages.lblSearchDesc);
 		}
 	}
 

@@ -282,9 +282,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 				return new SearchContributionComposite(parent, SWT.None);
 			}
 
-			protected int computeWidth(Control control) {
-				return 160;
-			}
 		};
 		searchContribution.setId(IPerspectiveConstance.SEARCH_ACTION_CONTRIBUTION_ID);
 		toolbarManager.add(new Separator());
