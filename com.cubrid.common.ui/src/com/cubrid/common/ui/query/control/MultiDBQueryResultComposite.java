@@ -52,6 +52,7 @@ import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.common.navigator.CubridNavigatorView;
+import com.cubrid.common.ui.cubrid.database.erwin.xmlmodel.AttributePropsList.Order;
 import com.cubrid.common.ui.query.Messages;
 import com.cubrid.common.ui.query.editor.QueryEditorPart;
 import com.cubrid.common.ui.query.editor.QueryUnit;
@@ -472,7 +473,7 @@ class MultiQueryThread implements
 				if (enableSearchUnit && unitCount > 0) {
 					multiQuerySql = SqlParser.getPaginatingSqlClause(sql);
 				}
-
+				String order = StringUtil.getOrdinalFromCardinalNumber(i+1);
 				if (multiQuerySql == null) {
 					sql = SqlParser.convertComment(sql);
 					beginTimestamp = System.currentTimeMillis();
@@ -500,7 +501,7 @@ class MultiQueryThread implements
 						List<String> columnTableNameList = UIQueryUtil.loadColumnTableNameList(stmt);
 						result = createQueryExecutor(queryEditor, cntResults, sql, database, connection, orignSQL, columnTableNameList);
 						result.makeResult(rs);
-						String queryMsg = (i + 1) + Messages.querySeq + "[ " + elapsedTimeStr + " "
+						String queryMsg = Messages.bind(Messages.querySeq, order) + "[ " + elapsedTimeStr + " "
 								+ Messages.second + " , " + Messages.totalRows + " : " + result.cntRecord + " ]"
 								+ StringUtil.NEWLINE;
 						result.setQueryMsg(queryMsg);
@@ -532,7 +533,7 @@ class MultiQueryThread implements
 						noSelectSql += sql + StringUtil.NEWLINE;
 						hasModifyQuery = true;
 
-						log.append(i + 1).append(Messages.querySeq).append(" ");
+						log.append(Messages.bind(Messages.querySeq, order)).append(" ");
 						switch (execType) {
 						case CUBRIDCommandType.CUBRID_STMT_ALTER_CLASS:
 						case CUBRIDCommandType.CUBRID_STMT_ALTER_SERIAL:
@@ -595,7 +596,7 @@ class MultiQueryThread implements
 				} else {
 					result = createQueryExecutor(queryEditor, cntResults, "", database, connection, orignSQL, null);
 					result.setMultiQuerySql(multiQuerySql);
-					result.setQueryMsg((i + 1) + Messages.querySeq + StringUtil.NEWLINE);
+					result.setQueryMsg(Messages.bind(Messages.querySeq, order) + StringUtil.NEWLINE);
 					result.setSqlDetailHistory(sqlHistoryDetail);
 
 					queryExecuterMap.put(sql, result);

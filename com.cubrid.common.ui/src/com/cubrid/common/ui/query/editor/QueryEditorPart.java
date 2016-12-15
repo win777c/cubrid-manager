@@ -2671,6 +2671,7 @@ public class QueryEditorPart extends
 						multiQuerySql = null;
 					}
 
+					String order = StringUtil.getOrdinalFromCardinalNumber(i+1);
 					if (multiQuerySql == null) {
 						sql = SqlParser.convertComment(sql);
 						beginTimestamp = System.currentTimeMillis();
@@ -2797,7 +2798,7 @@ public class QueryEditorPart extends
 								tuneModeModel = new TuneModeModel(sq, stat);
 							}
 
-							String queryMsg = (i + 1) + Messages.querySeq + "[ " + elapsedTimeStr
+							String queryMsg = Messages.bind(Messages.querySeq, order) + "[ " + elapsedTimeStr
 									+ " " + Messages.second + " , " + Messages.totalRows + " : "
 									+ result.cntRecord + " ]" + StringUtil.NEWLINE;
 
@@ -2868,7 +2869,7 @@ public class QueryEditorPart extends
 							noSelectSql += sql + StringUtil.NEWLINE;
 							hasModifyQuery = true;
 
-							log.append(i + 1).append(Messages.querySeq).append(" ");
+							log.append(Messages.bind(Messages.querySeq, order)).append(" ");
 							switch (execType) {
 							case CUBRIDCommandType.CUBRID_STMT_ALTER_CLASS:
 							case CUBRIDCommandType.CUBRID_STMT_ALTER_SERIAL:
@@ -2932,7 +2933,7 @@ public class QueryEditorPart extends
 						result = createQueryExecutor(queryEditor, cntResults, "", database,
 								parameterList, orignSQL, tableNames);
 						result.setMultiQuerySql(multiQuerySql);
-						result.setQueryMsg((i + 1) + Messages.querySeq);
+						result.setQueryMsg(Messages.bind(Messages.querySeq, order));
 						result.setSqlDetailHistory(sqlHistoryDetail);
 
 						try {
@@ -3599,7 +3600,7 @@ public class QueryEditorPart extends
 
 	public static String makeSqlErrorOnResult(int index, String sql, Exception ee) {
 		StringBuilder logs = new StringBuilder();
-		logs.append(index + 1).append(Messages.querySeq).append(" ");
+		logs.append(Messages.bind(Messages.querySeq, StringUtil.getOrdinalFromCardinalNumber(index+1))).append(" ");
 		logs.append(Messages.queryFail);
 		logs.append(StringUtil.NEWLINE);
 		logs.append(makeSqlLogOnResult(sql));

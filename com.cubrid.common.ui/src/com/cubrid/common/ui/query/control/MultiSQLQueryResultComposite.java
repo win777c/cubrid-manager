@@ -460,7 +460,7 @@ public class MultiSQLQueryResultComposite extends Composite implements IMultiQue
 					if (enableSearchUnit && unitCount > 0) {
 						multiQuerySql = SqlParser.getPaginatingSqlClause(sql);
 					}
-
+					String order = StringUtil.getOrdinalFromCardinalNumber(i+1);
 					if (multiQuerySql == null) {
 						sql = SqlParser.convertComment(sql);
 						beginTimestamp = System.currentTimeMillis();
@@ -469,7 +469,6 @@ public class MultiSQLQueryResultComposite extends Composite implements IMultiQue
 						} catch (final Exception ee) {
 							throw ee;
 						}
-
 						if (stmt.hasResultSet()) {
 							stmt.setQueryInfo(false);
 							stmt.setOnlyQueryPlan(false);
@@ -488,7 +487,8 @@ public class MultiSQLQueryResultComposite extends Composite implements IMultiQue
 							result = createQueryExecutor(queryEditor,
 									cntResults, sql, database, orignSQL, UIQueryUtil.loadColumnTableNameList(stmt));
 							result.makeResult(rs);
-							String queryMsg = (i + 1) + Messages.querySeq
+							
+							String queryMsg = Messages.bind(Messages.querySeq, order)
 									+ "[ " + elapsedTimeStr + " "
 									+ Messages.second + " , "
 									+ Messages.totalRows + " : "
@@ -521,8 +521,7 @@ public class MultiSQLQueryResultComposite extends Composite implements IMultiQue
 							int cntModify = threadExecResult;
 							noSelectSql += sql + StringUtil.NEWLINE;
 							hasModifyQuery = true;
-
-							log.append(i + 1).append(Messages.querySeq).append(" ");
+							log.append(Messages.bind(Messages.querySeq, order)).append(" ");
 							switch (execType) {
 							case CUBRIDCommandType.CUBRID_STMT_ALTER_CLASS:
 							case CUBRIDCommandType.CUBRID_STMT_ALTER_SERIAL:
@@ -586,7 +585,7 @@ public class MultiSQLQueryResultComposite extends Composite implements IMultiQue
 						result = createQueryExecutor(queryEditor, cntResults,
 								"", database, orignSQL, null);
 						result.setMultiQuerySql(multiQuerySql);
-						result.setQueryMsg((i + 1) + Messages.querySeq
+						result.setQueryMsg(Messages.bind(Messages.querySeq, order)
 								+ StringUtil.NEWLINE);
 						result.setSqlDetailHistory(sqlHistoryDetail);
 						try {
