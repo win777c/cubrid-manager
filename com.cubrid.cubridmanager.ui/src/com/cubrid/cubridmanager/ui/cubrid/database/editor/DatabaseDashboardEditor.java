@@ -1477,8 +1477,8 @@ public class DatabaseDashboardEditor extends
 		if (hostMemTotal != null) {
 			double memPhyMb = Long.parseLong(memPhyUsed) / 1024.0;//physichal memory
 			double hostMemTotalDoubleMb = Long.parseLong(hostMemTotal) / 1024.0;//total memory
-			memPhyUsed = numberFormat.format(memPhyMb) + "M";
-			hostMemTotal = numberFormat.format(hostMemTotalDoubleMb) + "M";
+			memPhyUsed = numberFormat.format(memPhyMb) + "MB";
+			hostMemTotal = numberFormat.format(hostMemTotalDoubleMb) + "MB";
 			Map<String, String> databaseInfo = dbInfoListData.get(0);
 			if (databaseInfo != null) {
 				databaseInfo.put("1", memPhyUsed + " / " + hostMemTotal);
@@ -1937,17 +1937,17 @@ public class DatabaseDashboardEditor extends
 		formater.setMaximumFractionDigits(2);
 		if (spaceSize >= 1024 * 1024 * 1024) {
 			sb.append(formater.format(StringUtil.convertToG(spaceSize))).append(
-					" G");
+					" GB");
 			return sb.toString();
 		}
 		if (spaceSize >= 1024 * 1024) {
 			sb.append(formater.format(StringUtil.convertToM(spaceSize))).append(
-					" M");
+					" MB");
 			return sb.toString();
 		}
 		if (spaceSize >= 1024) {
 			sb.append(formater.format(StringUtil.convertToK(spaceSize))).append(
-					" K");
+					" KB");
 			return sb.toString();
 		}
 		sb.append(spaceSize).append(" B");

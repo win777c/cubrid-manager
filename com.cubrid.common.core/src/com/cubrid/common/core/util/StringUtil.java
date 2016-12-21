@@ -664,13 +664,13 @@ public final class StringUtil {
 		double cSize = 0;
 		if (size > 1024 * 1024 * 1024) {
 			cSize = size / (1024 * 1024 * 1024);
-			sizeStr = cSize + "G";
+			sizeStr = cSize + "GB";
 		} else if (size > 1024 * 1024) {
 			cSize = size / (1024 * 1024);
-			sizeStr = cSize + "M";
+			sizeStr = cSize + "MB";
 		} else if (size > 1024) {
 			cSize = size / 1024;
-			sizeStr = cSize + "K";
+			sizeStr = cSize + "KB";
 		} else {
 			sizeStr = size + "B";
 		}

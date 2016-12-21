@@ -814,7 +814,7 @@ public class DatabaseDashboardViewPart extends
 		//reset memory physical in dbProcStatMap
 		dbProcStatMap.put(DbProcStatEnum.MEM_PHYSICAL.name(),
 				Integer.toString((int) (memPhyUsedMb + 0.5)));
-		memoryChart.updateValueMap(memoryValueMap, numberFormat.format(memPhyUsedMb) + "M");
+		memoryChart.updateValueMap(memoryValueMap, numberFormat.format(memPhyUsedMb) + "MB");
 		phymemValue.setText(numberFormat.format(memPhyUsedMb));
 		//update info
 		usercpuValue.setText(userPercent + "%");

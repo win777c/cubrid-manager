@@ -1526,10 +1526,10 @@ class ServerStatusLabelProvider implements
 			case 1:
 				return formater.format(StringUtil.convertToG(new Double(
 						hostStatus.getMemoryUsed()).longValue() * 1024))
-						+ "G / "
+						+ "GB / "
 						+ formater.format(StringUtil.convertToG(new Double(
 								hostStatus.getMemoryPhy()).longValue() * 1024))
-						+ "G";
+						+ "GB";
 			case 2:
 				return hostStatus.getFreespaceOnStorage() < 0 ? "-"
 						: DBSpaceLabelProvider.getSpaceDesc(hostStatus.getFreespaceOnStorage());
@@ -1701,15 +1701,15 @@ class DBSpaceLabelProvider implements
 		StringBuilder sb = new StringBuilder();
 		if (spaceSize >= 1024 * 1024 * 1024) {
 			sb.append(formater.format(StringUtil.convertToG(spaceSize))).append(
-					"G");
+					"GB");
 			return sb.toString();
 		} else if (spaceSize >= 1024 * 1024) {
 			sb.append(formater.format(StringUtil.convertToM(spaceSize))).append(
-					"M");
+					"MB");
 			return sb.toString();
 		} else if (spaceSize >= 1024) {
 			sb.append(formater.format((float) spaceSize / 1024f / 1024f)).append(
-					"M");
+					"MB");
 			return sb.toString();
 		}
 		sb.append(spaceSize).append("B");
