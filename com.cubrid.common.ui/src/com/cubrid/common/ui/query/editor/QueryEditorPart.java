@@ -998,6 +998,7 @@ public class QueryEditorPart extends
 		subQueryEditorTabItem.addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent e) {
 				if (!willClose && combinedQueryEditortabFolder.getItemCount() == 0) {
+					sqlEditorCounter = 1;
 					addEditorTab();
 				}
 			}
@@ -1213,12 +1214,31 @@ public class QueryEditorPart extends
 	}
 
 	/**
+	 * Parse the selected query. If it has a sqlmap fashion syntax,
+	 * it will show the sqlmap parameter editor with parsed query on the right side.
+	 */
+	public void parseSqlmapQuery() {
+		runQuery(false, true);
+	}
+	
+	/**
 	 * Execute all the selected SQL script on editor, if not, execute all the
 	 * script on editor
 	 *
 	 * @param isOnlyQueryPlan boolean
 	 */
 	public void runQuery(boolean isOnlyQueryPlan) {
+		runQuery(isOnlyQueryPlan, false);
+	}
+	
+	/**
+	 * Execute all the selected SQL script on editor, if not, execute all the
+	 * script on editor
+	 *
+	 * @param isOnlyQueryPlan boolean
+	 * @parma isSqlmapQuery boolean whether or not it should handled as a sqlmap query
+	 */
+	private void runQuery(boolean isOnlyQueryPlan, boolean isSqlmapQuery) {
 		final DBConnection dbConnection = getConnection();
 		if (dbConnection != null
 				&& dbConnection.isAutoCommit()
@@ -1251,7 +1271,7 @@ public class QueryEditorPart extends
 		}
 
 		String queries = combinedQueryComposite.getSqlEditorComp().getSelectedQueries();
-		runQuery(isOnlyQueryPlan, queries, null);
+		runQuery(isOnlyQueryPlan, isSqlmapQuery, queries, null);
 	}
 
 	/**
@@ -1263,6 +1283,20 @@ public class QueryEditorPart extends
 	 * @param rowParameterList List<List<PstmtParameter>>
 	 */
 	private void runQuery(boolean isOnlyQueryPlan, String queries,
+			List<List<PstmtParameter>> rowParameterList) {
+		runQuery(isOnlyQueryPlan, false, queries, rowParameterList);
+	}
+	
+	/**
+	 * Execute all the selected SQL script on editor, if not, execute all the
+	 * script on editor
+	 *
+	 * @param isOnlyQueryPlan boolean
+	 * @param isSqlmapQuery boolean whether or not it needs parsing a sqlmap query
+	 * @param queries String
+	 * @param rowParameterList List<List<PstmtParameter>>
+	 */
+	private void runQuery(boolean isOnlyQueryPlan, boolean isSqlmapQuery, String queries,
 			List<List<PstmtParameter>> rowParameterList) { // FIXME move this logic to core module
 		if (!isConnected()) {
 			CommonUITool.openErrorBox(Messages.qedit_tip_run_query);
@@ -1289,12 +1323,14 @@ public class QueryEditorPart extends
 			return;
 		}
 
-		boolean isXmlQueries = QueryUtil.isXml(queries);
 		MapperParser mapperParser = null;
-		try {
-			mapperParser = new MapperParserImpl();
-		} catch (Exception e) {
-			isXmlQueries = false;
+		boolean isXmlQueries = isSqlmapQuery && QueryUtil.isXml(queries);
+		if (isXmlQueries) {
+			try {
+				mapperParser = new MapperParserImpl();
+			} catch (Exception ignored) {
+				isXmlQueries = false;
+			}
 		}
 
 		if (isXmlQueries) {
@@ -1610,17 +1646,8 @@ public class QueryEditorPart extends
 			firstCharOffset = firstCharOffset - 1;
 		}
 
-		String query = null;
-		int sqlStartPos = -1;
-
-		if (QueryUtil.isXml(queries)) {
-			query = QueryUtil.findNearbyQuery(queries, cursorOffset);
-			sqlStartPos = queries.indexOf(query);
-		} else {
-			sqlStartPos = getQuerySQLStartPos(document, queries, firstCharOffset);
-			query = getQuery(queries, sqlStartPos);
-		}
-
+		int sqlStartPos = getQuerySQLStartPos(document, queries, firstCharOffset);
+		String query = getQuery(queries, sqlStartPos);
 		sqlText.setSelectionRange(sqlStartPos, query.length());
 
 		runQuery(false, query.trim(), null);
@@ -2670,6 +2697,7 @@ public class QueryEditorPart extends
 						multiQuerySql = null;
 					}
 
+					String order = StringUtil.getOrdinalFromCardinalNumber(i+1);
 					if (multiQuerySql == null) {
 						sql = SqlParser.convertComment(sql);
 						beginTimestamp = System.currentTimeMillis();
@@ -2796,7 +2824,7 @@ public class QueryEditorPart extends
 								tuneModeModel = new TuneModeModel(sq, stat);
 							}
 
-							String queryMsg = (i + 1) + Messages.querySeq + "[ " + elapsedTimeStr
+							String queryMsg = Messages.bind(Messages.querySeq, order) + "[ " + elapsedTimeStr
 									+ " " + Messages.second + " , " + Messages.totalRows + " : "
 									+ result.cntRecord + " ]" + StringUtil.NEWLINE;
 
@@ -2867,7 +2895,7 @@ public class QueryEditorPart extends
 							noSelectSql += sql + StringUtil.NEWLINE;
 							hasModifyQuery = true;
 
-							log.append(i + 1).append(Messages.querySeq).append(" ");
+							log.append(Messages.bind(Messages.querySeq, order)).append(" ");
 							switch (execType) {
 							case CUBRIDCommandType.CUBRID_STMT_ALTER_CLASS:
 							case CUBRIDCommandType.CUBRID_STMT_ALTER_SERIAL:
@@ -2931,7 +2959,7 @@ public class QueryEditorPart extends
 						result = createQueryExecutor(queryEditor, cntResults, "", database,
 								parameterList, orignSQL, tableNames);
 						result.setMultiQuerySql(multiQuerySql);
-						result.setQueryMsg((i + 1) + Messages.querySeq);
+						result.setQueryMsg(Messages.bind(Messages.querySeq, order));
 						result.setSqlDetailHistory(sqlHistoryDetail);
 
 						try {
@@ -3598,7 +3626,7 @@ public class QueryEditorPart extends
 
 	public static String makeSqlErrorOnResult(int index, String sql, Exception ee) {
 		StringBuilder logs = new StringBuilder();
-		logs.append(index + 1).append(Messages.querySeq).append(" ");
+		logs.append(Messages.bind(Messages.querySeq, StringUtil.getOrdinalFromCardinalNumber(index+1))).append(" ");
 		logs.append(Messages.queryFail);
 		logs.append(StringUtil.NEWLINE);
 		logs.append(makeSqlLogOnResult(sql));

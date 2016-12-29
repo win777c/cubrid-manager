@@ -304,7 +304,7 @@ public class HostSystemMonitorCompositePart {
 		double memPhyUsedMb = 0;
 		if (null != memPhyUsed) {
 			memPhyUsedMb = Long.parseLong(memPhyUsed) / 1024.0;
-			memoryChart.updateValueMap(memoryValueMap, numberFormat.format(memPhyUsedMb) + "M");
+			memoryChart.updateValueMap(memoryValueMap, numberFormat.format(memPhyUsedMb) + "MB");
 			phymemUsedValue.setText(numberFormat.format(memPhyUsedMb));
 		}
 

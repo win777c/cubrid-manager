@@ -56,7 +56,7 @@ public class PageSizeChoiceComposite {
 	private String sizeBtnTxt;
 	private Button sizeBtn;
 	private Button pageBtn;
-	private final String[] unitItems = new String[]{"K", "M", "G", "T" };
+	private final String[] unitItems = new String[]{"KB", "MB", "GB", "TB" };
 	private Combo unitCombo;
 
 	/**

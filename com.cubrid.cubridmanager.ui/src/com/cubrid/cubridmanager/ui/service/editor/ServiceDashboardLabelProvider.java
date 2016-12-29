@@ -201,8 +201,8 @@ public class ServiceDashboardLabelProvider extends
 					double memTotal = sDashInfo.getMemTotal();
 					return sDashInfo.getServer().isConnected() ? formater.format(StringUtil.convertToG(new Double(
 							memUsed).longValue() * 1024))
-							+ "G / " + formater.format(StringUtil.convertToG(new Double(
-									memTotal).longValue() * 1024)) + "G":"- / -";
+							+ "GB / " + formater.format(StringUtil.convertToG(new Double(
+									memTotal).longValue() * 1024)) + "GB":"- / -";
 				case 12:
 					long freespaceOnStorage = sDashInfo.getFreespaceOnStorage();
 					return sDashInfo.getServer().isConnected() ? getSpaceDesc(freespaceOnStorage):"-";
@@ -237,15 +237,15 @@ public class ServiceDashboardLabelProvider extends
 		StringBuilder sb = new StringBuilder();
 		if (spaceSize >= 1024 * 1024 * 1024) {
 			sb.append(formater.format(StringUtil.convertToG(spaceSize))).append(
-					"G");
+					"GB");
 			return sb.toString();
 		} else if (spaceSize >= 1024 * 1024) {
 			sb.append(formater.format(StringUtil.convertToM(spaceSize))).append(
-					"M");
+					"MB");
 			return sb.toString();
 		} else if (spaceSize >= 1024) {
 			sb.append(formater.format((float) spaceSize / 1024f / 1024f)).append(
-					"M");
+					"MB");
 			return sb.toString();
 		}
 		sb.append(spaceSize).append("B");

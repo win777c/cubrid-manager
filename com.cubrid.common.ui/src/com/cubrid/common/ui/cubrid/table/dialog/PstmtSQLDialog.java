@@ -183,7 +183,7 @@ public class PstmtSQLDialog extends CMTitleAreaDialog implements ITaskExecutorIn
 			sashForm.setOrientation(SWT.VERTICAL);
 			GridData gridData = new GridData(GridData.FILL_BOTH);
 			gridData.widthHint = 600;
-			gridData.heightHint = 400;
+			gridData.heightHint = 600;
 			sashForm.setLayoutData(gridData);
 			GridLayout layout = new GridLayout();
 			layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
@@ -192,7 +192,7 @@ public class PstmtSQLDialog extends CMTitleAreaDialog implements ITaskExecutorIn
 			createSqlTextComposite(sashForm);
 			createBottomComposite(sashForm);
 
-			sashForm.setWeights(new int[]{25, 75});
+			sashForm.setWeights(new int[]{50, 50});
 		}
 		if (isInsert) {
 			initial();

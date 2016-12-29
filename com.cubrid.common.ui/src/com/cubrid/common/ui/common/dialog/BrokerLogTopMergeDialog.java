@@ -86,7 +86,7 @@ public class BrokerLogTopMergeDialog extends CMTitleAreaDialog {
 		comp.setLayout(new GridLayout(3, false));
 		
 		Label qLabel = new Label(comp, SWT.NONE);
-		qLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
+		qLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
 				false));
 		qLabel.setText(Messages.brokerLogTopMergeQLabel);
 		qText = new Text(comp, SWT.BORDER | SWT.READ_ONLY);
@@ -119,7 +119,7 @@ public class BrokerLogTopMergeDialog extends CMTitleAreaDialog {
 
 		Label resLabel = new Label(comp, SWT.NONE);
 		resLabel.setText(Messages.brokerLogTopMergeResLabel);
-		resLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
+		resLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
 				false));
 		
 		resText = new Text(comp, SWT.BORDER | SWT.READ_ONLY);
@@ -151,7 +151,7 @@ public class BrokerLogTopMergeDialog extends CMTitleAreaDialog {
 		
 		Label exlPathLabel = new Label(comp, SWT.NONE);
 		exlPathLabel.setText(Messages.brokerLogTopMergeExcelPathLabel);
-		exlPathLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
+		exlPathLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
 				false));
 		exlPathText = new Text(comp, SWT.BORDER | SWT.READ_ONLY);
 		GridData exlTextGd = new GridData(SWT.FILL, SWT.CENTER, true,

@@ -262,7 +262,7 @@ public class DbSystemMonitorCompositePart {
 		String memPhy = resultMap.get(DbProcStatEnum.MEM_PHYSICAL.name());
 		if (null != memPhy) {
 			double memPhyMb = Long.parseLong(memPhy) / 1024.0;
-			memoryChart.updateValueMap(memoryValueMap, numberFormat.format(memPhyMb) + "M");
+			memoryChart.updateValueMap(memoryValueMap, numberFormat.format(memPhyMb) + "MB");
 			resultMap.put(DbProcStatEnum.MEM_PHYSICAL.name(),
 					Integer.toString((int) (memPhyMb + 0.5)));
 			//update physical memory value

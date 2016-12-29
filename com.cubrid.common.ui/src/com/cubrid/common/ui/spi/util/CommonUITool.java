@@ -105,6 +105,7 @@ import org.slf4j.Logger;
 import com.cubrid.common.core.util.DateUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.StringUtil;
+import com.cubrid.common.ui.common.dialog.MessageDialogWithScrollableMessage;
 import com.cubrid.common.ui.common.navigator.CubridDeferredTreeContentManager;
 import com.cubrid.common.ui.common.navigator.DeferredContentProvider;
 import com.cubrid.common.ui.query.action.CopyAction;
@@ -358,12 +359,19 @@ public final class CommonUITool {
 	 */
 	public static int openMsgBox(Shell sh, int dialogImageType, String title, String msg,
 			String[] dialogButton) {
+		return openMsgBox(sh, dialogImageType, title, msg, "", dialogButton);
+	}
+	
+	public static int openMsgBox(Shell sh, int dialogImageType, String title, String mainMessage, String secondaryMessage,
+			String[] dialogButton) {
 		Shell shell = sh;
 		if (shell == null) {
-			shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+			shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+					.getShell();
 		}
-		MessageDialog dialog = new MessageDialog(shell, title, null, msg, dialogImageType,
-				dialogButton, 0);
+		MessageDialogWithScrollableMessage dialog = new MessageDialogWithScrollableMessage(
+				shell, title, null, mainMessage, secondaryMessage,
+				dialogImageType, dialogButton);
 		return dialog.open();
 	}
 
@@ -438,6 +446,10 @@ public final class CommonUITool {
 		openMsgBox(sh, MessageDialog.INFORMATION, title, msg, new String[] { Messages.btnOk });
 	}
 
+	public static void openInformationBox(Shell sh, String title, String mainMessage, String secondaryMessage) {
+		openMsgBox(sh, MessageDialog.INFORMATION, title, mainMessage, secondaryMessage, new String[] { Messages.btnOk });
+	}
+	
 	/**
 	 * Open information box
 	 *
@@ -447,6 +459,11 @@ public final class CommonUITool {
 	public static void openInformationBox(String title, String msg) {
 		openInformationBox(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
 				msg);
+	}
+	
+	public static void openInformationBox(String title, String mainMessage, String secondaryMessage) {
+		openInformationBox(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
+				mainMessage, secondaryMessage);
 	}
 
 	/**
@@ -458,7 +475,7 @@ public final class CommonUITool {
 		openInformationBox(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 				Messages.titleInformation, msg);
 	}
-
+	
 	/**
 	 *
 	 * Open Warning box

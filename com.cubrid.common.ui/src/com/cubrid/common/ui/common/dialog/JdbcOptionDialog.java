@@ -83,7 +83,6 @@ public class JdbcOptionDialog extends
 
 		setTitle(Messages.titleJdbcOptionDialog);
 		setMessage(Messages.msgJdbcManagementDialog);
-
 		return parentComp;
 	}
 

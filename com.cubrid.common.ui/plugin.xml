@@ -171,20 +171,50 @@
              id="com.cubrid.common.ui.preference.queryoption"
              category="com.cubrid.common.ui.preference.category"
              name="%queryOptionPageName">
+			<keywordReference id="Query.commit"/>
+			<keywordReference id="Query.result"/>
+			<keywordReference id="Query.CLOB"/>
+			<keywordReference id="Query.BLOB"/>
+			<keywordReference id="Query.prompt"/>
+			<keywordReference id="Query.keyword"/>
+			<keywordReference id="Query.scientific"/>
+			<keywordReference id="Query.font"/>
        </page>
        <page
              class="com.cubrid.common.ui.common.preference.JdbcManagePreferencePage"
              id="com.cubrid.common.ui.preference.jdbcmanage"
              category="com.cubrid.common.ui.preference.category"
              name="%jdbcManagePageName">
+			<keywordReference id="Jdbc.update"/>
+			<keywordReference id="Jdbc.add"/>
+			<keywordReference id="Jdbc.delete"/>
        </page>
        <page
              category="com.cubrid.common.ui.preference.category"
              class="com.cubrid.common.ui.cubrid.table.preference.ImportPreferencePage"
              id="com.cubrid.common.ui.preference.ImportPreferencePage"
              name="%importOptions">
+			<keywordReference id="Import.null"/>
+			<keywordReference id="Import.export"/>
+			<keywordReference id="Import.import"/>
        </page>
     </extension>
+	<extension point="org.eclipse.ui.keywords">
+		<keyword label="commit" id="Query.commit"/>
+		<keyword label="result" id="Query.result"/>
+		<keyword label="CLOB" id="Query.CLOB"/>
+		<keyword label="BLOB" id="Query.BLOB"/>
+		<keyword label="prompt" id="Query.prompt"/>
+		<keyword label="keyword" id="Query.keyword"/>
+		<keyword label="scientific" id="Query.scientific"/>
+		<keyword label="font" id="Query.font"/>
+		<keyword label="update" id="Jdbc.update"/>
+		<keyword label="add" id="Jdbc.add"/>
+		<keyword label="delete" id="Jdbc.delete"/>
+		<keyword label="null" id="Import.null"/>
+		<keyword label="export" id="Import.export"/>
+		<keyword label="import" id="Import.import"/>
+	</extension>
     <extension
           point="org.eclipse.ui.views">
        <category

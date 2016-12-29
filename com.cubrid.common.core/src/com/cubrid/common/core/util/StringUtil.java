@@ -664,13 +664,13 @@ public final class StringUtil {
 		double cSize = 0;
 		if (size > 1024 * 1024 * 1024) {
 			cSize = size / (1024 * 1024 * 1024);
-			sizeStr = cSize + "G";
+			sizeStr = cSize + "GB";
 		} else if (size > 1024 * 1024) {
 			cSize = size / (1024 * 1024);
-			sizeStr = cSize + "M";
+			sizeStr = cSize + "MB";
 		} else if (size > 1024) {
 			cSize = size / 1024;
-			sizeStr = cSize + "K";
+			sizeStr = cSize + "KB";
 		} else {
 			sizeStr = size + "B";
 		}
@@ -1336,5 +1336,45 @@ public final class StringUtil {
 		sb.append(string);
 		int lengthOfInterimString = sb.length();
 		return sb.toString().substring(lengthOfInterimString - size, lengthOfInterimString);
+	}
+
+	public static String getOrdinalFromCardinalNumber(int number) {
+		String order;
+		LocaleUtil.LocaleEnum locale = LocaleUtil.JVM_LOCALE;
+
+		switch (locale) {
+		case EN_US:
+		case EN_UK:
+		case KM_KH:
+		case ZH_CN:
+			switch (number) {
+			case 1:
+				order = "1'st";
+				break;
+			case 2:
+				order = "2'nd";
+				break;
+			case 3:
+				order = "3'rd";
+				break;
+			default:
+				order = number + "'th";
+				break;
+			}
+			break;
+		case JP_JP:
+			order = number + "'\u756a\u76ee";
+			break;
+		case TR_TR:
+			order = number + "'ci";
+			break;
+		case KO_KR:
+			order = number + "\uBC88\uC9F8";
+			break;
+		default:
+			order = "" + number;
+		}
+		
+		return order;
 	}
 }

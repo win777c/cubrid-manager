@@ -131,8 +131,14 @@
              class="com.cubrid.cubridmanager.ui.mondashboard.preference.DashboardPreferencePage"
              id="com.cubrid.cubridmanager.ui.preference.mondashboard"
              name="%monitorDashboardEditorName">
+			<keywordReference id="Dashboard.color"/>
+			<keywordReference id="Dashboard.heartbeat"/>
        </page>
     </extension>
+	<extension point="org.eclipse.ui.keywords">
+		<keyword label="color" id="Dashboard.color"/>
+		<keyword label="heartbeat" id="Dashboard.heartbeat"/>
+	</extension>
     <extension
           point="org.eclipse.ui.views">
        <category
