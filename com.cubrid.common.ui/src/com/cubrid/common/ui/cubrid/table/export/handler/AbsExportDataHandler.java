@@ -48,6 +48,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -198,25 +199,6 @@ public abstract class AbsExportDataHandler {
 		if (!isHasBigValue) {
 			isHasBigValue = FieldHandlerUtils.isBitValue(columnType, precision);
 		}
-	}
-
-	protected String getSelectSQL(String name) { // FIXME move this logic to core module
-		String sql = null;
-		if (exportConfig.getSQL(name) != null) {
-			sql = exportConfig.getSQL(name);
-		} else {
-			List<String> columnList = exportConfig.getColumnNameList(name);
-			StringBuffer columns = new StringBuffer();
-			int size = columnList.size();
-			for (int i = 0; i < columnList.size(); i++) {
-				columns.append(QuerySyntax.escapeKeyword(columnList.get(i)));
-				if (i != size - 1) {
-					columns.append(',');
-				}
-			}
-			sql = "SELECT " + columns + " FROM " + QuerySyntax.escapeKeyword(name);
-		}
-		return sql;
 	}
 
 	protected Connection getConnection() throws SQLException { // FIXME move this logic to core module
