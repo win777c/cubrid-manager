@@ -1192,14 +1192,6 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 		itemDetail.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				List<Point> selectedList = selectableSupport.getSelectedLocations();
-				if (selectedList == null) {
-					CommonUITool.openErrorBox(Messages.errShowDetailNoSelected);
-					return;
-				}
-				if (selectedList.size() != 1) {
-					CommonUITool.openErrorBox(Messages.errShowDetailMultiSelected);
-					return;
-				}
 				Point location = selectedList.get(0);
 				if (location == null) {
 					CommonUITool.openErrorBox(Messages.errShowDetailFailed);
@@ -1270,8 +1262,10 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 
 		menu.addMenuListener(new MenuAdapter() {
 			public void menuShown(MenuEvent event) {
+				List<Point> selectedList = selectableSupport.getSelectedLocations();
 				TableItem[] tblItems = selectableSupport.getSelectedTableItems();
 				boolean selectedCol = selectableSupport.hasSelected();
+				boolean enableItemDetail = (selectedList != null && selectedList.size() == 1);
 
 				itemExportSelection.setEnabled(selectedCol);
 				itemCopy.setEnabled(selectedCol);
@@ -1285,7 +1279,7 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 				if (executer.getQueryEditor() != null && executer.getQueryEditor().getDatabaseInfo() != null
 						&& executer.getQueryEditor().getDatabaseInfo().equals(executer.getDatabaseInfo())) {
 					itemInsert.setEnabled(isEditMode());
-					itemDetail.setEnabled(selectedCol);
+					itemDetail.setEnabled(enableItemDetail);
 					itemDelete.setEnabled(getEditable() && isEditMode());
 				} else {
 					itemInsert.setEnabled(false);
