@@ -2542,6 +2542,11 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 	 * dispose the object.
 	 */
 	public void dispose() {
+		disposeAll();
+		freeResultSetCache();
+	}
+	
+	private void disposeAll() {
 		try {
 			if (stmt != null) {
 				stmt.cancel();
@@ -2552,19 +2557,22 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 		QueryUtil.freeQuery(stmt, rs);
 		stmt = null;
 		rs = null;
-		if (!allColumnList.isEmpty()) {
+		if (allColumnList != null && !allColumnList.isEmpty()) {
 			allColumnList.clear();
 			allColumnList = null;
 		}
-		if (!allDataList.isEmpty()) {
+		if (allDataList != null && !allDataList.isEmpty()) {
 			allDataList.clear();
 			allDataList = null;
 		}
-		if (!colComparatorMap.isEmpty()) {
+		if (colComparatorMap != null && !colComparatorMap.isEmpty()) {
 			colComparatorMap.clear();
 			colComparatorMap = null;
 		}
-		freeResultSetCache();
+	}
+	
+	public void initBeforeRunQuery() {
+		disposeAll();
 	}
 
 	public QueryInfo getQueryInfo() {
