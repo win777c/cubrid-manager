@@ -1437,8 +1437,11 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 				}
 
 				sql.append(colName);
-				values.append(getFormatedValue(colInfo, data));
-
+				if (QueryUtil.isStringDataType(colInfo.getType())) {
+					values.append(StringUtil.escapeQuotes(getFormatedValue(colInfo, data)));
+				} else {
+					values.append(getFormatedValue(colInfo, data));
+				}
 			}
 
 			sql.append(") VALUES (").append(values).append(");").append(StringUtil.NEWLINE);
@@ -1602,10 +1605,13 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 				}
 
 				sql.append(colName).append("=");
-				sql.append(getFormatedValue(colInfo, data));
+				if (QueryUtil.isStringDataType(colInfo.getType())) {
+					sql.append(StringUtil.escapeQuotes(getFormatedValue(colInfo, data)));
+				} else {
+					sql.append(getFormatedValue(colInfo, data));
+				}
 			}
 
-			sql.append(" WHERE ");
 			int count = 0;
 
 			for (int i = 0; i < colCount; i++) {
@@ -1615,6 +1621,10 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 
 				if (!pkList.contains(colName)) {
 					continue;
+				}
+
+				if (i == 0) {
+					sql.append(" WHERE ");
 				}
 
 				if (count > 0) {
