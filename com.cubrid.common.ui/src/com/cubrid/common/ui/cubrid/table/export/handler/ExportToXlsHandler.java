@@ -103,6 +103,11 @@ public class ExportToXlsHandler extends
 		if (StringUtil.isEmpty(tableName)) { // FIXME move this logic to core module
 			return;
 		}
+		
+		long totalRecord = exportConfig.getTotalCount(tableName);
+		if (totalRecord == 0) {
+			return;
+		}
 
 		Connection conn = null;
 		CUBRIDPreparedStatementProxy pStmt = null;
@@ -112,7 +117,7 @@ public class ExportToXlsHandler extends
 		String whereCondition = exportConfig.getWhereCondition(tableName);
 		boolean hasNextPage = true;
 		long beginIndex = 1;
-		long totalRecord = exportConfig.getTotalCount(tableName);
+		
 		int cellCharacterLimit = ImportFileConstants.XLSX_CELL_CHAR_LIMIT;
 		int rowLimit = ImportFileConstants.XLS_ROW_LIMIT; // 65536: limit xls row number.
 		boolean isInitedColumnTitles = false;
@@ -125,7 +130,7 @@ public class ExportToXlsHandler extends
 			WritableSheet sheet = workbook.createSheet("Sheet " + sheetNum, sheetNum);
 			sheetNum++;
 			int exportedCount = 0;
-			String sql = getSelectSQL(tableName);
+			String sql = QueryUtil.getSelectSQL(conn, tableName);
 			isPaginating = isPagination(whereCondition, sql, whereCondition);
 			while (hasNextPage) {
 				try {

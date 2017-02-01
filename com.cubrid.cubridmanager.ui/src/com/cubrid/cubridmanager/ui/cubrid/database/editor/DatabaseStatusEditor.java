@@ -374,7 +374,7 @@ public class DatabaseStatusEditor extends
 		map4.put("1", StringUtil.formatNumber(
 				database.getDatabaseInfo().getDbSpaceInfoList().getPagesize(),
 				"#,###")
-				+ " byte");
+				+ " bytes");
 		dbInfoListData.add(map4);
 
 		if (CompatibleUtil.isSupportLogPageSize(database.getServer().getServerInfo())) {
@@ -385,7 +385,7 @@ public class DatabaseStatusEditor extends
 					StringUtil.formatNumber(
 							database.getDatabaseInfo().getDbSpaceInfoList().getLogpagesize(),
 							"#,###")
-							+ " byte");
+							+ " bytes");
 			dbInfoListData.add(logPageSizeMap);
 		}
 

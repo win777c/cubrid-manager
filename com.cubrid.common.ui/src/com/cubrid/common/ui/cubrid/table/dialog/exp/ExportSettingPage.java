@@ -75,7 +75,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Tree;
 import org.slf4j.Logger;
 
 import com.cubrid.common.core.util.ConstantsUtil;
@@ -92,7 +91,6 @@ import com.cubrid.common.ui.spi.StatusInfo;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.common.ui.spi.model.DefaultSchemaNode;
 import com.cubrid.common.ui.spi.model.ICubridNode;
-import com.cubrid.common.ui.spi.model.ICubridNodeLoader;
 import com.cubrid.common.ui.spi.model.NodeType;
 import com.cubrid.common.ui.spi.persist.QueryOptions;
 import com.cubrid.common.ui.spi.util.CommonUITool;
@@ -195,50 +193,9 @@ public class ExportSettingPage extends
 		treeViewer.getTree().setLinesVisible(true);
 		treeViewer.getTree().setHeaderVisible(true);
 
-		final Tree tableTree = treeViewer.getTree();
-		tableTree.setHeaderVisible(true);
-		tableTree.setLinesVisible(true);
-
 		treeViewer.addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
-				treeViewer.setGrayed(event.getElement(), false);
-				treeViewer.setSubtreeChecked(event.getElement(), event.getChecked());
-				if (event.getElement() instanceof ICubridNode) {
-					ICubridNode node = (ICubridNode) event.getElement();
-					ICubridNode parent = node.getParent();
-					if (parent != null) {
-						changeParentNodeState(parent);
-					}
-				}
 				updateDialogStatus(null);
-			}
-
-			/**
-			 * Change parent node state based upon the children node state
-			 *
-			 * @param parent the parent node
-			 */
-			private void changeParentNodeState(ICubridNode parent) {
-				int checkedCount = 0;
-				Object[] objects = treeViewer.getCheckedElements();
-				List<ICubridNode> children = parent.getChildren();
-				for (ICubridNode child : children) {
-					for (Object obj : objects) {
-						ICubridNode checkedNode = (ICubridNode) obj;
-						if (child.getId().equals(checkedNode.getId())) {
-							checkedCount++;
-						}
-					}
-				}
-				if (checkedCount == 0) {
-					treeViewer.setChecked(parent, false);
-					treeViewer.setGrayed(parent, false);
-				} else if (!children.isEmpty() && checkedCount == children.size()) {
-					treeViewer.setChecked(parent, true);
-					treeViewer.setGrayed(parent, false);
-				} else {
-					treeViewer.setGrayChecked(parent, true);
-				}
 			}
 		});
 
@@ -316,7 +273,6 @@ public class ExportSettingPage extends
 				for (ICubridNode node : tablesOrViewLst) {
 					treeViewer.setGrayed(node, false);
 					treeViewer.setChecked(node, selection);
-					treeViewer.setSubtreeChecked(node, selection);
 				}
 				updateDialogStatus(null);
 			}
@@ -740,15 +696,6 @@ public class ExportSettingPage extends
 						if (whereCondition != null) {
 							node.setData(ExportObjectLabelProvider.CONDITION, whereCondition);
 						}
-						List<String> columnList = exportConfig.getColumnNameList(table);
-						for (ICubridNode columnNode : node.getChildren()) {
-							for (String columnName : columnList) {
-								if (columnNode.getName().equals(columnName)) {
-									treeViewer.setChecked(columnNode, true);
-									break;
-								}
-							}
-						}
 					}
 				}
 			}
@@ -851,7 +798,6 @@ public class ExportSettingPage extends
 				for (ICubridNode node : tablesOrViewLst) {
 					if (table.equalsIgnoreCase(node.getName())) {
 						treeViewer.setChecked(node, true);
-						treeViewer.setSubtreeChecked(node, true);
 					}
 				}
 			}
@@ -949,69 +895,6 @@ public class ExportSettingPage extends
 						QueryUtil.freeQuery(rs);
 						monitor.worked(1);
 						monitor.subTask(Messages.taskLoadingColumn);
-
-						StringBuilder getColumnsSQL = new StringBuilder(
-								"SELECT attr_name, class_name, data_type, prec, scale, is_nullable ");
-						getColumnsSQL.append("FROM db_attribute WHERE class_name IN (");
-						for (int i = 0; i < tablesOrViewLst.size(); i++) {
-							if (i != 0) {
-								getColumnsSQL.append(", ");
-							}
-							getColumnsSQL.append("'").append(tablesOrViewLst.get(i).getName()).append(
-									"'");
-						}
-						getColumnsSQL.append(") ORDER BY class_name, def_order");
-						query = getColumnsSQL.toString();
-
-						if (CubridDatabase.hasValidDatabaseInfo(getDatabase())) {
-							query = getDatabase().getDatabaseInfo().wrapShardQuery(query);
-						}
-
-						rs = stmt.executeQuery(query);
-						while (rs.next()) {
-							String columnName = rs.getString("attr_name");
-							String className = rs.getString("class_name");
-							String type = rs.getString("data_type");
-							int prec = rs.getInt("prec");
-							int scale = rs.getInt("scale");
-							String nullAble = rs.getString("is_nullable");
-
-							List<TableColumn> columnList = tableColumMap.get(className);
-							if (columnList == null) {
-								columnList = new ArrayList<TableColumn>();
-								tableColumMap.put(className, columnList);
-							}
-							TableColumn dbColumn = new TableColumn();
-							dbColumn.setColumnName(columnName);
-							if ("YES".equals(nullAble)) {
-								dbColumn.setPrimaryKey(false);
-							} else {
-								dbColumn.setPrimaryKey(true);
-							}
-							dbColumn.setTypeName(type);
-							dbColumn.setPrecision(prec);
-							dbColumn.setScale(scale);
-							columnList.add(dbColumn);
-						}
-
-						for (ICubridNode classNode : tablesOrViewLst) {
-							String tableName = classNode.getName();
-							List<TableColumn> columns = tableColumMap.get(tableName);
-							for (TableColumn column : columns) {
-								String label = column.getColumnName();
-								String columnId = tableName + ICubridNodeLoader.NODE_SEPARATOR
-										+ label;
-								ICubridNode columnNode = new DefaultSchemaNode(columnId, label,
-										"icons/navigator/table_column_item.png");
-								if (column.isPrimaryKey()) {
-									columnNode.setIconPath("icons/primary_key.png");
-								}
-								columnNode.setType(NodeType.TABLE_COLUMN);
-								columnNode.setContainer(false);
-								classNode.addChild(columnNode);
-							}
-						}
-						monitor.worked(1);
 					} catch (SQLException e) {
 						String msg = e.getErrorCode() + StringUtil.NEWLINE
 								+ Messages.importErrorHead + e.getMessage();
@@ -1199,25 +1082,6 @@ public class ExportSettingPage extends
 			}
 		}
 
-		Object[] objects = treeViewer.getCheckedElements();
-		for (Object object : objects) {
-			ICubridNode node = (ICubridNode) object;
-			if (node.getType() == NodeType.TABLE_COLUMN_FOLDER) {
-				boolean hasColumnChecked = false;
-				for (ICubridNode columnNode : node.getChildren()) {
-					if (treeViewer.getChecked(columnNode)) {
-						hasColumnChecked = true;
-						break;
-					}
-				}
-				if (!hasColumnChecked) {
-					StatusInfo statusInfo = new StatusInfo(IStatus.ERROR, Messages.bind(
-							Messages.errorExportHistoryColumn, node.getName()));
-					statusList.add(statusInfo);
-					break;
-				}
-			}
-		}
 		if (getExportConfig().isHistory()) {
 			File testFilePath = new File(pathText.getText());
 			if (!testFilePath.exists()) {
@@ -1371,21 +1235,6 @@ public class ExportSettingPage extends
 		for (ICubridNode tableOrView : selectedTableOrViews) {
 			String filePath = savedDirFile.getAbsolutePath() + File.separator
 					+ tableOrView.getName() + fileExt;
-			List<ICubridNode> columnNodes = tableOrView.getChildren();
-			ArrayList<String> columnNames = new ArrayList<String>();
-			for (ICubridNode columnNode : columnNodes) {
-				for (Object object : objects) {
-					ICubridNode node = (ICubridNode) object;
-					if (node.getType() == NodeType.TABLE_COLUMN) {
-						ICubridNode parent = node.getParent();
-						if (parent != null && parent.getId().equalsIgnoreCase(tableOrView.getId())
-								&& columnNode.getName().equalsIgnoreCase(node.getName())) {
-							columnNames.add(columnNode.getName());
-						}
-					}
-				}
-			}
-			exportConfig.setColumnNameList(tableOrView.getName(), columnNames);
 			Object whereCondition = tableOrView.getData(ExportObjectLabelProvider.CONDITION);
 			if (whereCondition != null) {
 				String sqlFilterPart = ((String) whereCondition).trim();
@@ -1476,7 +1325,6 @@ public class ExportSettingPage extends
 		Object[] objects = treeViewer.getCheckedElements();
 		for (Object o : objects) {
 			treeViewer.setChecked(o, false);
-			treeViewer.setSubtreeChecked(o, false);
 		}
 		tablesOrViewLst.clear();
 	}

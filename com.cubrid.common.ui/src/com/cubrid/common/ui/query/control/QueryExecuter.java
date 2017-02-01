@@ -565,7 +565,9 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 			if (loadSize > 0) {
 				char[] buf = new char[loadSize];
 				int len = reader.read(buf);
-				buffer.append(buf, 0, len);
+				if (len != -1) {
+					buffer.append(buf, 0, len);
+				}
 				if (len >= loadSize && reader.read() != -1) {
 					cellValue.setHasLoadAll(false);
 				} else {
@@ -1192,14 +1194,6 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 		itemDetail.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				List<Point> selectedList = selectableSupport.getSelectedLocations();
-				if (selectedList == null) {
-					CommonUITool.openErrorBox(Messages.errShowDetailNoSelected);
-					return;
-				}
-				if (selectedList.size() != 1) {
-					CommonUITool.openErrorBox(Messages.errShowDetailMultiSelected);
-					return;
-				}
 				Point location = selectedList.get(0);
 				if (location == null) {
 					CommonUITool.openErrorBox(Messages.errShowDetailFailed);
@@ -1270,8 +1264,10 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 
 		menu.addMenuListener(new MenuAdapter() {
 			public void menuShown(MenuEvent event) {
+				List<Point> selectedList = selectableSupport.getSelectedLocations();
 				TableItem[] tblItems = selectableSupport.getSelectedTableItems();
 				boolean selectedCol = selectableSupport.hasSelected();
+				boolean enableItemDetail = (selectedList != null && selectedList.size() == 1);
 
 				itemExportSelection.setEnabled(selectedCol);
 				itemCopy.setEnabled(selectedCol);
@@ -1285,7 +1281,7 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 				if (executer.getQueryEditor() != null && executer.getQueryEditor().getDatabaseInfo() != null
 						&& executer.getQueryEditor().getDatabaseInfo().equals(executer.getDatabaseInfo())) {
 					itemInsert.setEnabled(isEditMode());
-					itemDetail.setEnabled(selectedCol);
+					itemDetail.setEnabled(enableItemDetail);
 					itemDelete.setEnabled(getEditable() && isEditMode());
 				} else {
 					itemInsert.setEnabled(false);
@@ -1443,8 +1439,11 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 				}
 
 				sql.append(colName);
-				values.append(getFormatedValue(colInfo, data));
-
+				if (QueryUtil.isStringDataType(colInfo.getType())) {
+					values.append(StringUtil.escapeQuotes(getFormatedValue(colInfo, data)));
+				} else {
+					values.append(getFormatedValue(colInfo, data));
+				}
 			}
 
 			sql.append(") VALUES (").append(values).append(");").append(StringUtil.NEWLINE);
@@ -1608,10 +1607,13 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 				}
 
 				sql.append(colName).append("=");
-				sql.append(getFormatedValue(colInfo, data));
+				if (QueryUtil.isStringDataType(colInfo.getType())) {
+					sql.append(StringUtil.escapeQuotes(getFormatedValue(colInfo, data)));
+				} else {
+					sql.append(getFormatedValue(colInfo, data));
+				}
 			}
 
-			sql.append(" WHERE ");
 			int count = 0;
 
 			for (int i = 0; i < colCount; i++) {
@@ -1621,6 +1623,10 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 
 				if (!pkList.contains(colName)) {
 					continue;
+				}
+
+				if (i == 0) {
+					sql.append(" WHERE ");
 				}
 
 				if (count > 0) {
@@ -2548,6 +2554,11 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 	 * dispose the object.
 	 */
 	public void dispose() {
+		disposeAll();
+		freeResultSetCache();
+	}
+	
+	private void disposeAll() {
 		try {
 			if (stmt != null) {
 				stmt.cancel();
@@ -2558,19 +2569,22 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 		QueryUtil.freeQuery(stmt, rs);
 		stmt = null;
 		rs = null;
-		if (!allColumnList.isEmpty()) {
+		if (allColumnList != null && !allColumnList.isEmpty()) {
 			allColumnList.clear();
 			allColumnList = null;
 		}
-		if (!allDataList.isEmpty()) {
+		if (allDataList != null && !allDataList.isEmpty()) {
 			allDataList.clear();
 			allDataList = null;
 		}
-		if (!colComparatorMap.isEmpty()) {
+		if (colComparatorMap != null && !colComparatorMap.isEmpty()) {
 			colComparatorMap.clear();
 			colComparatorMap = null;
 		}
-		freeResultSetCache();
+	}
+	
+	public void initBeforeRunQuery() {
+		disposeAll();
 	}
 
 	public QueryInfo getQueryInfo() {

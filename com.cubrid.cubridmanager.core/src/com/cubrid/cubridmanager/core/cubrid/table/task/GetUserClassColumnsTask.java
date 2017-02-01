@@ -29,7 +29,6 @@
  */
 package com.cubrid.cubridmanager.core.cubrid.table.task;
 
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -82,15 +81,8 @@ public class GetUserClassColumnsTask extends
 				errorMsg = Messages.error_getConnection;
 				return columns;
 			}
-			DatabaseMetaData dbmd = connection.getMetaData();
 			columns = SchemaUtil.getTableColumn(databaseInfo, connection, tableName);
-
-			rs = dbmd.getPrimaryKeys(null, null, tableName);
-			List<String> pkColumns = new ArrayList<String>();
-			while (rs.next()) {
-				pkColumns.add(rs.getString("column_name"));
-			}
-			QueryUtil.freeQuery(rs);
+			List<String> pkColumns = QueryUtil.getPrimaryKeys(connection, tableName);
 
 			for (TableColumn dbColumn : columns) {
 				String columnName = dbColumn.getColumnName();

@@ -93,6 +93,11 @@ public class ExportToTxtHandler extends
 			return;
 		}
 		
+		long totalRecord = exportConfig.getTotalCount(tableName);
+		if (totalRecord == 0) {
+			return;
+		}
+		
 		if(exportConfig.isExportFromCache()){
 			exportFromCache(tableName);
 		}else{
@@ -116,7 +121,7 @@ public class ExportToTxtHandler extends
 			conn = getConnection();
 			fs = FileUtil.getBufferedWriter(exportConfig.getDataFilePath(tableName),
 					exportConfig.getFileCharset());
-			String sql = getSelectSQL(tableName);
+			String sql = QueryUtil.getSelectSQL(conn, tableName); 
 			isPaginating = isPagination(tableName, sql, whereCondition);
 			while (hasNextPage) {
 				try {

@@ -81,7 +81,7 @@ public class ShowDashboardDialog extends Dialog {
 
 		Label lblShowDashboard = new Label(composite, SWT.NONE);
 		lblShowDashboard.setText(Messages.lblShowDashboard);
-		showLaterButton = new Button(composite, SWT.CHECK);
+		showLaterButton = new Button(composite, SWT.CHECK | SWT.WRAP);
 		showLaterButton.setText(Messages.btnShowDashboard);
 		showLaterButton.setLayoutData(CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 2, 1, -1, -1));
 		showLaterButton.setSelection(useAutoShow);

@@ -143,10 +143,14 @@ public class ExportLoadDBHandler extends
 			for (String tableName : exportConfig.getTableNameList()) {
 				String whereCondition = exportConfig.getWhereCondition(tableName);
 				long totalRecord = exportConfig.getTotalCount(tableName);
+				if (totalRecord == 0) {
+					continue;
+				}
+				
 				boolean hasNextPage = true;
 				int exportedCount = 0;
 				long beginIndex = 1;
-				String sql = getSelectSQL(tableName);
+				String sql = QueryUtil.getSelectSQL(conn, tableName); 
 				isPaginating = isPagination(tableName, sql, whereCondition);
 				boolean isExportedColumnTitles = false;
 				while (hasNextPage) {
