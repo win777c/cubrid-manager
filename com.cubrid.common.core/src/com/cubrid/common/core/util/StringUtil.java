@@ -1387,7 +1387,7 @@ public final class StringUtil {
 	 * @return
 	 */
 	public static String escapeQuotes(String value) {
-		if (value == null) {
+		if (value == null || "NULL".equals(value)) {
 			return value;
 		}
 		data.setLength(0);
@@ -1425,5 +1425,23 @@ public final class StringUtil {
 
 	private static void wrapQuotesAndAppendToData(char quote) {
 		data.insert(0, quote).insert(data.length(), quote);
+	}
+
+	public static String getWrappedQuote(String value) {
+		if (value != null) {
+			if (value.startsWith("'") && value.endsWith("'")) {
+				return "'";
+			}
+			if (value.startsWith("\"") && value.endsWith("\"")) {
+				return "\"";
+			}
+		}
+		return "";
+	}
+
+	public static String insertQuotes(String quote, String data) {
+		data = data.substring(1, data.length() - 1);
+		data = quote + data + quote;
+		return "'" + data + "'";
 	}
 }

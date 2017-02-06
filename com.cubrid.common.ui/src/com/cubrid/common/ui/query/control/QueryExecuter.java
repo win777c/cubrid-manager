@@ -1464,11 +1464,16 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 		if ("(NULL)".equals(data)) {
 			return nullValue;
 		} else {
+			String quote = StringUtil.getWrappedQuote(data);
 			try {
 				FormatDataResult formatResult = DBAttrTypeFormatter.formatForInput(
 						colInfo.getComleteType(), data, true, charset, false);
 				if (formatResult.isSuccess()
 						&& formatResult.getFormatedString() != null) {
+					if (!quote.equals("")) {
+						formatResult.setFormatedString(StringUtil.insertQuotes(
+								quote, formatResult.getFormatedString()));
+					}
 					return formatResult.getFormatedString();
 				}
 			} catch (Exception ex) {
