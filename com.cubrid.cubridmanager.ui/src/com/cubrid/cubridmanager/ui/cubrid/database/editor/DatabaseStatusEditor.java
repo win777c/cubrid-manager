@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -90,11 +91,14 @@ import com.cubrid.common.ui.spi.part.CubridEditorPart;
 import com.cubrid.common.ui.spi.progress.TaskJobExecutor;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.cubridmanager.core.common.model.DbRunningType;
+import com.cubrid.cubridmanager.core.common.model.ServerVersion;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.core.common.task.CommonQueryTask;
 import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListNew;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListOld;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeType;
 import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
 import com.cubrid.cubridmanager.ui.cubrid.database.control.PieRenderer;
@@ -120,8 +124,22 @@ public class DatabaseStatusEditor extends
 
 	private ScrolledComposite scrolledComp = null;
 	private final List<Map<String, String>> dbInfoListData = new ArrayList<Map<String, String>>();
+	private final List<Map<String, String>> dbSpaceDescriptionData = new ArrayList<Map<String,String>>();
+	private final List<Map<String, String>> volumeDescriptionData = new ArrayList<Map<String,String>>();
+	private final List<Map<String, String>> fileSpaceDescriptionData = new ArrayList<Map<String,String>>();
+
 	private TableViewer dbInfoTableViewer;
 	private Table dbInfoTable;
+	
+	private TableViewer dbSpaceDescriptionTableViewer;
+	private Table dbSpaceDescriptionTable;
+	
+	private TableViewer volumeDescriptionTableViewer;
+	private Table volumeDescriptionTable;
+	
+	private TableViewer fileSpaceDescriptionTableViewer;
+	private Table fileSpaceDescriptionTable;
+	
 	private final Color color;
 
 	public DatabaseStatusEditor() {
@@ -199,6 +217,35 @@ public class DatabaseStatusEditor extends
 		dbInfoTable = dbInfoTableViewer.getTable();
 		dbInfoTable.setLinesVisible(true);
 		dbInfoTable.setHeaderVisible(false);
+		
+		if (!DbSpaceInfoList.useOld(database.getDatabaseInfo().getServerInfo().getEnvInfo())){
+			dbSpaceDescriptionTableViewer = createCommonTableViewer(descComp, null, 
+							new String[]{"type","purpose","volume_count","used_size","free_size","total_size"}, 
+							CommonUITool.createGridData(GridData.FILL_BOTH, 1,
+							1, -1, -1));
+			dbSpaceDescriptionTableViewer.setInput(dbSpaceDescriptionData);
+			dbSpaceDescriptionTable = dbSpaceDescriptionTableViewer.getTable();
+			dbSpaceDescriptionTable.setLinesVisible(true);
+			dbSpaceDescriptionTable.setHeaderVisible(true);
+			
+			volumeDescriptionTableViewer = createCommonTableViewer(descComp, null, 
+					new String[]{"volid","type","purpose","used_size","free_size","total_size","volume_name"}, 
+					CommonUITool.createGridData(GridData.FILL_BOTH, 1,
+					1, -1, -1));
+			volumeDescriptionTableViewer.setInput(volumeDescriptionData);
+			volumeDescriptionTable = volumeDescriptionTableViewer.getTable();
+			volumeDescriptionTable.setLinesVisible(true);
+			volumeDescriptionTable.setHeaderVisible(true);
+	
+			fileSpaceDescriptionTableViewer = createCommonTableViewer(descComp, null, 
+					new String[]{"data_type","file_count","used_size","file_table_size","reserved_size","total_size"}, 
+					CommonUITool.createGridData(GridData.FILL_BOTH, 1,
+					1, -1, -1));
+			fileSpaceDescriptionTableViewer.setInput(fileSpaceDescriptionData);
+			fileSpaceDescriptionTable = fileSpaceDescriptionTableViewer.getTable();
+			fileSpaceDescriptionTable.setLinesVisible(true);
+			fileSpaceDescriptionTable.setHeaderVisible(true);
+		}
 
 		//chart compostie
 		chartComp = new Composite(parentComp, SWT.NONE);
@@ -249,6 +296,12 @@ public class DatabaseStatusEditor extends
 			}
 			if (map.containsKey(VolumeType.TEMP.toString().toUpperCase())) {
 				paintOnePie(map.get(VolumeType.TEMP.toString().toUpperCase()));
+			}
+			if (map.containsKey("PERMANENT")) {
+				paintOnePie(map.get("PERMANENT"));
+			}
+			if (map.containsKey("TEMPORARY")) {
+				paintOnePie(map.get("TEMPORARY"));
 			}
 		}
 	}
@@ -340,9 +393,6 @@ public class DatabaseStatusEditor extends
 	 *
 	 */
 	private void initial() {
-		if (database == null || database.getDatabaseInfo() == null) {
-			return;
-		}
 		if (database.getDatabaseInfo().getDbSpaceInfoList() == null) {
 			return;
 		}
@@ -389,21 +439,9 @@ public class DatabaseStatusEditor extends
 			dbInfoListData.add(logPageSizeMap);
 		}
 
-		List<DbSpaceInfo> list = database.getDatabaseInfo().getDbSpaceInfoList().getSpaceinfo();
-		int totalSize = 0;
-		int freeSize = 0;
-		if (list != null) {
-			for (DbSpaceInfo bean : list) {
-				if (!bean.getType().equals("GENERIC")
-						&& !bean.getType().equals("DATA")
-						&& !bean.getType().equals("TEMP")
-						&& !bean.getType().equals("INDEX")) {
-					continue;
-				}
-				totalSize += bean.getTotalpage();
-				freeSize += bean.getFreepage();
-			}
-		}
+		int totalSize = database.getDatabaseInfo().getDbSpaceInfoList().getTotalSize();
+		int freeSize = database.getDatabaseInfo().getDbSpaceInfoList().getFreeSize();
+		
 		Map<String, String> map5 = new HashMap<String, String>();
 		map5.put("0", Messages.lblDatabaseTotalSize);
 		map5.put(
@@ -429,6 +467,43 @@ public class DatabaseStatusEditor extends
 						+ StringUtil.formatNumber(freeSize, "#,###")
 						+ " pages)");
 		dbInfoListData.add(map6);
+		
+		if (!DbSpaceInfoList.useOld(database.getDatabaseInfo().getServerInfo().getEnvInfo())){
+		
+			if (dbSpaceDescriptionTable != null && !dbSpaceDescriptionTable.isDisposed()) {
+				((DbSpaceInfoListNew)database.getDatabaseInfo().getDbSpaceInfoList()).createDbSpaceDescriptionData(dbSpaceDescriptionData);
+				dbSpaceDescriptionTableViewer.refresh();
+				for (int i = 0; i < dbSpaceDescriptionTable.getColumnCount(); i++) {
+					dbSpaceDescriptionTable.getColumn(i).pack();
+				}
+				for (int i = 0; i < (1 + dbSpaceDescriptionTable.getItemCount()) / 2; i++) {
+					dbSpaceDescriptionTable.getItem(i * 2).setBackground(color);
+				}
+			}
+			
+			((DbSpaceInfoListNew)database.getDatabaseInfo().getDbSpaceInfoList()).createFileSpaceDescriptionData(fileSpaceDescriptionData);
+			if (fileSpaceDescriptionTable != null && !fileSpaceDescriptionTable.isDisposed()) {
+				fileSpaceDescriptionTableViewer.refresh();
+				for (int i = 0; i < fileSpaceDescriptionTable.getColumnCount(); i++) {
+					fileSpaceDescriptionTable.getColumn(i).pack();
+				}
+				for (int i = 0; i < (1 + fileSpaceDescriptionTable.getItemCount()) / 2; i++) {
+					fileSpaceDescriptionTable.getItem(i * 2).setBackground(color);
+				}
+			}
+			
+			((DbSpaceInfoListNew)database.getDatabaseInfo().getDbSpaceInfoList()).createVolumeDescriptionData(volumeDescriptionData);
+			if (volumeDescriptionTable != null && !volumeDescriptionTable.isDisposed()) {
+				volumeDescriptionTableViewer.refresh();
+				for (int i = 0; i < volumeDescriptionTable.getColumnCount(); i++) {
+					volumeDescriptionTable.getColumn(i).pack();
+				}
+				for (int i = 0; i < (1 + volumeDescriptionTable.getItemCount()) / 2; i++) {
+					volumeDescriptionTable.getItem(i * 2).setBackground(color);
+				}
+			}
+			
+		}
 
 		if (dbInfoTable != null && !dbInfoTable.isDisposed()) {
 			dbInfoTableViewer.refresh();
@@ -469,12 +544,7 @@ public class DatabaseStatusEditor extends
 	 * @return <code>true</code> whether it is successful;<code>false</code>
 	 *         otherwise
 	 */
-	public boolean loadData() {
-		CommonQueryTask<DbSpaceInfoList> task = new CommonQueryTask<DbSpaceInfoList>(
-				database.getServer().getServerInfo(),
-				CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoList());
-		task.setDbName(database.getName());
-
+	public boolean loadData() {	
 		TaskJobExecutor taskJobExecutor = new TaskJobExecutor() {
 			@SuppressWarnings("unchecked")
 			@Override
@@ -496,7 +566,7 @@ public class DatabaseStatusEditor extends
 						return new Status(IStatus.ERROR,
 								CubridManagerUIPlugin.PLUGIN_ID, msg);
 					} else {
-						final DbSpaceInfoList dbSpaceInfoList = ((CommonQueryTask<DbSpaceInfoList>) t).getResultModel();
+						final DbSpaceInfoList dbSpaceInfoList = ((CommonQueryTask<? extends DbSpaceInfoList>)t).getResultModel();
 						Display.getDefault().syncExec(new Runnable() {
 							public void run() {
 								database.getDatabaseInfo().setDbSpaceInfoList(
@@ -521,6 +591,14 @@ public class DatabaseStatusEditor extends
 			}
 
 		};
+		CommonQueryTask<? extends DbSpaceInfoList> task = DbSpaceInfoList.useOld(database.getServer().getServerInfo().getEnvInfo()) ?
+															new CommonQueryTask<DbSpaceInfoListOld>(database.getServer().getServerInfo(),
+																									CommonSendMsg.getCommonDatabaseSendMsg(),
+																									new DbSpaceInfoListOld()) :
+															new CommonQueryTask<DbSpaceInfoListNew>(database.getServer().getServerInfo(),
+																									CommonSendMsg.getCommonDatabaseSendMsg(),
+																									new DbSpaceInfoListNew());
+		task.setDbName(database.getName());
 		taskJobExecutor.addTask(task);
 
 		String serverName = database.getServer().getName();
@@ -529,7 +607,7 @@ public class DatabaseStatusEditor extends
 				+ serverName;
 		taskJobExecutor.schedule(jobName, null, false, Job.SHORT);
 		return true;
-
+		
 	}
 
 	/**

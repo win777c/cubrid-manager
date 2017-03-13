@@ -42,17 +42,14 @@ public class DbSpaceInfo {
 	 * GENERIC,DATA,TEMP,INDEX,Active_log,Archive_log
 	 */
 	private String type = null;
-
 	private String location = null;
-
 	private int totalpage = 0;
-
 	private int freepage = 0;
-
+	private int usedpage = 0;
+	private int volid;
 	private String date = null;
-
+	private String purpose;
 	private int volumeCount = 0;
-
 	private String totalPageStr = null;
 	private String totalSizeStr = null;
 
@@ -111,6 +108,14 @@ public class DbSpaceInfo {
 	public void setFreepage(int freepage) {
 		this.freepage = freepage;
 	}
+	
+	public int getUsedpage() {
+		return usedpage;
+	}
+	
+	public void setUsedpage(int usedpage){
+		this.usedpage = usedpage;
+	}
 
 	public String getDate() {
 		return date;
@@ -119,9 +124,34 @@ public class DbSpaceInfo {
 	public void setDate(String date) {
 		this.date = date;
 	}
+	
+	public int getVolid() {
+		return volid;
+	}
+	
+	public void setVolid(int volid) {
+		this.volid = volid;
+	}
 
 	public int getVolumeCount() {
 		return volumeCount;
+	}
+	
+	public String getPurpose() {
+		return purpose;
+	}
+	
+	public void setPurpose(String purpose) {
+		this.purpose = purpose;
+	}
+	
+	public String getShortVolumeName(){
+		int lastIndex;
+		if ((lastIndex = spacename.lastIndexOf('/')) >= 0){
+			return spacename.substring(lastIndex+1);
+		} else {
+			return spacename;
+		}
 	}
 
 	/**

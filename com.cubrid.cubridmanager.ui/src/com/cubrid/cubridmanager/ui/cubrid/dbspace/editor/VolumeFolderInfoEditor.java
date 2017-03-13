@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -91,6 +92,8 @@ import com.cubrid.cubridmanager.core.common.task.CommonQueryTask;
 import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListNew;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListOld;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.VolumeType;
 import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
 import com.cubrid.cubridmanager.ui.cubrid.database.control.PieRenderer;
@@ -127,6 +130,21 @@ public class VolumeFolderInfoEditor extends
 
 	private String volumeFolderName = "";
 	private String volumeType = null;
+	
+	private static HashMap<String, String> folderTypeMap;
+
+	static {
+		folderTypeMap = new HashMap<String, String>();
+		folderTypeMap.put(CubridNodeType.GENERIC_VOLUME_FOLDER, VolumeType.GENERIC.toString());
+		folderTypeMap.put(CubridNodeType.DATA_VOLUME_FOLDER, VolumeType.DATA.toString());
+		folderTypeMap.put(CubridNodeType.INDEX_VOLUME_FOLDER, VolumeType.INDEX.toString());
+		folderTypeMap.put(CubridNodeType.TEMP_VOLUME_FOLDER, VolumeType.TEMP.toString());
+		folderTypeMap.put(CubridNodeType.ARCHIVE_LOG_FOLDER, VolumeType.ARCHIVE_LOG.toString());
+		folderTypeMap.put(CubridNodeType.ACTIVE_LOG_FOLDER, VolumeType.ACTIVE_LOG.toString());
+		folderTypeMap.put(CubridNodeType.PP_VOLUME_FOLDER, VolumeType.PP.getText());
+		folderTypeMap.put(CubridNodeType.PT_VOLUME_FOLDER, VolumeType.PT.getText());
+		folderTypeMap.put(CubridNodeType.TT_VOLUME_FOLDER, VolumeType.TT.getText());
+	}
 
 	public VolumeFolderInfoEditor() {
 		dbSpaceList = new ArrayList<DbSpaceInfo>();
@@ -145,43 +163,16 @@ public class VolumeFolderInfoEditor extends
 		super.init(site, input);
 		if (input instanceof DefaultSchemaNode) {
 			ICubridNode node = (DefaultSchemaNode) input;
+			database = ((DefaultSchemaNode) node).getDatabase();
+			
 			String type = node.getType();
-			if ((CubridNodeType.GENERIC_VOLUME_FOLDER.equals(type)
-					|| CubridNodeType.DATA_VOLUME_FOLDER.equals(type)
-					|| CubridNodeType.INDEX_VOLUME_FOLDER.equals(type)
-					|| CubridNodeType.TEMP_VOLUME_FOLDER.equals(type)
-					|| CubridNodeType.ACTIVE_LOG_FOLDER.equals(type) || CubridNodeType.ARCHIVE_LOG_FOLDER.equals(type))
+			if ((volumeType = folderTypeMap.get(type)) != null
 					&& (((DefaultSchemaNode) node).getChildren() != null && ((DefaultSchemaNode) node).getChildren().size() > 0)) {
 				for (ICubridNode child : ((DefaultSchemaNode) node).getChildren()) {
 					dbSpaceList.add((DbSpaceInfo) ((DefaultSchemaNode) child).getAdapter(DbSpaceInfo.class));
 				}
 			}
 			volumeFolderName = node.getName();
-			database = ((DefaultSchemaNode) node).getDatabase();
-			if (CubridNodeType.GENERIC_VOLUME_FOLDER.equals(type)) {
-				volumeType = VolumeType.GENERIC.toString();
-				return;
-			}
-			if (CubridNodeType.DATA_VOLUME_FOLDER.equals(type)) {
-				volumeType = VolumeType.DATA.toString();
-				return;
-			}
-			if (CubridNodeType.INDEX_VOLUME_FOLDER.equals(type)) {
-				volumeType = VolumeType.INDEX.toString();
-				return;
-			}
-			if (CubridNodeType.TEMP_VOLUME_FOLDER.equals(type)) {
-				volumeType = VolumeType.TEMP.toString();
-				return;
-			}
-			if (CubridNodeType.ACTIVE_LOG_FOLDER.equals(type)) {
-				volumeType = VolumeType.ACTIVE_LOG.toString();
-				return;
-			}
-			if (CubridNodeType.ARCHIVE_LOG_FOLDER.equals(type)) {
-				volumeType = VolumeType.ARCHIVE_LOG.toString();
-				return;
-			}
 		}
 	}
 
@@ -299,20 +290,20 @@ public class VolumeFolderInfoEditor extends
 					// for (int i = 0, n = Volinfo.size(); i < n; i++) {
 					// virec = (VolumeInfo) Volinfo.get(i);
 					synchronized (cubridNode) {
-
 						if (database.getDatabaseInfo().getDbSpaceInfoList() != null
 								&& database.getDatabaseInfo().getDbSpaceInfoList().getSpaceinfo() != null) {
 							// calcColumnLength();
-							for (DbSpaceInfo bean : dbSpaceList) {
-								totint = bean.getTotalpage();
-								freeint = bean.getFreepage();
+							ArrayList<DbSpaceInfoList.FreeTotalSizeSpacename> volumeInfos = database.getDatabaseInfo().getDbSpaceInfoList().getVolumesInfoByType(volumeType);
+							for (DbSpaceInfoList.FreeTotalSizeSpacename info : volumeInfos) {
+								totint = info.totalSize;
+								freeint = info.freeSize;
 								if (totint <= 0) {
 									continue;
 								}
 								event.gc.setForeground(Display.getCurrent().getSystemColor(
 										SWT.COLOR_BLACK));
 
-								alignText(bean.getSpacename(), event.gc, 50
+								alignText(info.spaceName, event.gc, 50
 										+ chary * yy, 20, 50, 1);
 
 								// e.gc.drawText(bean.getSpacename(), 10, 50 +
@@ -351,7 +342,7 @@ public class VolumeFolderInfoEditor extends
 													"#,###.##")
 													+ "/"
 													+ StringUtil.formatNumber(
-															bean.getFreepage()
+															freeint
 																	* (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f)),
 															"#,###.##"), 170,
 											50 + chary * yy, true);
@@ -362,14 +353,14 @@ public class VolumeFolderInfoEditor extends
 										&& (volumeType.equalsIgnoreCase(VolumeType.ACTIVE_LOG.toString()) || volumeType.equalsIgnoreCase(VolumeType.ARCHIVE_LOG.toString()))) {
 									alignText(
 											StringUtil.formatNumber(
-													(bean.getTotalpage() * (database.getDatabaseInfo().getDbSpaceInfoList().getLogpagesize() / (1048576.0f))),
+													(totint * (database.getDatabaseInfo().getDbSpaceInfoList().getLogpagesize() / (1048576.0f))),
 													"#,###.##")
 													+ " M", event.gc, 50
 													+ chary * yy, 320, 390, 2);
 								} else {
 									alignText(
 											StringUtil.formatNumber(
-													(bean.getTotalpage() * (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f))),
+													(totint * (database.getDatabaseInfo().getDbSpaceInfoList().getPagesize() / (1048576.0f))),
 													"#,###.##")
 													+ " M", event.gc, 50
 													+ chary * yy, 320, 390, 2);
@@ -378,7 +369,7 @@ public class VolumeFolderInfoEditor extends
 								event.gc.setForeground(Display.getCurrent().getSystemColor(
 										SWT.COLOR_BLACK));
 								alignText(StringUtil.formatNumber(
-										bean.getTotalpage(), "#,###")
+										totint, "#,###")
 										+ " pages", event.gc, 50 + chary * yy,
 										430, 500, 2);
 								yy++;
@@ -446,18 +437,6 @@ public class VolumeFolderInfoEditor extends
 		int totalSize = 0;
 		int freeSize = 0;
 		// String volumeType = "";
-		for (DbSpaceInfo dbSpaceInfo : dbSpaceList) {
-			totalSize += dbSpaceInfo.getTotalpage();
-			freeSize += dbSpaceInfo.getFreepage();
-			volumeType = dbSpaceInfo.getType();
-		}
-
-		spaceNameLabel.setText(volumeFolderName);
-
-		while (!spInfoListData.isEmpty()) {
-			spInfoListData.remove(0);
-		}
-
 		Map<String, String> map3 = new HashMap<String, String>();
 		map3.put("0", Messages.tblVolumeFolderType);
 		map3.put("1", volumeType);
@@ -469,7 +448,10 @@ public class VolumeFolderInfoEditor extends
 				dbSpaceList.size()
 						+ "                                                                                   ");
 		spInfoListData.add(map2);
-
+		for (DbSpaceInfo dbSpaceInfo : dbSpaceList) {
+			totalSize += dbSpaceInfo.getTotalpage();
+			freeSize += dbSpaceInfo.getFreepage();
+		}
 		if (!VolumeType.ACTIVE_LOG.toString().equalsIgnoreCase(volumeType)
 				&& !VolumeType.ARCHIVE_LOG.toString().equalsIgnoreCase(
 						volumeType)) {
@@ -524,6 +506,12 @@ public class VolumeFolderInfoEditor extends
 			spInfoListData.add(map6);
 		}
 
+		spaceNameLabel.setText(volumeFolderName);
+
+		while (!spInfoListData.isEmpty()) {
+			spInfoListData.remove(0);
+		}
+
 		if (spInfoTable != null && !spInfoTable.isDisposed()) {
 			spInfoTableViewer.refresh();
 			for (int i = 0; i < spInfoTable.getColumnCount(); i++) {
@@ -576,10 +564,6 @@ public class VolumeFolderInfoEditor extends
 	 * @return boolean
 	 */
 	public boolean loadData() {
-		CommonQueryTask<DbSpaceInfoList> task = new CommonQueryTask<DbSpaceInfoList>(
-				database.getServer().getServerInfo(),
-				CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoList());
-		task.setDbName(database.getName());
 
 		TaskJobExecutor taskJobExecutor = new TaskJobExecutor() {
 			@SuppressWarnings("unchecked")
@@ -602,7 +586,7 @@ public class VolumeFolderInfoEditor extends
 						return new Status(IStatus.ERROR,
 								CubridManagerUIPlugin.PLUGIN_ID, msg);
 					} else {
-						final DbSpaceInfoList model = ((CommonQueryTask<DbSpaceInfoList>) t).getResultModel();
+						final DbSpaceInfoList model = ((CommonQueryTask<? extends DbSpaceInfoList>)t).getResultModel();
 						Display.getDefault().syncExec(new Runnable() {
 							public void run() {
 								database.getDatabaseInfo().setDbSpaceInfoList(
@@ -627,7 +611,16 @@ public class VolumeFolderInfoEditor extends
 			}
 
 		};
+		CommonQueryTask<? extends DbSpaceInfoList> task = DbSpaceInfoList.useOld(database.getServer().getServerInfo().getEnvInfo()) ?
+				new CommonQueryTask<DbSpaceInfoListOld>(database.getServer().getServerInfo(),
+														CommonSendMsg.getCommonDatabaseSendMsg(),
+														new DbSpaceInfoListOld()) :
+				new CommonQueryTask<DbSpaceInfoListNew>(database.getServer().getServerInfo(),
+														CommonSendMsg.getCommonDatabaseSendMsg(),
+														new DbSpaceInfoListNew());
+		task.setDbName(database.getName());
 		taskJobExecutor.addTask(task);
+		
 		String serverName = database.getServer().getName();
 		String dbName = database.getName();
 		String jobName = Messages.viewVolumeInfoJobName + " - "
