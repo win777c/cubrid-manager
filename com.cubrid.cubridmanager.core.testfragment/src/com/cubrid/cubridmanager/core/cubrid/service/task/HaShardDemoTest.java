@@ -121,7 +121,7 @@ public class HaShardDemoTest extends TestCase {
 	}
 	
 	public void testHaNode() {
-		try{
+		try {
 			demo.registerServiceAndBuildInfo(haIp, haCmPort, haCmUser, 
 					haCmPass, serviceName, haConnName, haHost);
 			
@@ -130,18 +130,17 @@ public class HaShardDemoTest extends TestCase {
 			assertEquals(node.getServiceName(), serviceName);
 			assertEquals(node.getHostName(), haHost);
 			assertEquals(node.getCmConnectName(), haConnName);
-		}finally{
+		} finally {
 			ServerInfo serverInfo = ServerManager.getInstance().getServer(haIp,
 					haCmPort, haCmUser);
 			ServerManager.getInstance().removeServer(
-					serverInfo.getHostAddress(),
-					serverInfo.getHostMonPort(),
+					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName());
 		}
 	}
 	
 	public void testReplicaNode() {
-		try{
+		try {
 			demo.registerServiceAndBuildInfo(replicaIp, replicaCmPort, replicaCmUser, 
 					replicaCmPass, serviceName, replicaConnName, replicaHost);
 			
@@ -150,18 +149,17 @@ public class HaShardDemoTest extends TestCase {
 			assertEquals(node.getServiceName(), serviceName);
 			assertEquals(node.getHostName(), replicaHost);
 			assertEquals(node.getCmConnectName(), replicaConnName);
-		}finally{
+		} finally {
 			ServerInfo serverInfo = ServerManager.getInstance().getServer(replicaIp,
 					replicaCmPort, replicaCmUser);
 			ServerManager.getInstance().removeServer(
-					serverInfo.getHostAddress(),
-					serverInfo.getHostMonPort(),
+					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName());
 		}
 	}
 	
 	public void testBrokerNode() {
-		try{
+		try {
 			demo.registerServiceAndBuildInfo(brokerIp, brokerCmPort, brokerCmUser, 
 					brokerCmPass, serviceName, brokerConnName, brokerHost);
 			
@@ -170,18 +168,17 @@ public class HaShardDemoTest extends TestCase {
 			assertEquals(node.getServiceName(), serviceName);
 			assertEquals(node.getHostName(), brokerHost);
 			assertEquals(node.getCmConnectName(), brokerConnName);
-		}finally{
+		} finally {
 			ServerInfo serverInfo = ServerManager.getInstance().getServer(brokerIp,
 					brokerCmPort, brokerCmUser);
 			ServerManager.getInstance().removeServer(
-					serverInfo.getHostAddress(),
-					serverInfo.getHostMonPort(),
+					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName());
 		}
 	}
 	
 	public void testShardNode() {
-		try{
+		try {
 			demo.registerServiceAndBuildInfo(shardIp, shardCmPort, shardCmUser, 
 					shardCmPass, serviceName, shardConnName, shardHost);
 			
@@ -190,12 +187,11 @@ public class HaShardDemoTest extends TestCase {
 			assertEquals(node.getServiceName(), serviceName);
 			assertEquals(node.getHostName(), shardHost);
 			assertEquals(node.getCmConnectName(), shardConnName);
-		}finally{
+		} finally {
 			ServerInfo serverInfo = ServerManager.getInstance().getServer(shardIp,
 					shardCmPort, shardCmUser);
 			ServerManager.getInstance().removeServer(
-					serverInfo.getHostAddress(),
-					serverInfo.getHostMonPort(),
+					serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
 					serverInfo.getUserName());
 		}
 	}

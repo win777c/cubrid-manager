@@ -118,7 +118,7 @@ public class ClientSocketTest extends
 			ServerManager.getInstance().removeServer("localhost", 8002, "dba");
 			ServerManager.getInstance().removeServer("localhost", 8003, "dba");
 			ServerManager.getInstance().removeServer("localhost", 8004, "dba");
-			assertNotNull(ServerManager.getInstance().getAllServerInfo());
+			assertNotNull(ServerManager.getInstance().getAllServerInfos());
 		} catch (Exception e) {
 		}
 		

@@ -70,6 +70,7 @@ import com.cubrid.cubridmanager.ui.replication.editor.model.ContainerNode;
 import com.cubrid.cubridmanager.ui.replication.editor.model.Diagram;
 import com.cubrid.cubridmanager.ui.replication.editor.model.HostNode;
 import com.cubrid.cubridmanager.ui.spi.Version;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 
 /**
  * 
@@ -243,7 +244,7 @@ public class SetHostInfoDialog extends
 		boolean isConnected = ServerManager.getInstance().isConnected(ip,
 				Integer.parseInt(port), userName);
 		if (isConnected && hostInfo != null) {
-			ServerInfo serverInfo = ServerManager.getInstance().getServer(ip,
+			ServerInfo serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(ip,
 					Integer.parseInt(port), userName);
 			if (!serverInfo.getLoginedUserInfo().isAdmin()) {
 				CommonUITool.openErrorBox(Messages.bind(Messages.errInvalidUser,
@@ -361,10 +362,10 @@ public class SetHostInfoDialog extends
 			String userName, String password) {
 		boolean isEnabled = true;
 		boolean isValidPassword;
-		boolean isConnected = ServerManager.getInstance().isConnected(ip,
+		boolean isConnected = ServerManager.getInstance().getInstance().isConnected(ip,
 				Integer.parseInt(port), userName);
 		if (isConnected) {
-			ServerInfo serverInfo = ServerManager.getInstance().getServer(ip,
+			ServerInfo serverInfo = CMHostNodePersistManager.getInstance().getServerInfo(ip,
 					Integer.parseInt(port), userName);
 			isValidPassword = password.equals(serverInfo.getLoginedUserInfo().getPassword());
 			boolean isAdmin = serverInfo.getLoginedUserInfo().isAdmin();
@@ -498,7 +499,7 @@ public class SetHostInfoDialog extends
 			
 			for (ITask task : taskList) {
 				if (task instanceof MonitoringTask) {
-					ServerManager.getInstance().addServer(ip,
+					CMHostNodePersistManager.getInstance().addServer(ip,
 							Integer.parseInt(port), userName, serverInfo);
 					MonitoringTask monitoringTask = (MonitoringTask) task;
 					monitoringTask.connectServer(Version.releaseVersion,

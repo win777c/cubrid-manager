@@ -69,6 +69,7 @@ import com.cubrid.cubridmanager.ui.mondashboard.preference.MonitorDashboardPrefe
 import com.cubrid.cubridmanager.ui.replication.Messages;
 import com.cubrid.cubridmanager.ui.replication.editor.CreateReplicationUtil;
 import com.cubrid.cubridmanager.ui.spi.Version;
+import com.cubrid.cubridmanager.ui.spi.persist.CMHostNodePersistManager;
 
 /**
  * 
@@ -166,7 +167,7 @@ public class ChangeSlaveDbWizard extends
 		taskGroup.setTarget(mdbName);
 
 		if (isConnected) {
-			masterServerInfo = ServerManager.getInstance().getServer(ip,
+			masterServerInfo = CMHostNodePersistManager.getInstance().getServerInfo(ip,
 					Integer.parseInt(port), userName);
 		} else {
 			masterServerInfo.setHostAddress(ip);
@@ -432,7 +433,7 @@ public class ChangeSlaveDbWizard extends
 				if (task instanceof MonitoringTask) {
 					monitoringTask = (MonitoringTask) task;
 					serverInfo = monitoringTask.getServerInfo();
-					ServerManager.getInstance().addServer(
+					CMHostNodePersistManager.getInstance().addServer(
 							serverInfo.getHostAddress(),
 							serverInfo.getHostMonPort(),
 							serverInfo.getUserName(), serverInfo);
@@ -540,7 +541,7 @@ public class ChangeSlaveDbWizard extends
 				if (task instanceof MonitoringTask) {
 					monitoringTask = (MonitoringTask) task;
 					ServerInfo serverInfo = monitoringTask.getServerInfo();
-					ServerManager.getInstance().addServer(
+					CMHostNodePersistManager.getInstance().addServer(
 							serverInfo.getHostAddress(),
 							serverInfo.getHostMonPort(),
 							serverInfo.getUserName(), serverInfo);
