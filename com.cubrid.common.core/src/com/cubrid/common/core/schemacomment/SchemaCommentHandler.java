@@ -172,41 +172,14 @@ public class SchemaCommentHandler {
 
 	public static Map<String, SchemaComment> loadDescriptions(IDatabaseSpec dbSpec, Connection conn)
 			throws SQLException {
-		String sql = "SELECT table_name, column_name, description"
-				+ " FROM " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE;
-
-		// [TOOLS-2425]Support shard broker
-		if (dbSpec.isShard()) {
-			sql = dbSpec.wrapShardQuery(sql);
-		}
-
-		Map<String, SchemaComment> results = new HashMap<String, SchemaComment>();
-		
-		Statement stmt = null;
-		ResultSet rs = null;
-		try {
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				SchemaComment meta = resultToMetaDesc(rs);
-				results.put(meta.getId(), meta);
-			}
-		} catch (SQLException e) {
-			QueryUtil.rollback(conn);
-			LOGGER.error(e.getMessage(), e);
-			throw e;
-		} finally {
-			QueryUtil.freeQuery(stmt, rs);
-		}
-		
-		return results;
+		return loadDescription(dbSpec, conn, null);
 	}
 
 	public static Map<String, SchemaComment> loadTableDescriptions(IDatabaseSpec dbSpec, Connection conn) 
 			throws SQLException {
-		String sql = "SELECT table_name, column_name, description"
+		String sql = "SELECT LOWER(table_name) as table_name, LOWER(column_name) as column_name, description"
 				+ " FROM " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE
-				+ " WHERE table_name LIKE '%' AND column_name = '*'";
+				+ " WHERE LOWER(table_name) LIKE '%' AND column_name = '*'";
 
 		// [TOOLS-2425]Support shard broker
 		if (dbSpec.isShard()) {
@@ -237,10 +210,13 @@ public class SchemaCommentHandler {
 
 	public static Map<String, SchemaComment> loadDescription(IDatabaseSpec dbSpec, 
 			Connection conn, String tableName) throws SQLException {
-		String pureTableName = tableName.replace("\"", "");
-		String sql = "SELECT table_name, column_name, description"
-				+ " FROM " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE
-				+ " WHERE table_name='" + pureTableName + "'";
+		String sql = "SELECT LOWER(table_name) as table_name, LOWER(column_name) as column_name, description"
+				+ " FROM " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE;
+
+		if (StringUtil.isNotEmpty(tableName)) {
+			String pureTableName = tableName.replace("\"", "");
+			sql += " WHERE LOWER(table_name)='" + pureTableName.toLowerCase() + "'";
+		}
 
 		// [TOOLS-2425]Support shard broker
 		if (dbSpec.isShard()) {
@@ -305,7 +281,7 @@ public class SchemaCommentHandler {
 		sql = "UPDATE " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE
 				+ " SET description=?, last_updated=CURRENT_TIMESTAMP,"
 				+ " last_updated_user=CURRENT_USER"
-				+ " WHERE table_name=? AND column_name=?";
+				+ " WHERE LOWER(table_name)=? AND LOWER(column_name)=?";
 
 		// [TOOLS-2425]Support shard broker
 		if (dbSpec.isShard()) {
@@ -316,8 +292,8 @@ public class SchemaCommentHandler {
 			int i = 1;
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(i++, description);
-			stmt.setString(i++, pureTableName);
-			stmt.setString(i++, pureColumnName);
+			stmt.setString(i++, pureTableName.toLowerCase());
+			stmt.setString(i++, pureColumnName.toLowerCase());
 			stmt.executeUpdate();
 			QueryUtil.commit(conn);
 		} catch (SQLException e) {
@@ -333,7 +309,7 @@ public class SchemaCommentHandler {
 			String tableName) throws SQLException {
 		String pureTableName = tableName.replace("\"", "");
 		String sql = "DELETE FROM " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE
-				+ " WHERE table_name='" + pureTableName + "'";
+				+ " WHERE LOWER(table_name)='" + pureTableName.toLowerCase() + "'";
 
 		// [TOOLS-2425]Support shard broker
 		if (dbSpec.isShard()) {
@@ -451,10 +427,10 @@ public class SchemaCommentHandler {
 		sqlSB.append(ConstantsUtil.SCHEMA_DESCRIPTION_TABLE );
 		sqlSB.append(" SET description = '");
 		sqlSB.append(desc);
-		sqlSB.append("', last_updated = CURRENT_TIMESTAMP, last_updated_user = CURRENT_USER WHERE table_name = '");
-		sqlSB.append(pureTableName);
-		sqlSB.append("' AND column_name = '");
-		sqlSB.append(pureColumnName);
+		sqlSB.append("', last_updated = CURRENT_TIMESTAMP, last_updated_user = CURRENT_USER WHERE LOWER(table_name) = '");
+		sqlSB.append(pureTableName.toLowerCase());
+		sqlSB.append("' AND LOWER(column_name) = '");
+		sqlSB.append(pureColumnName.toLowerCase());
 		sqlSB.append("';");
 		return sqlSB.toString();
 	}
