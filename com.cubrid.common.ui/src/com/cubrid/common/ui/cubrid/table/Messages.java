@@ -139,6 +139,7 @@ public class Messages extends
 	public static String lblCurVal;
 	public static String lblIndexes;
 	public static String lblIndexName;
+	public static String lblIndexDescription;
 	public static String lblIndexType;
 	public static String lblOwner;
 	public static String lblCollation;
@@ -260,6 +261,7 @@ public class Messages extends
 	public static String tblColumnForeignTable;
 	public static String tblColumnIndexName;
 	public static String tblColumnIndexRule;
+	public static String tblColumnIndexMemo;
 	public static String tblColumnIndexType;
 	public static String tblColumnInherit;
 	public static String tblColumnInheritHint;
