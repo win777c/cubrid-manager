@@ -472,12 +472,14 @@ public class Messages extends
 	public static String tabItemSQLScript;
 	public static String lblViewName;
 	public static String lblViewOwnerName;
+	public static String lblViewDescription;
 	public static String lblQueryList;
 	public static String lblSelectQueryList;
 	public static String tblColViewName;
 	public static String tblColViewDataType;
 	public static String tblColViewDefaultType;
 	public static String tblColViewDefaultValue;
+	public static String tblColViewMemo;
 	public static String msgPropertyInfo;
 	public static String msgEditInfo;
 	public static String btnAddParameter;
