@@ -51,6 +51,7 @@ public class Messages extends
 	public static String msgEditFuncParamDialog;
 	public static String titleEditFuncParamDialog;
 	public static String lblParameterName;
+	public static String lblParameterDescription;
 	public static String lblSqlType;
 	public static String lblSpecialJavaType;
 	public static String lblJavaType;
@@ -68,10 +69,12 @@ public class Messages extends
 	public static String tabItemFuncSetting;
 	public static String tabItemSQLScript;
 	public static String lblFunctionName;
+	public static String lblFunctionDescription;
 	public static String tblColFunctionParamName;
 	public static String tblColFunctionParamType;
 	public static String tblColFunctionJavaParamType;
 	public static String tblColFunctionModel;
+	public static String tblColFunctionMemo;
 	public static String lblJavaFunctionName;
 	public static String lblReturnJavaType;
 	public static String titleEditFunctionDialog;
@@ -97,11 +100,13 @@ public class Messages extends
 	// Edit procedure
 	public static String tabItemProcSetting;
 	public static String lblProcedureName;
+	public static String lblProcedureDescription;
 	public static String tabItemProcSQLScript;
 	public static String tblColProcedureParamName;
 	public static String tblColProcedureParamType;
 	public static String tblColProcedureJavaParamType;
 	public static String tblColProcedureModel;
+	public static String tblColProcedureMemo;
 	public static String titleEditProcedureDialog;
 	public static String msgEditProcedureDialog;
 	public static String titleAddProcedureDialog;

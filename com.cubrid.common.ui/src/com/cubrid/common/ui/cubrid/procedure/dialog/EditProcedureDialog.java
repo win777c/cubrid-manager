@@ -55,6 +55,7 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 
 import com.cubrid.common.core.task.ITask;
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QuerySyntax;
 import com.cubrid.common.core.util.StringUtil;
@@ -87,6 +88,7 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 	private TableViewer procParamsTableViewer;
 	private static SqlFormattingStrategy formator = new SqlFormattingStrategy();
 	private Text procNameText;
+	private Text procDescriptionText;
 	private CubridDatabase database = null;
 	private TabFolder tabFolder;
 	private StyledText sqlScriptText;
@@ -102,6 +104,7 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 	private static final int BUTTON_DOWN_ID = 1005;
 	private static final int BUTTON_DROP_ID = 1006;
 	private String procedureName = null;
+	private boolean isCommentSupport = false;
 
 	public EditProcedureDialog(Shell parentShell) {
 		super(parentShell);
@@ -110,6 +113,7 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 	}
 
 	protected Control createDialogArea(Composite parent) {
+		isCommentSupport = CompatibleUtil.isCommentSupports(database.getDatabaseInfo());
 		Composite parentComp = (Composite) super.createDialogArea(parent);
 		Composite composite = new Composite(parentComp, SWT.NONE);
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -193,11 +197,28 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 			}
 		});
 
-		final String[] userColumnNameArr = new String[]{
-				Messages.tblColProcedureParamName,
-				Messages.tblColProcedureParamType,
-				Messages.tblColProcedureJavaParamType,
-				Messages.tblColProcedureModel };
+		if (isCommentSupport) {
+			final Label procDescriptionLabel = new Label(composite, SWT.NONE);
+			procDescriptionLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+			procDescriptionLabel.setText(Messages.lblProcedureDescription);
+
+			procDescriptionText = new Text(composite, SWT.BORDER);
+			procDescriptionText.setTextLimit(ValidateUtil.MAX_DB_OBJECT_COMMENT);
+			procDescriptionText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		}
+
+		final String[] userColumnNameArr = isCommentSupport
+				? new String[] {
+					Messages.tblColProcedureParamName,
+					Messages.tblColProcedureParamType,
+					Messages.tblColProcedureJavaParamType,
+					Messages.tblColProcedureModel,
+					Messages.tblColProcedureMemo }
+				: new String[] {
+					Messages.tblColProcedureParamName,
+					Messages.tblColProcedureParamType,
+					Messages.tblColProcedureJavaParamType,
+					Messages.tblColProcedureModel };
 		procParamsTableViewer = CommonUITool.createCommonTableViewer(composite,
 				null, userColumnNameArr,
 				CommonUITool.createGridData(GridData.FILL_BOTH, 6, 4, -1, 200));
@@ -308,7 +329,8 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 
 			try {
 				AddFuncParamsDialog addDlg = new AddFuncParamsDialog(
-						getShell(), model, sqlTypeMap, javaTypeMap, true, procParamsListData);
+						getShell(), model, sqlTypeMap, javaTypeMap, true, procParamsListData,
+						database);
 				if (addDlg.open() == IDialogConstants.OK_ID) { // add
 					procParamsListData.add(model);
 					procParamsTableViewer.refresh();
@@ -327,7 +349,8 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 			}
 			Map<String, String> map = procParamsListData.get(index);
 			AddFuncParamsDialog editDlg = new AddFuncParamsDialog(getShell(),
-					map, sqlTypeMap, javaTypeMap, false, procParamsListData);
+					map, sqlTypeMap, javaTypeMap, false, procParamsListData,
+					database);
 			if (editDlg.open() == IDialogConstants.OK_ID) {
 				procParamsTableViewer.refresh();
 				for (int i = 0; i < procParamsTableViewer.getTable().getColumnCount(); i++) {
@@ -395,6 +418,11 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 
 			procNameText.setText(spInfo.getSpName());
 
+			if (isCommentSupport
+					&& StringUtil.isNotEmpty(spInfo.getDescription())) {
+				procDescriptionText.setText(spInfo.getDescription());
+			}
+
 			if (target != null && target.length() > 0
 					&& target.indexOf("(") > 0 && target.indexOf(")") > 0) {
 
@@ -424,6 +452,9 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 						model.put("1", spArgsInfo.getDataType());
 						model.put("2", javaParamType[i]);
 						model.put("3", spArgsInfo.getSpArgsType().toString());
+						if (isCommentSupport) {
+							model.put("4", spArgsInfo.getDescription());
+						}
 						procParamsListData.add(model);
 					}
 				}
@@ -571,11 +602,17 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 			String type = map.get("1");
 			String javaType = map.get("2");
 			String paramModel = map.get("3");
+			String description = map.get("4");
 			sb.append(QuerySyntax.escapeKeyword(name)).append(" ");
 			if (!paramModel.equalsIgnoreCase(SPArgsType.IN.toString())) {
 				sb.append(paramModel).append(" ");
 			}
-			sb.append(type).append(",");
+			sb.append(type);
+			if (isCommentSupport && StringUtil.isNotEmpty(description)) {
+				description = String.format("'%s'", description);
+				sb.append(String.format(" COMMENT %s", StringUtil.escapeQuotes(description)));
+			}
+			sb.append(",");
 			javaSb.append(javaType).append(",");
 		}
 		if (!procParamsListData.isEmpty()) {
@@ -594,7 +631,13 @@ public class EditProcedureDialog extends CMTitleAreaDialog {
 			javaFuncName = "";
 		}
 		sb.append("NAME '").append(javaFuncName).append("(").append(javaSb).append(")").append("'");
-
+		if (isCommentSupport) {
+			String description = procDescriptionText.getText();
+			if (StringUtil.isNotEmpty(description)) {
+				description = String.format("'%s'", description);
+				sb.append(String.format(" COMMENT %s", StringUtil.escapeQuotes(description)));
+			}
+		}
 		return formatSql(sb.toString());
 	}
 
