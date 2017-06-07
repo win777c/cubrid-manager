@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.slf4j.Logger;
 
 /**
@@ -1443,5 +1445,10 @@ public final class StringUtil {
 		data = data.substring(1, data.length() - 1);
 		data = quote + data + quote;
 		return "'" + data + "'";
+	}
+
+	public static byte[] parseBitToBytes(String data) {
+		data = (data).substring(2, data.length() - 1);
+		return DatatypeConverter.parseHexBinary(data);
 	}
 }

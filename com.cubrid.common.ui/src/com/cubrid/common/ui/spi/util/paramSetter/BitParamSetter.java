@@ -38,6 +38,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import com.cubrid.common.core.util.Closer;
+import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.cubrid.table.dialog.PstmtParameter;
 
 /**
@@ -81,6 +82,8 @@ public class BitParamSetter extends DefaultParamSetter {
 		} else if (value instanceof InputStream) {
 			InputStream in = (InputStream) value;
 			bytesvalues = getBytesFromInputSteam(in);
+		} else if (value instanceof String) {	// bit or bit varying
+			bytesvalues = StringUtil.parseBitToBytes((String) value);
 		} else {
 			bytesvalues = (byte[]) value;
 		}
