@@ -98,6 +98,7 @@ import com.cubrid.common.core.common.model.PartitionInfo;
 import com.cubrid.common.core.common.model.PartitionType;
 import com.cubrid.common.core.common.model.SchemaInfo;
 import com.cubrid.common.core.schemacomment.SchemaCommentHandler;
+import com.cubrid.common.core.schemacomment.model.CommentType;
 import com.cubrid.common.core.schemacomment.model.SchemaComment;
 import com.cubrid.common.core.task.ITask;
 import com.cubrid.common.core.util.ApplicationType;
@@ -230,6 +231,7 @@ public class TableEditorPart extends
 	private List<Constraint> originalConstraints = new ArrayList<Constraint>();
 	private int showDefaultType = EditTableAction.MODE_TABLE_EDIT;
 	private TableEditorAdaptor editorAdaptor;
+	private boolean isCommentSupport = false;
 
 	public void showToolTip(Rectangle rect, String title, String message) {
 		CommonUITool.showToolTip(columnsTable, toolTip, rect, title, message);
@@ -244,6 +246,7 @@ public class TableEditorPart extends
 	}
 
 	public void createPartControl(Composite parent) {
+		isCommentSupport = CompatibleUtil.isCommentSupports(database.getDatabaseInfo());
 		final Composite composite = new Composite(parent, SWT.NONE);
 		{
 			final GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -1841,6 +1844,12 @@ public class TableEditorPart extends
 		tblCol.setWidth(282);
 		tblCol.setText(Messages.tblColumnIndexRule);
 
+		if (isCommentSupport) {
+			tblCol = new TableColumn(indexTable, SWT.NONE);
+			tblCol.setWidth(250);
+			tblCol.setText(Messages.tblColumnIndexMemo);
+		}
+
 		IndexTableViewerContentProvider indexContentProvider = new IndexTableViewerContentProvider();
 		IndexTableViewerLabelProvider indexLabelProvider = new IndexTableViewerLabelProvider();
 		indexTableView.setContentProvider(indexContentProvider);
@@ -2608,8 +2617,13 @@ public class TableEditorPart extends
 
 		final Table partitionTable = partitionTableView.getTable();
 		{
-			partitionTable.setLayout(TableViewUtil.createTableViewLayout(new int[] { 20, 15, 10,
-					20, 25, 10 }));
+			if (isCommentSupport) {
+				partitionTable.setLayout(TableViewUtil.createTableViewLayout(
+						new int[] { 20, 15, 10,	20, 25, 10, 20 }));
+			} else {
+				partitionTable.setLayout(TableViewUtil.createTableViewLayout(
+						new int[] { 20, 15, 10,	20, 25, 10 }));
+			}
 			GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 			gd.heightHint = 350;
 			partitionTable.setLayoutData(gd);
@@ -2625,6 +2639,9 @@ public class TableEditorPart extends
 		TableViewUtil.createTableColumn(partitionTable, SWT.CENTER, Messages.tblColExpr);
 		TableViewUtil.createTableColumn(partitionTable, SWT.CENTER, Messages.tblColExprValue);
 		TableViewUtil.createTableColumn(partitionTable, SWT.CENTER, Messages.tblColRows);
+		if (isCommentSupport) {
+			TableViewUtil.createTableColumn(partitionTable, SWT.CENTER, Messages.tblColPartitionDescription);
+		}
 
 		partitionTableView.setLabelProvider(new PartitionTableLabelProvider());
 		partitionTableView.setContentProvider(new PartitionContentProvider());
@@ -2803,6 +2820,18 @@ public class TableEditorPart extends
 							newSchemaInfo.getClassname(), attr.getName());
 					if (schemaComment != null) {
 						attr.setDescription(schemaComment.getDescription());
+					}
+				}
+
+				// get description for index
+				for (Constraint cons : newSchemaInfo.getConstraints()) {
+					if (isCommentSupport) {
+						String indexName = cons.getName();
+						SchemaComment indexComment = SchemaCommentHandler.loadObjectDescription(
+								dbSpec, conn, indexName, CommentType.INDEX);
+						if (indexComment != null) {
+							cons.setDescription(indexComment.getDescription());
+						}
 					}
 				}
 

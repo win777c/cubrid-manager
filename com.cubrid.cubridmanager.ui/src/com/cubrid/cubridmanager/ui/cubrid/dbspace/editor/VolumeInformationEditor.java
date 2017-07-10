@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -87,6 +88,8 @@ import com.cubrid.cubridmanager.core.common.task.CommonQueryTask;
 import com.cubrid.cubridmanager.core.common.task.CommonSendMsg;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfo;
 import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoList;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListNew;
+import com.cubrid.cubridmanager.core.cubrid.dbspace.model.DbSpaceInfoListOld;
 import com.cubrid.cubridmanager.ui.CubridManagerUIPlugin;
 import com.cubrid.cubridmanager.ui.cubrid.database.control.PieRenderer;
 import com.cubrid.cubridmanager.ui.cubrid.database.editor.DatabaseStatusEditor;
@@ -115,7 +118,7 @@ public class VolumeInformationEditor extends
 	private Label spaceNameLabel;
 	private Composite parentComp;
 	private Composite chartComp;
-
+	
 	private ScrolledComposite scrolledComp = null;
 	private final org.eclipse.swt.graphics.Color color;
 
@@ -136,15 +139,20 @@ public class VolumeInformationEditor extends
 		if (input instanceof DefaultSchemaNode) {
 			ICubridNode node = (DefaultSchemaNode) input;
 			String type = node.getType();
-			if (CubridNodeType.GENERIC_VOLUME.equals(type)
-					|| CubridNodeType.DATA_VOLUME.equals(type)
-					|| CubridNodeType.INDEX_VOLUME.equals(type)
-					|| CubridNodeType.TEMP_VOLUME.equals(type)
-					|| CubridNodeType.ARCHIVE_LOG.equals(type)
-					|| CubridNodeType.ACTIVE_LOG.equals(type)) {
+			
+			database = ((DefaultSchemaNode) node).getDatabase();
+			
+			if (CubridNodeType.GENERIC_VOLUME_FOLDER.equals(type)
+					|| CubridNodeType.DATA_VOLUME_FOLDER.equals(type)
+					|| CubridNodeType.INDEX_VOLUME_FOLDER.equals(type)
+					|| CubridNodeType.TEMP_VOLUME_FOLDER.equals(type)
+					|| CubridNodeType.ARCHIVE_LOG_FOLDER.equals(type)
+					|| CubridNodeType.ACTIVE_LOG_FOLDER.equals(type)
+					|| CubridNodeType.PP_VOLUME_FOLDER.equals(type) ||
+					CubridNodeType.PT_VOLUME_FOLDER.equals(type) ||
+					CubridNodeType.TT_VOLUME_FOLDER.equals(type)) {
 				dbSpaceInfo = (DbSpaceInfo) ((DefaultSchemaNode) node).getAdapter(DbSpaceInfo.class);
 			}
-			database = ((DefaultSchemaNode) node).getDatabase();
 		}
 	}
 
@@ -237,8 +245,9 @@ public class VolumeInformationEditor extends
 	 * @return dataset
 	 */
 	private DefaultPieDataset createDataset() {
-		int freeSize = dbSpaceInfo.getFreepage();
-		int totalSize = dbSpaceInfo.getTotalpage();
+		int freeSize, totalSize;
+		freeSize = dbSpaceInfo.getFreepage();
+		totalSize = dbSpaceInfo.getTotalpage();
 
 		DefaultPieDataset dataset = new DefaultPieDataset();
 		dataset.setValue(
@@ -261,35 +270,57 @@ public class VolumeInformationEditor extends
 		if (database == null || database.getDatabaseInfo() == null) {
 			return;
 		}
-
 		if (database.getDatabaseInfo().getDbSpaceInfoList() == null) {
 			return;
 		}
-		int totalSize = dbSpaceInfo.getTotalpage();
-		int freeSize = dbSpaceInfo.getFreepage();
-
-		spaceNameLabel.setText(dbSpaceInfo.getSpacename());
+		
+		int totalSize, freeSize;
+		String volumeLocation, volumeDate, volumeType, volumePurpose, spacename;
+		
+		totalSize = dbSpaceInfo.getTotalpage();
+		freeSize = dbSpaceInfo.getFreepage();
+		volumeType = dbSpaceInfo.getType();
+		volumeDate = dbSpaceInfo.getDate();
+		spacename = dbSpaceInfo.getShortVolumeName();
+		volumeLocation = dbSpaceInfo.getLocation();
+		volumePurpose = dbSpaceInfo.getPurpose();
+	
+		spaceNameLabel.setText(spacename);
 
 		while (!spInfoListData.isEmpty()) {
 			spInfoListData.remove(0);
 		}
 		Map<String, String> map1 = new HashMap<String, String>();
 		map1.put("0", Messages.lblSpaceLocation);
-		map1.put("1", dbSpaceInfo.getLocation());
+		map1.put("1", volumeLocation);
 		spInfoListData.add(map1);
 
 		Map<String, String> map2 = new HashMap<String, String>();
-		map2.put("0", Messages.lblSpaceDate);
-		map2.put("1", dbSpaceInfo.getDate());
-		spInfoListData.add(map2);
-
 		Map<String, String> map3 = new HashMap<String, String>();
-		map3.put("0", Messages.lblSpaceType);
-		map3.put(
-				"1",
-				dbSpaceInfo.getType()
-						+ "                                                                               ");
-		spInfoListData.add(map3);
+		if (DbSpaceInfoList.useOld(database.getDatabaseInfo().getServerInfo().getEnvInfo())) {
+			map2.put("0", Messages.lblSpaceDate);
+			map2.put("1", volumeDate);
+			map3.put("0", Messages.lblSpaceType);
+			map3.put(
+					"1",
+					volumeType
+							+ "                                                                               ");
+		} else {
+			map2.put("0", Messages.lblSpaceType);
+			map2.put(
+					"1",
+					dbSpaceInfo.getType()
+							+ "                                                                               ");
+			map3.put("0", "Purpose");
+			map3.put(
+					"1",
+					volumePurpose
+							+ "                                                                               ");
+		}	
+		spInfoListData.add(map2);
+		if (volumePurpose != null){
+			spInfoListData.add(map3);
+		}
 
 		Map<String, String> map4 = new HashMap<String, String>();
 		map4.put("0", Messages.lblFreeSize);
@@ -378,11 +409,6 @@ public class VolumeInformationEditor extends
 	 * @return boolean
 	 */
 	public boolean loadData() {
-		CommonQueryTask<DbSpaceInfoList> task = new CommonQueryTask<DbSpaceInfoList>(
-				database.getServer().getServerInfo(),
-				CommonSendMsg.getCommonDatabaseSendMsg(), new DbSpaceInfoList());
-		task.setDbName(database.getName());
-
 		TaskJobExecutor taskJobExecutor = new TaskJobExecutor() {
 			@SuppressWarnings("unchecked")
 			@Override
@@ -404,7 +430,7 @@ public class VolumeInformationEditor extends
 						return new Status(IStatus.ERROR,
 								CubridManagerUIPlugin.PLUGIN_ID, msg);
 					} else {
-						final DbSpaceInfoList model = ((CommonQueryTask<DbSpaceInfoList>) t).getResultModel();
+						final DbSpaceInfoList model = ((CommonQueryTask<? extends DbSpaceInfoList>)t).getResultModel();
 						Display.getDefault().syncExec(new Runnable() {
 							public void run() {
 								database.getDatabaseInfo().setDbSpaceInfoList(
@@ -431,11 +457,21 @@ public class VolumeInformationEditor extends
 			}
 
 		};
+		CommonQueryTask<? extends DbSpaceInfoList> task = DbSpaceInfoList.useOld(database.getServer().getServerInfo().getEnvInfo()) ?
+				new CommonQueryTask<DbSpaceInfoListOld>(database.getServer().getServerInfo(),
+														CommonSendMsg.getCommonDatabaseSendMsg(),
+														new DbSpaceInfoListOld()) :
+				new CommonQueryTask<DbSpaceInfoListNew>(database.getServer().getServerInfo(),
+														CommonSendMsg.getCommonDatabaseSendMsg(),
+														new DbSpaceInfoListNew());
+		task.setDbName(database.getName());
 		taskJobExecutor.addTask(task);
+		
 		String jobName = Messages.viewVolumeInfoJobName + " - "
 				+ dbSpaceInfo.getSpacename() + "@" + database.getName() + "@"
 				+ database.getServer().getName();
 		taskJobExecutor.schedule(jobName, null, false, Job.LONG);
+		
 		return true;
 
 	}

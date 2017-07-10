@@ -53,7 +53,9 @@ import org.eclipse.swt.widgets.Text;
 
 import com.cubrid.common.core.common.model.PartitionInfo;
 import com.cubrid.common.core.common.model.SchemaInfo;
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.PartitionUtil;
+import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.cubrid.table.Messages;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.common.ui.spi.util.FieldHandlerUtils;
@@ -85,7 +87,9 @@ public class PartitionEditListPage extends
 	private Text partitionTypeText;
 	private Text partitionExprText;
 	private Text partitionNameText;
+	private Text partitionDescriptionText;
 	private boolean isCanFinished = false;
+	private boolean isCommentSupport = false;
 
 	private Combo partitionValueCombo;
 
@@ -99,6 +103,7 @@ public class PartitionEditListPage extends
 		this.partitionInfoList = partitionInfoList;
 		this.isNewTable = isNewTable;
 		setPageComplete(false);
+		isCommentSupport = CompatibleUtil.isCommentSupports(dbInfo);
 	}
 
 	/**
@@ -151,6 +156,17 @@ public class PartitionEditListPage extends
 		partitionNameText.setTextLimit(ValidateUtil.MAX_SCHEMA_NAME_LENGTH);
 		partitionNameText.setLayoutData(CommonUITool.createGridData(
 				GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
+
+		if (isCommentSupport) {
+			Label partitionDescriptionLabel = new Label(composite, SWT.NONE);
+			partitionDescriptionLabel.setText(Messages.lblPartitionDescription);
+			partitionDescriptionLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
+
+			partitionDescriptionText = new Text(composite, SWT.BORDER);
+			partitionDescriptionText.setTextLimit(ValidateUtil.MAX_DB_OBJECT_COMMENT);
+			partitionDescriptionText.setLayoutData(CommonUITool.createGridData(
+					GridData.FILL_HORIZONTAL, 1, 1, -1, -1));
+		}
 
 		Label partitionTypeLabel = new Label(composite, SWT.NONE);
 		partitionTypeLabel.setText(Messages.lblPartitionType);
@@ -337,7 +353,7 @@ public class PartitionEditListPage extends
 	 */
 	private void init() {
 		partitionExprTypeCombo.setItems(PartitionUtil.getSupportedDateTypes());
-		if (!partitionInfoList.isEmpty() && editedPartitionInfo == null) {
+		if (!partitionInfoList.isEmpty() && editedPartitionInfo == null) {	// create partition
 			PartitionInfo partitonInfo = partitionInfoList.get(0);
 			String partitionType = partitonInfo.getPartitionType().getText().toUpperCase();
 			String partitionExpr = partitonInfo.getPartitionExpr();
@@ -355,14 +371,21 @@ public class PartitionEditListPage extends
 				initValuesCombo();
 			}
 		}
-		if (editedPartitionInfo != null) {
+		if (editedPartitionInfo != null) {	// edit partition
 			partitionNameText.setText(editedPartitionInfo.getPartitionName());
+			String description = editedPartitionInfo.getDescription();
+			if (StringUtil.isNotEmpty(description)) {
+				partitionDescriptionText.setText(description);
+			}
 			for (int i = 0; i < editedPartitionInfo.getPartitionValues().size(); i++) {
 				String value = editedPartitionInfo.getPartitionValues().get(i);
 				new TableItem(listValueTable, SWT.NONE).setText(value);
 			}
 		}
 		partitionNameText.addModifyListener(this);
+		if (isCommentSupport) {
+			partitionDescriptionText.addModifyListener(this);
+		}
 	}
 
 	/**
@@ -378,6 +401,7 @@ public class PartitionEditListPage extends
 			String partitionType = partitionTypePage.getPartitionType();
 			String partitionExpr = partitionTypePage.getPartitionExpr();
 			String exprDataType = partitionTypePage.getPartitionExprDataType();
+			String partitionDescription = partitionTypePage.getDescription();
 			if (exprDataType == null) {
 				partitionExprTypeCombo.setEnabled(true);
 				if (editedPartitionInfo == null) {
@@ -391,6 +415,9 @@ public class PartitionEditListPage extends
 			}
 			partitionTypeText.setText(partitionType);
 			partitionExprText.setText(partitionExpr);
+			if (StringUtil.isNotEmpty(partitionDescription)) {
+				partitionDescriptionText.setText(partitionDescription);
+			}
 			initValuesCombo();
 			setPageComplete(validate());
 			partitionNameText.setFocus();
@@ -478,6 +505,11 @@ public class PartitionEditListPage extends
 
 	public String getPartitionExprDataType() {
 		return partitionExprTypeCombo.getText();
+	}
+
+	public String getPartitionDescription() {
+		return partitionDescriptionText != null ?
+				partitionDescriptionText.getText() : null;
 	}
 
 	/**

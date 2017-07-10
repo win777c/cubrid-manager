@@ -35,7 +35,8 @@ package com.cubrid.cubridmanager.core.cubrid.dbspace.model;
  */
 public enum VolumeType {
 	GENERIC("GENERIC"), DATA("DATA"), TEMP("TEMP"), INDEX("INDEX"), ARCHIVE_LOG(
-			"Archive_log"), ACTIVE_LOG("Active_log");
+			"Archive_log"), ACTIVE_LOG("Active_log"), PP("PERMANENT PERMANENT DATA"), PT("PERMANENT TEMPORARY DATA"),
+			TT("TEMPORARY TEMPORARY DATA");
 
 	String text = null;
 

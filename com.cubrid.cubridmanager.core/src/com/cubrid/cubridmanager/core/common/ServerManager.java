@@ -29,11 +29,9 @@
 package com.cubrid.cubridmanager.core.common;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 
@@ -45,19 +43,19 @@ import com.cubrid.cubridmanager.core.common.model.ServerInfo;
  */
 public final class ServerManager {
 
-	private static ServerManager manager = new ServerManager();
-	private final Map<String, ServerInfo> serverInfoMap = new HashMap<String, ServerInfo>();
+	private static final ServerManager instance = new ServerManager();
 
+	private HashMap<String, ServerInfo> serverInfos = new HashMap<String, ServerInfo>();
+	
+	public static ServerManager getInstance() {
+		return instance;
+	}
+	
 	private ServerManager() {
 	}
-
-	/**
-	 * Return the only CUBRID Manager server manager instance
-	 * 
-	 * @return ServerManager
-	 */
-	public static ServerManager getInstance() {
-		return manager;
+	
+	public ServerInfo getServer(String hostAddress, int port, String userName) {
+		return serverInfos.get(hostAddress + ":" + port + ":" + userName);
 	}
 
 	/**
@@ -91,24 +89,9 @@ public final class ServerManager {
 				return;
 			}
 			serverInfo.setConnected(isConnected);
-//			if (!isConnected) {
-//				serverInfoMap.remove(hostAddress + ":" + port + ":" + userName);
-//			}
 		}
 	}
-
-	/**
-	 * Get CUBRID Manager server information
-	 * 
-	 * @param hostAddress String host address
-	 * @param port int host port
-	 * @param userName the String
-	 * @return ServerInfo
-	 */
-	public ServerInfo getServer(String hostAddress, int port, String userName) {
-		return serverInfoMap.get(hostAddress + ":" + port + ":" + userName);
-	}
-
+	
 	/**
 	 * Remove CUBRID Manager server
 	 * 
@@ -119,7 +102,7 @@ public final class ServerManager {
 	public void removeServer(String hostAddress, int port, String userName) {
 		synchronized (this) {
 			setConnected(hostAddress, port, userName, false);
-			serverInfoMap.remove(hostAddress + ":" + port + ":" + userName);
+			serverInfos.remove(hostAddress + ":" + port + ":" + userName);
 		}
 	}
 
@@ -134,15 +117,15 @@ public final class ServerManager {
 	 */
 	public ServerInfo addServer(String hostAddress, int port, String userName, ServerInfo value) {
 		synchronized (this) {
-			return serverInfoMap.put(hostAddress + ":" + port + ":" + userName, value);
+			return serverInfos.put(hostAddress + ":" + port + ":" + userName, value);
 		}
 	}
 
 	public void disConnectAllServer() {
 		synchronized (this) {
-			if (serverInfoMap != null) {
+			if (serverInfos != null) {
 				List<ServerInfo> serverInfoList = new ArrayList<ServerInfo>();
-				serverInfoList.addAll(serverInfoMap.values());
+				serverInfoList.addAll(serverInfos.values());
 				Iterator<ServerInfo> it = serverInfoList.iterator();
 				while (it.hasNext()) {
 					ServerInfo serverInfo = it.next();
@@ -155,7 +138,7 @@ public final class ServerManager {
 		}
 	}
 
-	public Collection<ServerInfo> getAllServerInfo() {
-		return serverInfoMap.values();
+	public HashMap<String, ServerInfo> getAllServerInfos(){
+		return serverInfos;
 	}
 }

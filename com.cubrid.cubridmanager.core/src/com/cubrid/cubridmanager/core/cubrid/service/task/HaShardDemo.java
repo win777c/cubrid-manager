@@ -146,13 +146,13 @@ public class HaShardDemo {
 	}
 
 	protected void addServer(ServerInfo serverInfo) {
-		ServerManager.getInstance().addServer(serverInfo.getHostAddress(),
-				serverInfo.getHostMonPort(), serverInfo.getUserName(), serverInfo);
+		/*ServerManager.addServer(serverInfo.getHostAddress(),
+				serverInfo.getHostMonPort(), serverInfo.getUserName(), serverInfo);*/
 	}
 
 	protected void removeServer(ServerInfo serverInfo) {
-		ServerManager.getInstance().removeServer(serverInfo.getHostAddress(),
-				serverInfo.getHostMonPort(), serverInfo.getUserName());
+		/*ServerManager.removeServer(serverInfo.getHostAddress(),
+				serverInfo.getHostMonPort(), serverInfo.getUserName());*/
 	}
 
 	protected NodeInfo getRequiredInfo(ServerInfo serverInfo,

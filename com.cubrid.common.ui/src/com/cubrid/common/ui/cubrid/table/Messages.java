@@ -139,6 +139,7 @@ public class Messages extends
 	public static String lblCurVal;
 	public static String lblIndexes;
 	public static String lblIndexName;
+	public static String lblIndexDescription;
 	public static String lblIndexType;
 	public static String lblOwner;
 	public static String lblCollation;
@@ -260,6 +261,7 @@ public class Messages extends
 	public static String tblColumnForeignTable;
 	public static String tblColumnIndexName;
 	public static String tblColumnIndexRule;
+	public static String tblColumnIndexMemo;
 	public static String tblColumnIndexType;
 	public static String tblColumnInherit;
 	public static String tblColumnInheritHint;
@@ -470,12 +472,14 @@ public class Messages extends
 	public static String tabItemSQLScript;
 	public static String lblViewName;
 	public static String lblViewOwnerName;
+	public static String lblViewDescription;
 	public static String lblQueryList;
 	public static String lblSelectQueryList;
 	public static String tblColViewName;
 	public static String tblColViewDataType;
 	public static String tblColViewDefaultType;
 	public static String tblColViewDefaultValue;
+	public static String tblColViewMemo;
 	public static String msgPropertyInfo;
 	public static String msgEditInfo;
 	public static String btnAddParameter;
@@ -527,6 +531,7 @@ public class Messages extends
 	//Partition
 	public static String tabItemPartition;
 	public static String tblColPartitionName;
+	public static String tblColPartitionDescription;
 	public static String tblColType;
 	public static String tblColExpr;
 	public static String tblColExprValue;
@@ -563,6 +568,7 @@ public class Messages extends
 	public static String titleListPage;
 	public static String msgListPage;
 	public static String lblPartitionName;
+	public static String lblPartitionDescription;
 	public static String grpExpressionValue;
 	public static String lblPartitionValue;
 	public static String errValueExist;

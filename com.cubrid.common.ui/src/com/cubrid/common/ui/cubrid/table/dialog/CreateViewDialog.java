@@ -27,6 +27,10 @@
  */
 package com.cubrid.common.ui.cubrid.table.dialog;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,10 +68,14 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 
 import com.cubrid.common.core.common.model.DBAttribute;
+import com.cubrid.common.core.schemacomment.SchemaCommentHandler;
+import com.cubrid.common.core.schemacomment.model.CommentType;
+import com.cubrid.common.core.schemacomment.model.SchemaComment;
 import com.cubrid.common.core.task.ITask;
 import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QuerySyntax;
+import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.cubrid.table.Messages;
 import com.cubrid.common.ui.query.format.SqlFormattingStrategy;
@@ -81,6 +89,7 @@ import com.cubrid.common.ui.spi.progress.TaskExecutor;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.common.ui.spi.util.FieldHandlerUtils;
 import com.cubrid.common.ui.spi.util.ValidateUtil;
+import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.common.task.CommonSQLExcuterTask;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.model.ClassAuthorizations;
@@ -115,6 +124,7 @@ public class CreateViewDialog extends
 	private Combo ownerCombo;
 	private Text tableText;
 	private Text querydescText;
+	private Text viewDescriptionText;
 	private final CubridDatabase database;
 	private TabFolder tabFolder = null;
 	private final boolean isNewTableFlag;
@@ -128,11 +138,13 @@ public class CreateViewDialog extends
 	private static final int BUTTON_EDIT_ID = 1003;
 	private String owner;
 	private String viewName = "";
+	private boolean isCommentSupport = false;
 
 	public CreateViewDialog(Shell parentShell, CubridDatabase database, boolean isNew) {
 		super(parentShell);
 		this.database = database;
 		this.isNewTableFlag = isNew;
+		this.isCommentSupport = CompatibleUtil.isCommentSupports(database.getDatabaseInfo());
 	}
 
 	protected Control createDialogArea(Composite parent) {
@@ -220,7 +232,8 @@ public class CreateViewDialog extends
 	private Composite createSQLScriptComposite() {
 		final Composite composite = new Composite(tabFolder, SWT.NONE);
 		composite.setLayout(new GridLayout());
-		sqlText = new StyledText(composite, SWT.WRAP | SWT.BORDER | SWT.READ_ONLY);
+		sqlText = new StyledText(composite, SWT.WRAP | SWT.BORDER | SWT.READ_ONLY
+				| SWT.V_SCROLL | SWT.H_SCROLL);
 		CommonUITool.registerContextMenu(sqlText, false);
 		final GridData gdSqlText = new GridData(SWT.FILL, SWT.FILL, true, true);
 		sqlText.setLayoutData(gdSqlText);
@@ -261,6 +274,24 @@ public class CreateViewDialog extends
 		gdTableText.horizontalIndent = 30;
 		tableText.setLayoutData(gdTableText);
 
+		if (isCommentSupport) {
+			final Label viewDescriptionLabel = new Label(group, SWT.SHADOW_IN);
+			viewDescriptionLabel.setText(Messages.lblViewDescription);
+			viewDescriptionText = new Text(group, SWT.BORDER);
+			viewDescriptionText.setTextLimit(ValidateUtil.MAX_DB_OBJECT_COMMENT);
+			final GridData gdViewDescription = new GridData(SWT.FILL, SWT.CENTER, true, false);
+			gdViewDescription.horizontalIndent = 30;
+			viewDescriptionText.setLayoutData(gdViewDescription);
+			viewDescriptionText.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent event) {
+					if (getButton(IDialogConstants.OK_ID) != null) {
+						getButton(IDialogConstants.OK_ID).setEnabled(true);
+					}
+				}
+			});
+		}
+
 		final Label ownerLabel = new Label(group, SWT.NONE);
 		ownerLabel.setText(Messages.lblViewOwnerName);
 
@@ -276,6 +307,7 @@ public class CreateViewDialog extends
 				}
 			}
 		});
+
 		final Label querySQLLabel = new Label(composite, SWT.LEFT | SWT.WRAP);
 		querySQLLabel.setText(Messages.lblQueryList);
 		querySQLLabel.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
@@ -321,21 +353,33 @@ public class CreateViewDialog extends
 
 		final Label columnsLabel = new Label(composite, SWT.NONE);
 		columnsLabel.setText(Messages.lblTableNameColumns);
-		final String[] columnNameArr = new String[] { Messages.tblColViewName,
-				Messages.tblColViewDataType, Messages.tblColViewDefaultType,
-				Messages.tblColViewDefaultValue };
+		final String[] columnNameArr = isCommentSupport
+				? new String[] {
+					Messages.tblColViewName,
+					Messages.tblColViewDataType,
+					Messages.tblColViewDefaultType,
+					Messages.tblColViewDefaultValue,
+					Messages.tblColViewMemo}
+				: new String[] {
+					Messages.tblColViewName,
+					Messages.tblColViewDataType,
+					Messages.tblColViewDefaultType,
+					Messages.tblColViewDefaultValue};
 
 		viewColTableViewer = createCommonTableViewer(composite, null, columnNameArr,
 				CommonUITool.createGridData(GridData.FILL_BOTH, 2, 4, -1, 200));
 		viewColTableViewer.setInput(viewColListData);
 		viewColTableViewer.setColumnProperties(columnNameArr);
 
-		CellEditor[] editors = new CellEditor[4];
+		CellEditor[] editors = new CellEditor[5];
 		editors[0] = new TextCellEditor(viewColTableViewer.getTable());
 		editors[1] = null;
 		editors[2] = new ComboBoxCellEditor(viewColTableViewer.getTable(), defaultType,
 				SWT.READ_ONLY);
 		editors[3] = new TextCellEditor(viewColTableViewer.getTable());
+		if (isCommentSupport) {
+			editors[4] = new TextCellEditor(viewColTableViewer.getTable());
+		}
 
 		viewColTableViewer.setCellEditors(editors);
 		viewColTableViewer.setCellModifier(new ICellModifier() {
@@ -389,6 +433,8 @@ public class CreateViewDialog extends
 					}
 
 					return value;
+				} else if (isCommentSupport && property.equals(columnNameArr[4])) {
+					return map.get("4");
 				}
 
 				return null;
@@ -420,6 +466,8 @@ public class CreateViewDialog extends
 					if (val != null) {
 						map.put("3", val);
 					}
+				} else if (isCommentSupport && property.equals(columnNameArr[4])) {
+					map.put("4", value.toString());
 				}
 				viewColTableViewer.refresh();
 				valid();
@@ -548,6 +596,17 @@ public class CreateViewDialog extends
 			tableText.setEditable(false);
 			tableText.setText(classInfo.getClassName());
 
+			if (isCommentSupport) {
+				if (!classInfo.isSystemClass()) {
+					String comment = getViewComment();
+					if (comment != null) {
+						viewDescriptionText.setText(comment);
+					}
+				} else {
+					viewDescriptionText.setEditable(false);
+				}
+			}
+
 			ownerOld = classInfo.getOwnerName();
 			String[] strs = new String[] { classInfo.getClassName(),
 					isPropertyQuery ? Messages.msgPropertyInfo : Messages.msgEditInfo };
@@ -587,6 +646,10 @@ public class CreateViewDialog extends
 				map.put("1", type);
 				map.put("2", defaultType[0]);
 				map.put("3", defaultType[0]);
+
+				if (isCommentSupport) {
+					map.put("4", attr.getDescription());
+				}
 
 				String dfltType = null;
 				String value = null;
@@ -640,6 +703,33 @@ public class CreateViewDialog extends
 		for (String userName : dbUserList) {
 			ownerCombo.add(userName.toUpperCase(Locale.getDefault()));
 		}
+	}
+
+	/**
+	 * get view's comment
+	 *
+	 * @return
+	 */
+	private String getViewComment() {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		SchemaComment schemaComment = null;
+		String viewName = tableText.getText();
+
+		try {
+			DatabaseInfo dbInfo = database.getDatabaseInfo();
+			conn = JDBCConnectionManager.getConnection(dbInfo, true);
+			schemaComment = SchemaCommentHandler.loadObjectDescription(
+					dbInfo, conn, viewName, CommentType.VIEW);
+		} catch (SQLException e) {
+			LOGGER.error(e.getMessage());
+			CommonUITool.openErrorBox(e.getMessage());
+		} finally {
+			QueryUtil.freeQuery(stmt, rs);
+		}
+
+		return schemaComment.getDescription();
 	}
 
 	/**
@@ -778,7 +868,7 @@ public class CreateViewDialog extends
 		ddl.append("(");
 
 		for (Map<String, String> map : viewColListData) {
-			// "Name", "Data type", "Shared", "Default", "Default value"
+			// "Name", "Data type", "Shared", "Default", "Default value", "comment"
 			String type = map.get("1");
 			ddl.append(StringUtil.NEWLINE);
 			ddl.append(" ").append(QuerySyntax.escapeKeyword(map.get("0"))).append(" ");
@@ -800,6 +890,15 @@ public class CreateViewDialog extends
 					ddl.append(" ").append(defaultValue);
 				}
 			}
+
+			if (isCommentSupport) {
+				String comment = map.get("4");
+				if (StringUtil.isNotEmpty(comment)) {
+					comment = String.format("'%s'", comment);
+					ddl.append(String.format(" COMMENT %s ", StringUtil.escapeQuotes(comment)));
+				}
+			}
+
 			ddl.append(",");
 		}
 
@@ -815,6 +914,14 @@ public class CreateViewDialog extends
 			ddl.append(map.get("0"));
 			if (i != total - 1) {
 				ddl.append(StringUtil.NEWLINE).append(" UNION ALL ");
+			}
+		}
+
+		if (isCommentSupport) {
+			String comment = viewDescriptionText.getText();
+			if (StringUtil.isNotEmpty(comment)) {
+				comment = String.format("'%s'", comment);
+				ddl.append(String.format(" COMMENT %s", StringUtil.escapeQuotes(comment)));
 			}
 		}
 		ddl.append(";");

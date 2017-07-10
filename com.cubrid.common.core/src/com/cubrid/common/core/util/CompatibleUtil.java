@@ -55,6 +55,8 @@ public final class CompatibleUtil {
 	private static final String VER_9_2_0 = "9.2.0";
 	private static final String VER_9_3_0 = "9.3.0";
 	private static final String VER_10_0_0 = "10.0.0";
+	private static final String VER_10_1_0 = "10.1.0";
+
 	private CompatibleUtil() {
 	}
 
@@ -342,6 +344,26 @@ public final class CompatibleUtil {
 	}
 
 	/**
+	 * Is the version of database after the 10.0.0
+	 *
+	 * @param serverInfo IServerSpec
+	 * @return true:10.0.0 or higher
+	 */
+	public static boolean isAfter100(IServerSpec serverInfo) {
+		return compareVersion(serverInfo.getServerVersionKey(), VER_10_0_0) >= 0;
+	}
+
+	/**
+	 * Is the version of database after the 10.0.0
+	 *
+	 * @param database IDatabaseSpec
+	 * @return true:10.0.0 or higher
+	 */
+	public static boolean isAfter100(IDatabaseSpec database) {
+		return compareVersion(database.getVersion(), VER_10_0_0) >= 0;
+	}
+
+	/**
 	 * Retrieves whether the current client supports the cm server to connect.
 	 * (supports 8.2.x, 8.3.x, 8.4.0, 8.4.1, 8.4.3, 8.4.9, 9.0.0, 9.1.0
 	 *
@@ -384,6 +406,10 @@ public final class CompatibleUtil {
 			return true;
 		}
 		if (compareVersion(serverInfo.getServerVersionKey(), VER_10_0_0, 2) == 0) {
+			return true;
+		}
+
+		if (compareVersion(serverInfo.getServerVersionKey(), VER_10_1_0, 2) == 0) {
 			return true;
 		}
 
@@ -1219,4 +1245,25 @@ public final class CompatibleUtil {
 		return isAfter843(serverInfo);
 	}
 
+	/**
+	 * Whether supports to comment on engine
+	 * <b>Note: <b>Only after 10.0.0
+	 *
+	 * @param serverInfo IServerSpec
+	 * @return true: after 10.0.0
+	 */
+	public static boolean isCommentSupports(IServerSpec serverInfo) {
+		return isAfter100(serverInfo);
+	}
+
+	/**
+	 * Whether supports to comment on engine
+	 * <b>Note: <b>Only after 10.0.0
+	 *
+	 * @param databaseSpec IDatabaseSpec
+	 * @return
+	 */
+	public static boolean isCommentSupports(IDatabaseSpec databaseSpec) {
+		return isAfter100(databaseSpec);
+	}
 }

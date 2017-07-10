@@ -38,6 +38,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import com.cubrid.common.core.common.model.PartitionInfo;
 import com.cubrid.common.core.common.model.PartitionType;
 import com.cubrid.common.core.common.model.SchemaInfo;
+import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.cubrid.table.Messages;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 
@@ -93,7 +94,7 @@ public class CreatePartitionWizard extends
 					partitionInfoList, isNewTable);
 			addPage(listPage);
 
-			rangePage = new PartitionEditRangePage(partitionInfoList);
+			rangePage = new PartitionEditRangePage(dbInfo, partitionInfoList);
 			addPage(rangePage);
 
 			WizardDialog dialog = (WizardDialog) getContainer();
@@ -124,7 +125,7 @@ public class CreatePartitionWizard extends
 					dialog.addPageChangedListener(listPage);
 				}
 			} else {
-				rangePage = new PartitionEditRangePage(partitionInfoList);
+				rangePage = new PartitionEditRangePage(dbInfo, partitionInfoList);
 				rangePage.setEditedPartitionInfo(editedPartitionInfo);
 				addPage(rangePage);
 				if (typePage != null) {
@@ -216,16 +217,19 @@ public class CreatePartitionWizard extends
 		} else if (partitionType == PartitionType.LIST) {
 			String partitionName = listPage.getPartitionName();
 			String exprDataType = listPage.getPartitionExprDataType();
+			String partitionDescription = listPage.getPartitionDescription();
 			List<String> valuesList = listPage.getListValues();
 			if (this.editedPartitionInfo == null) {
 				PartitionInfo partitonInfo = new PartitionInfo(
 						schemaInfo.getClassname(), partitionName,
 						partitionType, expr, valuesList, -1);
 				partitonInfo.setPartitionExprType(exprDataType);
+				partitonInfo.setDescription(partitionDescription);
 				partitionInfoList.add(partitonInfo);
 			} else {
 				editedPartitionInfo.setPartitionName(partitionName);
 				editedPartitionInfo.setPartitionExprType(exprDataType);
+				editedPartitionInfo.setDescription(partitionDescription);
 				if (isChangeListValues(
 						editedPartitionInfo.getPartitionValues(), valuesList)) {
 					editedPartitionInfo.setPartitionValues(valuesList);
@@ -240,6 +244,7 @@ public class CreatePartitionWizard extends
 			String partitionName = rangePage.getPartitionName();
 			String exprDataType = rangePage.getPartitionExprDataType();
 			String newValue = rangePage.getRangeValue();
+			String partitionDescription = rangePage.getPartitionDescription();
 			if (this.editedPartitionInfo == null) {
 				List<String> rangeList = new ArrayList<String>();
 				rangeList.add(null);
@@ -252,6 +257,7 @@ public class CreatePartitionWizard extends
 						schemaInfo.getClassname(), partitionName,
 						partitionType, expr, rangeList, -1);
 				partitonInfo.setPartitionExprType(exprDataType);
+				partitonInfo.setDescription(partitionDescription);
 				partitionInfoList.add(partitonInfo);
 				resetRangePartitionInfoList(partitionInfoList);
 			} else {
@@ -263,6 +269,10 @@ public class CreatePartitionWizard extends
 				}
 				if (!expr.equals(editedPartitionInfo.getPartitionExpr())) {
 					changePartitionExpr(expr);
+				}
+				if (StringUtil.isNotEmpty(partitionDescription) &&
+						!partitionDescription.equals(editedPartitionInfo.getDescription())) {
+					editedPartitionInfo.setDescription(partitionDescription);
 				}
 				String oldValue = editedPartitionInfo.getPartitionValues().get(
 						1);

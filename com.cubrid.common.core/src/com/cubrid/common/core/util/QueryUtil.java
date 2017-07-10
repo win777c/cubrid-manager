@@ -651,13 +651,13 @@ public final class QueryUtil {
 		sql = "SELECT " + columns + " FROM " + QuerySyntax.escapeKeyword(name);
 		return sql;
 	}
-	
-	public static List<String> getColumnList(Connection conn, String tableName) {
+
+	private static List<String> getColumnList(Connection conn, String tableName) {
 		List<String> columnList = new ArrayList<String>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String sql = "SELECT attr_name FROM db_attribute WHERE class_name = ?";
-		
+		String sql = "SELECT attr_name FROM db_attribute WHERE class_name = ? ORDER BY def_order";
+
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, tableName);
@@ -709,5 +709,54 @@ public final class QueryUtil {
 		} else {
 			return false;
 		}
+	}
+
+	public static String getColumnDescSql(Connection con, String tableName,
+			String columnName) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SHOW CREATE TABLE " + tableName);
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = con.prepareStatement(sql.toString());
+			rs = pstmt.executeQuery();
+
+			sql.setLength(0);
+			sql.append("ALTER TABLE " + tableName + " MODIFY ");
+
+			if (rs.next()) {
+				sql.append(parseColumnDefinition(rs.getString(2), columnName));
+			}
+		} catch (SQLException e) {
+			LOGGER.error(e.getLocalizedMessage());
+		} finally {
+			QueryUtil.freeQuery(pstmt, rs);
+		}
+
+		return sql.toString();
+	}
+
+	private static String parseColumnDefinition(String createSql,
+			String columnName) {
+		int index = 0;
+
+		Pattern pattern = Pattern.compile(
+				String.format("\\[%s\\].[\\w\\s\\d\\(\\,\\)\\.]*", columnName));
+		Matcher matcher = pattern.matcher(createSql);
+		matcher.find();
+		String data = matcher.group();
+
+		String[] sqlEndWord = {" COMMENT ", ") COLLATE ", ", "};
+		int tempIndex = 0;
+		index = data.length();
+
+		for (String s : sqlEndWord) {
+			if ((tempIndex = data.lastIndexOf(s)) > 0) {
+				index = tempIndex;
+				break;
+			}
+		}
+		return data.substring(0, index) + " COMMENT %s";
 	}
 }

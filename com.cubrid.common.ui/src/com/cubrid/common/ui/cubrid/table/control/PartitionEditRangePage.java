@@ -48,12 +48,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import com.cubrid.common.core.common.model.PartitionInfo;
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.PartitionUtil;
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.cubrid.table.Messages;
 import com.cubrid.common.ui.spi.util.CommonUITool;
 import com.cubrid.common.ui.spi.util.FieldHandlerUtils;
 import com.cubrid.common.ui.spi.util.ValidateUtil;
+import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
 import com.cubrid.cubridmanager.core.cubrid.table.model.DataType;
 
 /**
@@ -72,23 +74,21 @@ public class PartitionEditRangePage extends
 
 	private final List<PartitionInfo> partitionInfoList;
 	private boolean isCanFinished = false;
+	private boolean isCommentSupport = false;
 	private PartitionInfo editedPartitionInfo = null;
 
 	private Text partitionNameText;
-
 	private Text partitionTypeText;
-
 	private Text partitionRangeText;
-
 	private Text partitionExprText;
-
+	private Text partitionDescriptionText;
 	private Button maxValueButton;
-
 	private Combo partitionExprTypeCombo;
 
-	protected PartitionEditRangePage(List<PartitionInfo> partitionInfoList) {
+	protected PartitionEditRangePage(DatabaseInfo dbInfo, List<PartitionInfo> partitionInfoList) {
 		super(PAGENAME);
 		this.partitionInfoList = partitionInfoList;
+		isCommentSupport = CompatibleUtil.isCommentSupports(dbInfo);
 	}
 
 	/**
@@ -139,6 +139,18 @@ public class PartitionEditRangePage extends
 		partitionNameText.setTextLimit(ValidateUtil.MAX_SCHEMA_NAME_LENGTH);
 		partitionNameText.setLayoutData(CommonUITool.createGridData(
 				GridData.FILL_HORIZONTAL, 2, 1, -1, -1));
+
+		if (isCommentSupport) {
+			Label partitionDescriptionLabel = new Label(composite, SWT.NONE);
+			partitionDescriptionLabel.setText(Messages.lblPartitionDescription);
+			partitionDescriptionLabel.setLayoutData(
+					CommonUITool.createGridData(1, 1, -1, -1));
+
+			partitionDescriptionText = new Text(composite, SWT.BORDER);
+			partitionDescriptionText.setTextLimit(ValidateUtil.MAX_DB_OBJECT_COMMENT);
+			partitionDescriptionText.setLayoutData(
+					CommonUITool.createGridData(GridData.FILL_HORIZONTAL, 2, 1, -1, -1));
+		}
 
 		Label partitionTypeLabel = new Label(composite, SWT.NONE);
 		partitionTypeLabel.setText(Messages.lblPartitionType);
@@ -199,7 +211,7 @@ public class PartitionEditRangePage extends
 	 */
 	private void init() {
 		partitionExprTypeCombo.setItems(PartitionUtil.getSupportedDateTypes());
-		if (!partitionInfoList.isEmpty() && editedPartitionInfo == null) {
+		if (!partitionInfoList.isEmpty() && editedPartitionInfo == null) {	// create partition
 			PartitionInfo partitonInfo = partitionInfoList.get(0);
 			String partitionType = partitonInfo.getPartitionType().getText().toUpperCase();
 			String partitionExpr = partitonInfo.getPartitionExpr();
@@ -214,7 +226,7 @@ public class PartitionEditRangePage extends
 			partitionTypeText.setText(partitionType);
 			partitionExprText.setText(partitionExpr);
 		}
-		if (editedPartitionInfo != null) {
+		if (editedPartitionInfo != null) {	// edit partition
 			partitionNameText.setText(editedPartitionInfo.getPartitionName());
 			String str = editedPartitionInfo.getPartitionValues().get(1);
 			if (str == null) {
@@ -223,9 +235,16 @@ public class PartitionEditRangePage extends
 			} else {
 				partitionRangeText.setText(str);
 			}
+			String description = editedPartitionInfo.getDescription();
+			if (StringUtil.isNotEmpty(description)) {
+				partitionDescriptionText.setText(description);
+			}
 		}
 		partitionNameText.addModifyListener(this);
 		partitionRangeText.addModifyListener(this);
+		if (isCommentSupport) {
+			partitionDescriptionText.addModifyListener(this);
+		}
 	}
 
 	/**
@@ -360,6 +379,11 @@ public class PartitionEditRangePage extends
 
 	public String getPartitionExprDataType() {
 		return partitionExprTypeCombo.getText();
+	}
+
+	public String getPartitionDescription() {
+		return partitionDescriptionText != null ?
+				partitionDescriptionText.getText() : null;
 	}
 
 	/**

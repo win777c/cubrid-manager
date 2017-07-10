@@ -201,6 +201,16 @@ public abstract class AbsExportDataHandler {
 		}
 	}
 
+	protected String getSelectSQL(Connection conn, String name) {
+		String sql = null;
+		if (exportConfig.getSQL(name) != null) {
+			sql = exportConfig.getSQL(name);
+		} else {
+			sql = QueryUtil.getSelectSQL(conn, name);
+		}
+		return sql;
+	}
+
 	protected Connection getConnection() throws SQLException { // FIXME move this logic to core module
 		return JDBCConnectionManager.getConnection(dbInfo, false);
 	}

@@ -42,9 +42,9 @@ public class TestRawScript {
 			System.exit(-1);
 		}
 
-		ServerManager.getInstance().addServer(serverInfo.getHostAddress(),
-				serverInfo.getHostMonPort(), serverInfo.getUserName(),
-				serverInfo);
+		ServerManager.getInstance().addServer(
+				serverInfo.getHostAddress(), serverInfo.getHostMonPort(),
+				serverInfo.getUserName(), serverInfo);
 		ServerManager.getInstance().setConnected(serverInfo.getHostAddress(),
 				serverInfo.getHostMonPort(), serverInfo.getUserName(), true);
 

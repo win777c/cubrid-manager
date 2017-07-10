@@ -1432,6 +1432,12 @@ public class SchemaDDL {
 		}
 		makeIndexColumns(bf, tableName, columnsRuleArray);
 
+		String description = indexConstaint.getDescription();
+		if (description != null) {
+			description = StringUtil.escapeQuotes("'" + description + "'");
+			bf.append(String.format(" COMMENT %s", description));
+		}
+
 		return bf.toString();
 	}
 
@@ -2230,6 +2236,11 @@ public class SchemaDDL {
 				ddl.append(")");
 			} else {
 				throw new RuntimeException("Invalid partition type.");
+			}
+			String description = inf.getDescription();
+			if (StringUtil.isNotEmpty(description)) {
+				description = String.format("'%s'", description);
+				ddl.append(String.format(" COMMENT %s", StringUtil.escapeQuotes(description)));
 			}
 		}
 
