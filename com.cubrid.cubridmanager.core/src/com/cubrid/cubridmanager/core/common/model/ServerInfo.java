@@ -32,6 +32,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -43,7 +44,6 @@ import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.FileUtil;
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.cubridmanager.core.broker.model.BrokerInfos;
-import com.cubrid.cubridmanager.core.common.ServerManager;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.core.common.task.MonitoringTask;
 import com.cubrid.cubridmanager.core.logs.model.LogInfoManager;
@@ -98,6 +98,7 @@ public class ServerInfo extends PropertyChangeProvider implements IServerSpec {
 	private Shards shards = null;
 	private List<String> allDatabaseList = null;
 	private String serverVersion = null;
+	private static Map<String, Integer> availableCasCount;
 
 	private HAHostStatusInfo haHostStatusInfo;
 	// the interface version that be used to connect to cubrid manager server
@@ -1207,4 +1208,37 @@ public class ServerInfo extends PropertyChangeProvider implements IServerSpec {
 				serverInfo.getUserName().compareTo(getUserName()) == 0;
 	}
 
+	private void initUsedCasCount() {
+		availableCasCount = null;
+		availableCasCount = new HashMap<String, Integer>();
+		for (String key : brokerConfParaMap.keySet()) {
+			if (key.equals("broker")) {
+				continue;
+			}
+			availableCasCount.put(key, Integer.parseInt(
+					brokerConfParaMap.get(key).get("MAX_NUM_APPL_SERVER")));
+		}
+	}
+
+	public boolean isExistAvailableCas(String brokerName) {
+		if (availableCasCount == null) {
+			initUsedCasCount();
+		}
+
+		int availableCount = availableCasCount.get(brokerName);
+		boolean result = availableCount > 0;
+		if (result) {
+			availableCasCount.put(brokerName, availableCount - 1);
+		}
+		return result;
+	}
+
+	public void releaseCasCount(String brokerName) {
+		int casCount = availableCasCount.get(brokerName);
+		int max = Integer.parseInt(brokerConfParaMap.get(brokerName)
+				.get("MAX_NUM_APPL_SERVER"));
+		if (casCount < max) {
+			availableCasCount.put(brokerName, ++casCount);
+		}
+	}
 }
