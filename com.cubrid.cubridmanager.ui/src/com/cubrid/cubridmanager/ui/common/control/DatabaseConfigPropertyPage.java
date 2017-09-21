@@ -776,11 +776,11 @@ public class DatabaseConfigPropertyPage extends PreferencePage implements Modify
 
 		str = paraMap.get(ConfConstants.DATA_BUFFER_SIZE);
 		if (str != null && str.trim().length() > 0 && dataBufferSizeText != null) {
-			if (str.matches("^\\d+[KkMmGgTt]$")) {
-				String subStr = str.substring(0, str.length() - 1);
-				dataBufferSizeText.setText(subStr);
-				subStr = str.substring(str.length() - 1);
-				dataBufferGroup.setUnitOfSize(subStr);
+			if (str.matches("^\\d+[KkMmGgTt][Bb]*$")) {
+				String withoutUnitStr = str.replaceAll("\\D+$", "");
+				dataBufferSizeText.setText(withoutUnitStr);
+				String unit = str.replaceAll("\\d", "");
+				dataBufferGroup.setUnitOfSize(unit);
 			} else {
 				dataBufferSizeText.setText(str);
 				dataBufferGroup.setUnitOfSize("");
@@ -795,11 +795,11 @@ public class DatabaseConfigPropertyPage extends PreferencePage implements Modify
 
 		str = paraMap.get(ConfConstants.SORT_BUFFER_SIZE);
 		if (str != null && str.trim().length() > 0 && sortBufferSizeText != null) {
-			if (str.matches("^\\d+[KkMmGgTt]$")) {
-				String subStr = str.substring(0, str.length() - 1);
-				sortBufferSizeText.setText(subStr);
-				subStr = str.substring(str.length() - 1);
-				sortBufferGroup.setUnitOfSize(subStr);
+			if (str.matches("^\\d+[KkMmGgTt][Bb]*$")) {
+				String withoutUnitStr = str.replaceAll("\\D+$", "");
+				sortBufferSizeText.setText(withoutUnitStr);
+				String unit = str.replaceAll("\\d", "");
+				sortBufferGroup.setUnitOfSize(unit);
 			} else {
 				sortBufferSizeText.setText(str);
 				sortBufferGroup.setUnitOfSize("");
@@ -814,11 +814,11 @@ public class DatabaseConfigPropertyPage extends PreferencePage implements Modify
 
 		str = paraMap.get(ConfConstants.LOG_BUFFER_SIZE);
 		if (str != null && str.trim().length() > 0 && logBufferSizeText != null) {
-			if (str.matches("^\\d+[KkMmGgTt]$")) {
-				String subStr = str.substring(0, str.length() - 1);
-				logBufferSizeText.setText(subStr);
-				subStr = str.substring(str.length() - 1);
-				logBufferGroup.setUnitOfSize(subStr);
+			if (str.matches("^\\d+[KkMmGgTt][Bb]*$")) {
+				String withoutUnitStr = str.replaceAll("\\D+$", "");
+				logBufferSizeText.setText(withoutUnitStr);
+				String unit = str.replaceAll("\\d", "");
+				logBufferGroup.setUnitOfSize(unit);
 			} else {
 				logBufferSizeText.setText(str);
 				logBufferGroup.setUnitOfSize("");

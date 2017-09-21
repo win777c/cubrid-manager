@@ -43,7 +43,6 @@ import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.FileUtil;
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.cubridmanager.core.broker.model.BrokerInfos;
-import com.cubrid.cubridmanager.core.common.ServerManager;
 import com.cubrid.cubridmanager.core.common.socket.SocketTask;
 import com.cubrid.cubridmanager.core.common.task.MonitoringTask;
 import com.cubrid.cubridmanager.core.logs.model.LogInfoManager;
@@ -98,6 +97,7 @@ public class ServerInfo extends PropertyChangeProvider implements IServerSpec {
 	private Shards shards = null;
 	private List<String> allDatabaseList = null;
 	private String serverVersion = null;
+	private static Map<String, Integer> availableCasCount;
 
 	private HAHostStatusInfo haHostStatusInfo;
 	// the interface version that be used to connect to cubrid manager server
@@ -1206,5 +1206,4 @@ public class ServerInfo extends PropertyChangeProvider implements IServerSpec {
 				serverInfo.getHostMonPort() == getHostMonPort() &&
 				serverInfo.getUserName().compareTo(getUserName()) == 0;
 	}
-
 }
