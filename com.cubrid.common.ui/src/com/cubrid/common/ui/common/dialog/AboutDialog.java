@@ -27,6 +27,8 @@
  */
 package com.cubrid.common.ui.common.dialog;
 
+import java.util.Calendar;
+
 import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -79,9 +81,10 @@ public class AboutDialog extends ProductInfoDialog {
 				productName,
 				versionId,
 				osArch,
+				Integer.toString(Calendar.getInstance().get(Calendar.YEAR)),
 				Messages.msgCubridHomePageUrl,
-				Messages.msgCubridProjectSiteUrl,
-				Messages.msgCubridToolsSiteUrl });
+				Messages.msgCubridToolsSiteUrl,
+				Messages.msgCubridProjectSiteUrl});
 		this.setItem(scan(message));
 	}
 
