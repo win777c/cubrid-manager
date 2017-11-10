@@ -25,11 +25,11 @@ Please refer here:
 ## How to CONTRIBUTE
 If you want to contribute to CUBRID Manager, please follow the procedure below.
 1. Register the issue in [jira](http://jira.cubrid.org/browse/TOOLS).
-  * Describe the problem and solution in detail.
+  - Describe the problem and solution in detail.
 2. Create the branch name as jira issue number.
 3. Apply for PR after performing the work in that branch.
-  * When applying for PR, the title should be written in the format '[jira issue number] title'.
-  * eg) [TOOLS-4270] Enhancement to open the query editor
+  - When applying for PR, the title should be written in the format '[jira issue number] title'.
+  - eg) [TOOLS-4270] Enhancement to open the query editor
 
 ## GETTING HELP
 
