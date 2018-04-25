@@ -119,7 +119,6 @@ public class QueryTunerJob extends
 		}
 
 		ServerInfo serverInfo = databaseInfo.getServerInfo() == null ? null : databaseInfo.getServerInfo();
-		int pageLimit = QueryOptions.getPageLimit(serverInfo);
 
 		for (String query : queryList) {
 			long startTime = System.currentTimeMillis();
@@ -163,7 +162,6 @@ public class QueryTunerJob extends
 						queryRecord.setColumnInfoList(getColumnData(resultSet));
 
 						QueryInfo queryInfo = new QueryInfo();
-						queryInfo.setPageSize(pageLimit);
 						queryRecord.setQueryInfo(queryInfo);
 						recordProcessor.process(resultSet, queryRecord);
 					} else {

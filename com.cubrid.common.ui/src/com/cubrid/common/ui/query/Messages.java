@@ -224,6 +224,8 @@ public class Messages extends
 	public static String explain_history_delete_message;
 	public static String explain_history_delete_error;
 
+	public static String qedit_top;
+	public static String qedit_next_run;
 	public static String qedit_lastpage;
 	public static String qedit_nextpage;
 
@@ -723,6 +725,8 @@ public class Messages extends
 	public static String msgSqlmapInputVariableType;
 
 	public static String errQeditNotOpenForConnectionFull;
+
+	public static String noMoreRecord;
 
 	static {
 		NLS.initializeMessages(CommonUIPlugin.PLUGIN_ID + ".query.Messages",

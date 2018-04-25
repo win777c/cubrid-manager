@@ -431,7 +431,6 @@ public class MultiSQLQueryResultComposite extends Composite implements IMultiQue
 					serverInfo = this.database.getServer().getServerInfo();
 				}
 
-				boolean enableSearchUnit = QueryOptions.getEnableSearchUnit(serverInfo);
 				int unitCount = QueryOptions.getSearchUnitCount(serverInfo);
 				int sqlTotalCount = qVector.size();
 				for (i = 0; i < sqlTotalCount; i++) {
@@ -457,7 +456,7 @@ public class MultiSQLQueryResultComposite extends Composite implements IMultiQue
 
 					String orignSQL = sql;
 
-					if (enableSearchUnit && unitCount > 0) {
+					if (unitCount > 0) {
 						multiQuerySql = SqlParser.getPaginatingSqlClause(sql);
 					}
 					String order = StringUtil.getOrdinalFromCardinalNumber(i+1);

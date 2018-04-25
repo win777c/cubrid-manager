@@ -57,7 +57,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ControlEditor;
 import org.eclipse.swt.custom.StyleRange;
@@ -86,9 +85,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
@@ -112,13 +108,12 @@ import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.core.util.StringUtil;
 import com.cubrid.common.ui.CommonUIPlugin;
 import com.cubrid.common.ui.cubrid.table.dialog.PstmtParameter;
-import com.cubrid.common.ui.cubrid.table.export.ResultSetDataCache;
 import com.cubrid.common.ui.query.Messages;
 import com.cubrid.common.ui.query.action.CopyAction;
 import com.cubrid.common.ui.query.action.InputMethodAction;
-import com.cubrid.common.ui.query.action.LastAction;
-import com.cubrid.common.ui.query.action.NextAction;
+import com.cubrid.common.ui.query.action.NextQueryAction;
 import com.cubrid.common.ui.query.action.PasteAction;
+import com.cubrid.common.ui.query.action.ResultPageTopAction;
 import com.cubrid.common.ui.query.control.tunemode.TuneModeModel;
 import com.cubrid.common.ui.query.dialog.ExportResultDialog;
 import com.cubrid.common.ui.query.dialog.RowDetailDialog;
@@ -171,11 +166,11 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 	private static final Color BLUE_COLOR = ResourceManager.getColor(0, 0, 255);
 	private final int recordLimit;
 	public String query = "";
+	private String rownumQuery;
 	public final String orignQuery;
 	public int idx;
 	public int cntRecord = 0;
 	public Table tblResult = null;
-	public int pageLimit; // each page size
 	public ToolItem insertRecordItem = null;
 	public ToolItem insertSaveItem = null;
 	public ToolItem delRecordItem = null;
@@ -188,14 +183,11 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 
 	private final QueryEditorPart queryEditor;
 	private QueryInfo queryInfo = null;
-	private Action nextPageAction = null;
-	private Action lastPageAction = null;
+	private Action resultCursorTopAction = null;
+	private Action nextQueryAction = null;
 	private FilterResultContrItem filterResultContrItem;
 	private List<Map<String, CellValue>> allDataList = null;
-	private ResultSetDataCache resultSetDataCache;
 	private List<ColumnInfo> allColumnList = null;
-	private boolean isEnd = false;
-	private boolean dontTipNext = false;
 	private String queryMsg;
 	private String multiQuerySql = null;
 	private Map<String, ColumnComparator> colComparatorMap = null;
@@ -226,6 +218,7 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 	private boolean isContainPrimayKey;
 	private boolean isSingleTableQuery;
 	private int loadSize = 0;
+	private boolean showEndDialog = true;
 
 	private String statsLog;
 	private String queryPlanLog;
@@ -247,19 +240,12 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 		this.orignQuery = orignQuery;
 		this.connection = con;
 		ServerInfo serverInfo = cubridDatabase.getServer() == null ? null : cubridDatabase.getServer().getServerInfo();
-		pageLimit = QueryOptions.getPageLimit(serverInfo);
-		filterResultContrItem = new FilterResultContrItem(this, pageLimit);
-		recordLimit = QueryOptions.getSearchUnitCount(serverInfo);
+		recordLimit = QueryOptions.isExistPrefix(serverInfo) ? QueryOptions.getSearchUnitCount(serverInfo) : QueryOptions.getSearchUnitCount(null);
+		filterResultContrItem = new FilterResultContrItem(this, recordLimit);
 		allDataList = new ArrayList<Map<String, CellValue>>();
 		allColumnList = new ArrayList<ColumnInfo>();
 		colComparatorMap = new HashMap<String, ColumnComparator>();
-		resultSetDataCache = new ResultSetDataCache();
-		boolean enableSearchUnit = QueryOptions.getEnableSearchUnit(serverInfo);
 		loadSize = QueryOptions.getLobLoadSize(serverInfo);
-		dontTipNext = !QueryOptions.getMultiPageConfirm();
-		if (!enableSearchUnit) {
-			dontTipNext = true;
-		}
 
 		boolean isUseScientificNotation = QueryOptions.getUseScientificNotation(serverInfo);
 		if (isUseScientificNotation) {
@@ -315,8 +301,7 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 				sb.append(StringUtil.NEWLINE);
 			}
 		}
-		queryInfo = new QueryInfo(allDataList.size(), pageLimit);
-		queryInfo.setCurrentPage(1);
+		queryInfo = new QueryInfo(allDataList.size());
 		textData = sb.toString().replace("\n", StringUtil.NEWLINE);
 	}
 
@@ -358,7 +343,6 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 					columnType, elementType, precision, scale);
 			allColumnList.add(colInfo);
 		}
-		resultSetDataCache.setColumnInfos(new ArrayList<ColumnInfo>(allColumnList));
 	}
 
 	/**
@@ -598,25 +582,13 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 	 */
 	private void fillTableItemData(CUBRIDResultSetProxy rs) throws SQLException {
 		cntRecord = 0;
-		int limit = recordLimit;
 		while (rs.next()) {
 			cntRecord++;
 			//add item data to the end of list
 			addTableItemData(rs, -1);
-			resultSetDataCache.AddData(BuildCurrentRowData(rs));
-			if (recordLimit > 0 && cntRecord >= limit && multiQuerySql == null) {
-				final String msg = Messages.bind(Messages.tooManyRecord, limit);
-				showQueryTip(msg);
-				if (isEnd) {
-					break;
-				} else {
-					limit += recordLimit;
-				}
-			}
 		}
 		if (multiQuerySql == null) {
-			queryInfo = new QueryInfo(cntRecord, pageLimit);
-			queryInfo.setCurrentPage(1);
+			queryInfo = new QueryInfo(cntRecord);
 		}
 	}
 
@@ -628,37 +600,11 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 	public void makeActions(ToolBarManager toolBarManager, Table resultTable) {
 		toolBarManager.add(filterResultContrItem);
 		toolBarManager.add(new Separator());
-		lastPageAction = new LastAction(this);
-		nextPageAction = new NextAction(this);
-		toolBarManager.add(nextPageAction);
-		toolBarManager.add(lastPageAction);
-		updateActions();
+		resultCursorTopAction = new ResultPageTopAction(this);
+		nextQueryAction = new NextQueryAction(this);
+		toolBarManager.add(resultCursorTopAction);
+		toolBarManager.add(nextQueryAction);
 		toolBarManager.update(true);
-	}
-
-	/**
-	 * Set the action disabled
-	 */
-	private void disableActions() {
-		if (lastPageAction != null) {
-			lastPageAction.setEnabled(false);
-		}
-		if (nextPageAction != null) {
-			nextPageAction.setEnabled(false);
-		}
-	}
-
-	/**
-	 * Update paged action state
-	 */
-	public void updateActions() {
-		if (queryInfo.getCurrentPage() >= queryInfo.getPages()) {
-			lastPageAction.setEnabled(false);
-			nextPageAction.setEnabled(false);
-		} else {
-			lastPageAction.setEnabled(true);
-			nextPageAction.setEnabled(true);
-		}
 	}
 
 	/**
@@ -673,19 +619,6 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 			StyledText messageText, boolean multiQueryResult) {
 		this.selectableSupport = tableSelectSupport;
 		this.tblResult = tableSelectSupport.getTable();
-		logMessageText = messageText;
-		int[] queryInfoRange = new int[2];
-		int[] queryRange = new int[2];
-		StringBuilder resultMessage = new StringBuilder();
-		resultMessage.append(getQueryMsg() == null ? "" : getQueryMsg().trim());
-		queryInfoRange[0] = 0;
-		queryInfoRange[1] = resultMessage.length();
-		resultMessage.append(StringUtil.NEWLINE)
-				.append(QueryUtil.SPLIT_LINE_FOR_QUERY_RESULT)
-				.append(StringUtil.NEWLINE);
-		queryRange[0] = resultMessage.length();
-		resultMessage.append(query);
-		queryRange[1] = query.length();
 
 		ServerInfo serverInfo = database.getServer() == null ? null
 				: database.getServer().getServerInfo();
@@ -728,6 +661,24 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 
 		makeColumn();
 		makeItem();
+		processLogs(messageText);
+	}
+
+	private void processLogs(StyledText messageText) {
+		logMessageText = messageText = messageText == null ? logMessageText : messageText;
+		int[] queryInfoRange = new int[2];
+		int[] queryRange = new int[2];
+		StringBuilder resultMessage = new StringBuilder();
+		resultMessage.append(getQueryMsg() == null ? "" : getQueryMsg().trim());
+		queryInfoRange[0] = 0;
+		queryInfoRange[1] = resultMessage.length();
+		resultMessage.append(StringUtil.NEWLINE)
+				.append(QueryUtil.SPLIT_LINE_FOR_QUERY_RESULT)
+				.append(StringUtil.NEWLINE);
+		queryRange[0] = resultMessage.length();
+		resultMessage.append(query);
+		queryRange[1] = query.length();
+
 
 		if (!StringUtil.isEmpty(queryPlanLog)) {
 			resultMessage.append(StringUtil.NEWLINE).append(
@@ -1054,12 +1005,8 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 					allDataList.clear();
 				}
 
-				int page = queryInfo.getCurrentPage();
 				makeResult(prs);
-				queryInfo.setCurrentPage(page);
 				makeItem();
-				updateActions();
-
 			}
 		} catch (final Exception ee) {
 			LOGGER.error("execute SQL failed sql  at query editor : " + query + " error message: " + ee);
@@ -1187,8 +1134,7 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 				}
 
 				//Bug fixed by Kevin.Qian. FYI. allDataList is a global query result to the current query.
-				int pageBeginIndex = (queryInfo.getCurrentPage() - 1) * queryInfo.getPageSize();
-				Map<String, CellValue> map = allDataList.get(pageBeginIndex + location.y);
+				Map<String, CellValue> map = allDataList.get(location.y);
 				TableItem item = tblResult.getItem(location.y);
 				ColumnInfo colInfo = allColumnList.get(location.x - 1);
 				RowDetailDialog dialog = new RowDetailDialog(tblResult.getShell(), allColumnList, map, item,
@@ -1749,7 +1695,6 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 					Collections.sort(allDataList, comparator);
 					comparator.setAsc(!comparator.isAsc());
 					makeItem();
-					updateActions();
 
 					column.pack();
 					if (column.equals(sortedColumn)) {
@@ -1814,20 +1759,7 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 	 * @throws SQLException if failed
 	 */
 	public TuneModeModel makeTable(int start, boolean useTuneMode) throws SQLException {
-		int end = start + recordLimit - 1;
-		String sql = multiQuerySql;
-		if (multiQuerySql.indexOf(SqlParser.ROWNUM_CONDITION_MARK) != -1) {
-			if (dontTipNext) {
-				if (recordLimit > 0) {
-					sql = this.multiQuerySql.replace(SqlParser.ROWNUM_CONDITION_MARK,
-						"\r\nWHERE ROWNUM  >= " + String.valueOf(start));
-				}
-			} else {
-				sql = this.multiQuerySql.replace(SqlParser.ROWNUM_CONDITION_MARK,
-					"\r\nWHERE ROWNUM BETWEEN " + String.valueOf(start) + " AND " + String.valueOf(end));
-			}
-		}
-
+		String sql = isLimitedSql() ? handleRownumQuery(multiQuerySql, start) : query;
 		TuneModeModel tuneModeModel = null;
 		long beginTimestamp = 0;
 		long endTimestamp = 0;
@@ -1836,7 +1768,6 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 		nf.setMaximumFractionDigits(3);
 		stmt = null;
 		rs = null;
-		boolean isHasError = false;
 
 		try {
 			beginTimestamp = System.currentTimeMillis();
@@ -1891,27 +1822,33 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 			queryMsg += Messages.runError + event.getErrorCode() + StringUtil.NEWLINE + Messages.errorHead
 				+ event.getMessage() + StringUtil.NEWLINE;
 			query += sql + StringUtil.NEWLINE;
-			isHasError = true;
 			LOGGER.error("execute SQL failed sql at query editor: " + query
 					+ " error message: " + event.getMessage(), event);
 			throw event;
 		} finally {
-			queryInfo = new QueryInfo(allDataList == null ? 0 : allDataList.size(), pageLimit);
-			queryInfo.setCurrentPage(1);
+			queryInfo = new QueryInfo(allDataList == null ? 0 : allDataList.size());
 			QueryUtil.freeQuery(stmt, rs);
 			stmt = null;
 			rs = null;
-			if (!isHasError && cntRecord == recordLimit && recordLimit > 0) {
-				isEnd = false;
-				final String msg = Messages.bind(Messages.tooManyRecord, end);
-				showQueryTip(msg);
-				if (!isEnd) {
-					makeTable(end + 1, false);
-				}
-			}
 		}
 
 		return tuneModeModel;
+	}
+
+	private String handleRownumQuery(String sql, int start) {
+		if (sql.indexOf(SqlParser.ROWNUM_CONDITION_MARK) != -1) {
+			saveRownumQuery(sql);
+			return sql.replace(
+					SqlParser.ROWNUM_CONDITION_MARK, "\r\nWHERE ROWNUM BETWEEN " +
+							String.valueOf(start) + " AND " +
+							String.valueOf(start + filterResultContrItem.getSearchUnit() - 1));
+		} else {
+			return sql;
+		}
+	}
+
+	private void saveRownumQuery(String sql) {
+		rownumQuery = rownumQuery != sql ? sql : rownumQuery;
 	}
 
 	private void recordSQLDetail(String elapseTime, String info) {
@@ -1930,65 +1867,14 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 		} catch(Exception e) {
 			LOGGER.error("parse execute sql time error", e);
 		}
-		sqlDetailHistory.setExecuteInfo(info);
-		sqlDetailHistory.setElapseTime(elapseTime);
+		if (sqlDetailHistory != null) {
+			sqlDetailHistory.setExecuteInfo(info);
+			sqlDetailHistory.setElapseTime(elapseTime);
+		}
 	}
 
-	/**
-	 * show the query tip
-	 *
-	 * @param msg String
-	 */
-	private void showQueryTip(final String msg) {
-		Display.getDefault().syncExec(new Runnable() {
-			/**
-			 * @see org.eclipse.jface.action.Action#run()
-			 */
-			public void run() {
-				if (!dontTipNext) {
-
-					MessageDialog dialog = new MessageDialog(queryEditor.getEditorSite().getShell(), Messages.warning, null,
-						msg, MessageDialog.QUESTION, new String[] {Messages.btnYes, Messages.btnNo}, 1) {
-						Button btn = null;
-
-						/**
-						 * @see org.eclipse.jface.dialogs.MessageDialog#createCustomArea(org.eclipse.swt.widgets.Composite)
-						 * @param parent parent composite to contain the custom
-						 *        area
-						 * @return the custom area control, or <code>null</code>
-						 */
-						protected Control createCustomArea(Composite parent) {
-							btn = new Button(parent, SWT.CHECK);
-							btn.setText(Messages.showOneTimeTip);
-							return btn;
-						}
-
-						/**
-						 * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
-						 * @param buttonId the id of the button that was pressed
-						 *        (see <code>IDialogConstants.*_ID</code>
-						 *        constants)
-						 */
-						protected void buttonPressed(int buttonId) {
-							dontTipNext = btn.getSelection();
-							if (dontTipNext) {
-								QueryOptions.setMultiPageConfirm(false);
-								QueryOptions.savePref();
-							}
-							if (buttonId == 1) {
-								isEnd = true;
-							}
-							close();
-						}
-
-					};
-					int ret = dialog.open();
-					if (ret != 0 && ret != 1) {
-						isEnd = true;
-					}
-				}
-			}
-		});
+	private boolean isLimitedSql() {
+		return multiQuerySql != null;
 	}
 
 	/**
@@ -2031,6 +1917,11 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 	 * make table item by the data in allDataList
 	 */
 	public void makeItem() {
+		findPK();
+		processResultTable(true);
+	}
+
+	private void findPK() {
 		isSingleTableQuery = false;
 
 		if (!queryEditor.isCollectExecStats()) {
@@ -2059,32 +1950,28 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 						}
 					}
 				}
-
-				if (matchedCnt > 0 && matchedCnt == pkList.size()) {
-					isContainPrimayKey = true;
-				} else {
-					isContainPrimayKey = false;
-				}
+				isContainPrimayKey = matchedCnt > 0 && matchedCnt == pkList.size() ? true : false;
 			}
 		}
+	}
 
+	private void processResultTable(boolean isNew) {
 		if (insertRecordItem != null && !insertRecordItem.isDisposed()) {
 			insertRecordItem.setEnabled(getEditable() && isEditMode());
 		}
 
-		disableActions();
+		if (isNew) {
+			tblResult.removeAll();
+		}
+
 		clearModifiedLog();
-		tblResult.removeAll();
 		rsToItemMap.clear();
 
-		int begin = (queryInfo.getCurrentPage() - 1) * queryInfo.getPageSize();
-		int last = begin + queryInfo.getPageSize();
-
 		List<Point> matchedPointList = new ArrayList<Point>();
-
+		final int indexGap = isNew ? 0 : getCurrentTblTotalCount();
 		int itemNo = 0;
-		int index = (queryInfo.getCurrentPage() - 1) * queryInfo.getPageSize() + 1;
-		for (int i = 0; allDataList != null && i < last && i < queryInfo.getTotalRs(); i++) {
+
+		for (int i = 0; allDataList != null && i < queryInfo.getTotalRs(); i++) {
 			Map<String, CellValue> dataMap = allDataList.get(i);
 
 			// filter the data
@@ -2095,7 +1982,7 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 
 			TableItem item = new TableItem(tblResult, SWT.MULTI);
 			rsToItemMap.put(""+item.hashCode(), ""+i);
-			item.setText(0, String.valueOf(index + i - begin));
+			item.setText(0, String.valueOf(indexGap + i + 1));
 			item.setData(dataMap);
 			makeItemValue(item, dataMap);
 			item.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
@@ -2142,19 +2029,6 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 		if (filterResultContrItem.isUseFilter()) {
 			selectableSupport.setSelection(matchedPointList);
 		}
-
-		tblResult.setTopIndex(begin);
-
-		//recover and display the inserted records which have not been committed yet.
-//		for (Map.Entry<String,Map<String,Object>> itemEntry : allInsertedItemList.entrySet()) {
-//			TableItem itemNew = new TableItem(tblResult, SWT.MULTI);
-//			changeInsertedItemStyle(itemNew);
-//			itemNew.setData(NEW_RECORD_FLAG, itemEntry.getKey());
-//			int colCount = tblResult.getColumnCount();
-//			for (int i = 1; i < colCount; i++) {
-//				itemNew.setText(i, "" + itemEntry.getValue().get("" + (i - 1)));
-//			}
-//		}
 
 		if (delRecordItem != null && !delRecordItem.isDisposed()) {
 			delRecordItem.setEnabled(false);
@@ -2248,6 +2122,11 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 		}
 
 		return StringUtil.isEqual(value0.getShowValue(), value1.getShowValue());
+	}
+
+	public void makeItemWithoutReset() {
+		findPK();
+		processResultTable(false);
 	}
 
 	public boolean getEditable() {
@@ -2546,7 +2425,6 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 	 */
 	public void dispose() {
 		disposeAll();
-		freeResultSetCache();
 	}
 	
 	private void disposeAll() {
@@ -3109,14 +2987,6 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 		}
 		return successedMap;
 	}
-
-	private void freeResultSetCache(){
-		if(resultSetDataCache == null){
-			return;
-		}
-		resultSetDataCache.free();
-		resultSetDataCache = null;
-	}
 	
 	public String getQueryPlanLog() {
 		return queryPlanLog;
@@ -3417,8 +3287,28 @@ public class QueryExecuter implements IShowMoreOperator{ // FIXME very complicat
 	public void setColumnTableNames(List<String> tableNames) {
 		this.columnTableNames = tableNames;
 	}
-	
-	public ResultSetDataCache getTableDataCache() {
-		return resultSetDataCache;
+
+	public int getRecordLimit() {
+		return recordLimit;
+	}
+
+	public int getCurrentTblTotalCount() {
+		return tblResult.getItemCount();
+	}
+
+	public void runNextQuery() throws SQLException {
+		int start = getCurrentTblTotalCount() + 1;
+		allDataList.clear();
+		makeTable(start, queryEditor.isCollectExecStats());
+		if (isLimitedSql() && cntRecord != 0) {
+			makeItemWithoutReset();
+			processLogs(null);
+		} else {
+			if (showEndDialog) {
+				CommonUITool.openInformationBox(Messages.noMoreRecord);
+				showEndDialog = false;
+				nextQueryAction.setEnabled(false);
+			}
+		}
 	}
 }

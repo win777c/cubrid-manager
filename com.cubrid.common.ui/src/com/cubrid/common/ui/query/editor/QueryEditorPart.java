@@ -2647,7 +2647,6 @@ public class QueryEditorPart extends
 					serverInfo = this.database.getServer().getServerInfo();
 				}
 
-				boolean enableSearchUnit = QueryOptions.getEnableSearchUnit(serverInfo);
 				int unitCount = QueryOptions.getSearchUnitCount(serverInfo);
 				int sqlTotalCount = queries.size();
 
@@ -2690,7 +2689,7 @@ public class QueryEditorPart extends
 						parameterList = rowParameterList.get(i);
 					}
 
-					if (enableSearchUnit && unitCount > 0 && rowParameterList == null) {
+					if (unitCount > 0 && rowParameterList == null) {
 						multiQuerySql = SqlParser.getPaginatingSqlClause(sql);
 					} else {
 						multiQuerySql = null;

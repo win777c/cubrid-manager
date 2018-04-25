@@ -65,9 +65,7 @@ public final class QueryOptions {
 	private static final Logger LOGGER = LogUtil.getLogger(QueryOptions.class);
 
 	public static final String AUTO_COMMIT = ".auto_commit";
-	public static final String ENABLE_UNIT_INSTANCES = ".enable_unit_instances";
 	public static final String UNIT_INSTANCES_COUNT = ".instances_count";
-	public static final String PAGE_INSTANCES_COUNT = ".page_count";
 	public static final String DISPLAY_TYPE_QUERY_PLAN = ".display_type_query_plan";
 	public static final String ENABLE_GET_OID = ".enable_get_oid";
 	public static final String BROKER_PORT = ".broker_port";
@@ -83,7 +81,6 @@ public final class QueryOptions {
 	public static final String KEYWORD_LOWERCASE = ".keyword_lowercase";
 	public static final String KEYWORD_NO_AUTO_UPPERCASE = ".keyword_no_autouppercase";
 	public static final String WITHOUT_PROMPT_SAVE = ".without_prompt_save";
-	public static final String MULTI_PAGE_CONFIRM = ".multi_page_confirm";
 	public static final String USE_SCIENTIFIC_NOTATION = ".use_scienfitic_notation";
 	public static final String LOB_LOAD_SIZE = ".lob_load_size";
 
@@ -444,34 +441,6 @@ public final class QueryOptions {
 
 	/**
 	 * 
-	 * Get page limit of this server from preference
-	 * 
-	 * @param serverInfo
-	 *            the ServerInfo object
-	 * @return the limit
-	 */
-	public static int getPageLimit(ServerInfo serverInfo) {
-		String key = getPreKey(serverInfo, QueryOptions.PAGE_INSTANCES_COUNT);
-		int limit = pref.getInt(key, DEFAULT_MAX_PAGE_LIMIT);
-		return limit <= 0 ? DEFAULT_MAX_PAGE_LIMIT : limit;
-	}
-
-	/**
-	 * 
-	 * Set page limit of this server to preference
-	 * 
-	 * @param serverInfo
-	 *            the ServerInfo object
-	 * @param limit
-	 *            the limit
-	 */
-	public static void setPageLimit(ServerInfo serverInfo, int limit) {
-		String prefix = getPrefix(serverInfo);
-		pref.putInt(prefix + QueryOptions.PAGE_INSTANCES_COUNT, limit);
-	}
-
-	/**
-	 * 
 	 * Get broker IP of the database from preference
 	 * 
 	 * @param databaseInfo
@@ -593,34 +562,6 @@ public final class QueryOptions {
 	public static void setAutoCommit(ServerInfo serverInfo, boolean isAutoCommit) {
 		String prefix = getPrefix(serverInfo);
 		pref.putBoolean(prefix + QueryOptions.AUTO_COMMIT, isAutoCommit);
-	}
-
-	/**
-	 * 
-	 * Get search unit enable status of the server from preference
-	 * 
-	 * @param serverInfo
-	 *            the ServerInfo Object
-	 * @return <code>true</code> if enabled;<code>false</code>otherwise
-	 */
-	public static boolean getEnableSearchUnit(ServerInfo serverInfo) {
-		String key = getPreKey(serverInfo, QueryOptions.ENABLE_UNIT_INSTANCES);
-		return pref.getBoolean(key, true);
-	}
-
-	/**
-	 * 
-	 * Set search unit enable status of the server to preference
-	 * 
-	 * @param serverInfo
-	 *            the ServerInfo Object
-	 * @param isEnabled
-	 *            whether enabled
-	 */
-	public static void setEnableSearchUnit(ServerInfo serverInfo,
-			boolean isEnabled) {
-		String prefix = getPrefix(serverInfo);
-		pref.putBoolean(prefix + QueryOptions.ENABLE_UNIT_INSTANCES, isEnabled);
 	}
 
 	/**
@@ -1020,31 +961,6 @@ public final class QueryOptions {
 
 	/**
 	 * 
-	 * Get show confirmation prompt status of this server from preference
-	 * 
-	 * @param serverInfo
-	 *            the ServerInfo object
-	 * @return boolean
-	 */
-	public static boolean getMultiPageConfirm() {
-		return pref.getBoolean(QueryOptions.MULTI_PAGE_CONFIRM, true);
-	}
-
-	/**
-	 * 
-	 * Set show confirmation prompt status of this server to preference
-	 * 
-	 * @param serverInfo
-	 *            the ServerInfo object
-	 * @param isSave
-	 *            whether save
-	 */
-	public static void setMultiPageConfirm(boolean useConfirm) {
-		pref.putBoolean(QueryOptions.MULTI_PAGE_CONFIRM, useConfirm);
-	}
-
-	/**
-	 * 
 	 * Load added host from file preference to be compatible for the version
 	 * before 8.4.0
 	 * 
@@ -1293,5 +1209,9 @@ public final class QueryOptions {
 		}
 
 		return getDBMapKey(dbUser, dbName, address, port, serverName, isCMMode);
+	}
+
+	public static boolean isExistPrefix(ServerInfo serverInfo) {
+		return getPrefix(serverInfo) != null ? true : false;
 	}
 }

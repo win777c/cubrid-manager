@@ -630,7 +630,8 @@ public class ExportQueryResultDialog extends
 			CubridDatabase database = null;
 			for (QueryExecuter queryExecuter : queryExecuterList) {
 				exportConfig.setSQL(fileName, queryExecuter.getOrignQuery());
-				exportConfig.setResultSetDataCache(queryExecuter.getTableDataCache());
+				// TODO Need to refactoring without ResultSetDataCache
+//				exportConfig.setResultSetDataCache(queryExecuter.getTableDataCache());
 				exportConfig.setDataFilePath(fileName, fileFullName);
 				if (database == null) {
 					database = queryExecuter.getDatabase();

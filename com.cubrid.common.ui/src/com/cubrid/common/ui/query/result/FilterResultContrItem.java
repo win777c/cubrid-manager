@@ -102,8 +102,7 @@ public class FilterResultContrItem extends ControlContribution {
 	public FilterResultContrItem(QueryExecuter qe, int pageLimit) {
 		super(ID);
 		this.qe = qe;
-		ServerInfo serverInfo = qe.getDatabase().getServer().getServerInfo();
-		this.pageLimit = QueryOptions.getSearchUnitCount(serverInfo);
+		this.pageLimit = pageLimit;
 	}
 
 	/**
@@ -152,9 +151,9 @@ public class FilterResultContrItem extends ControlContribution {
 		lblLimit.setText(" " + Messages.lblSearchLimit + " ");
 
 		pageLimitCombo = new Combo(comp, SWT.READ_ONLY);
-		pageLimitCombo.setItems(new String[] { "1000", "5000", "10000" });
+		pageLimitCombo.setItems(new String[] { "100", "200", "500", "1000", "5000" });
 		pageLimitCombo.setLayoutData(CommonUITool.createGridData(1, 1, -1, -1));
-		pageLimitCombo.setText(""+pageLimit);
+		pageLimitCombo.setText(Integer.toString(pageLimit));
 		pageLimitCombo.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				int limit = StringUtil.intValue(pageLimitCombo.getText());
@@ -384,7 +383,6 @@ public class FilterResultContrItem extends ControlContribution {
 
 		qe.setFilterSetting(filterSetting);
 		qe.makeItem();
-		qe.updateActions();
 	}
 
 	/**
@@ -521,5 +519,9 @@ public class FilterResultContrItem extends ControlContribution {
 	
 	public boolean isUseFilter() {
 		return (text == null || text.isDisposed()) ? false : text.getText().length() > 0;
+	}
+
+	public int getSearchUnit() {
+		return pageLimitCombo == null ? pageLimit : Integer.parseInt(pageLimitCombo.getText());
 	}
 }

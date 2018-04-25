@@ -446,7 +446,6 @@ class MultiQueryThread implements
 
 			RecentlyUsedSQLDetailPersistUtils.load(database);
 
-			boolean enableSearchUnit = QueryOptions.getEnableSearchUnit(serverInfo);
 			int unitCount = QueryOptions.getSearchUnitCount(serverInfo);
 			int sqlTotalCount = qVector.size();
 			for (int i = 0; i < sqlTotalCount; i++) {
@@ -470,7 +469,7 @@ class MultiQueryThread implements
 				}
 
 				String orignSQL = sql;
-				if (enableSearchUnit && unitCount > 0) {
+				if (unitCount > 0) {
 					multiQuerySql = SqlParser.getPaginatingSqlClause(sql);
 				}
 				String order = StringUtil.getOrdinalFromCardinalNumber(i+1);

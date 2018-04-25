@@ -75,7 +75,7 @@ public class TextRecordProcessor implements
 				queryRecord.setQueryInfo(queryInfo);
 			}
 			int dataID = 1;
-			while (resultSet.next() && dataID <= getFetchNumber(queryInfo)) {
+			while (resultSet.next()) {
 				Map<String, String> data = new HashMap<String, String>();
 				data.put(String.valueOf(0), String.valueOf(dataID++));
 				for (int i = 1; i <= columnCount; i++) {
@@ -170,9 +170,5 @@ public class TextRecordProcessor implements
 			}
 		}
 		return dataToput;
-	}
-
-	public int getFetchNumber(QueryInfo queryInfo) {
-		return queryInfo.getPageSize();
 	}
 }

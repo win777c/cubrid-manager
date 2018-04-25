@@ -43,5 +43,4 @@ import com.cubrid.jdbc.proxy.driver.CUBRIDResultSetProxy;
  */
 public interface IRecordProcessor {
 	public void process(CUBRIDResultSetProxy resultSet, QueryRecord queryRecord) throws SQLException;
-	public int getFetchNumber(QueryInfo queryInfo);
 }

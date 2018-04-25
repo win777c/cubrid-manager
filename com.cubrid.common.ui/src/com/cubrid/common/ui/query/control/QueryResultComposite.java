@@ -312,7 +312,7 @@ public class QueryResultComposite extends Composite implements ISubTabSelection 
 		resultTable.setHeaderVisible(true);
 		resultTable.setLinesVisible(true);
 		resultTable.setBackground(BACKGROUND_NORMAL);
-		CommonUITool.hackForYosemite(resultTable);		
+		CommonUITool.hackForYosemite(resultTable);
 		// display data compare label for multiple queries
 		if (this.multiResultsCompare == true) {
 			Composite compareButtonComposite = new Composite(resultContainer, SWT.None);
@@ -567,10 +567,7 @@ public class QueryResultComposite extends Composite implements ISubTabSelection 
 				rollbackModifiedItem.setEnabled(false);
 				result.clearModifiedLog();
 
-				QueryInfo queryInfo = result.getQueryInfo();
-				queryInfo.setCurrentPage(queryInfo.getCurrentPage());
 				result.makeItem();
-				result.updateActions();
 
 				result.swRecordItem.setSelection(false);
 				result.insertRecordItem.setEnabled(false);
