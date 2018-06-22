@@ -730,17 +730,28 @@ public class Messages extends
 	public static String tablesDetailInfoPartBtnViewDataTip;
 	public static String tablesDetailInfoPartBtnViewDataSelectOne;
 	public static String tablesDetailInfoPartBtnEsitmateRecord;
+	public static String tablesDetailInfoPartBtnEsitmateColumn;
+	public static String tablesDetailInfoPartBtnEsitmateKey;
+	public static String tablesDetailInfoPartBtnEsitmateRecordSize;
 	public static String tablesDetailInfoPartBtnEsitmateRecordAlert;
+	public static String tablesDetailInfoPartBtnEsitmateAlert;
 	public static String tablesDetailInfoPartBtnCopyTableNames;
 	public static String tablesDetailInfoPartBtnCopyColumnNames;
 	public static String tablesDetailInfoPartBtnRefreshTip;
 	public static String tablesDetailInfoPartBtnEsitmateRecordTip;
+	public static String tablesDetailInfoPartBtnEsitmateColumnTip;
+	public static String tablesDetailInfoPartBtnEsitmateKeyTip;
+	public static String tablesDetailInfoPartBtnEsitmateRecordSizeTip;
 	public static String tablesDetailInfoPartBtnCopyTableNamesTip;
 	public static String tablesDetailInfoPartBtnCopyColumnNamesTip;
 	public static String tablesDetailInfoPartBtnCopySuccessTitle;
 	public static String tablesDetailInfoPartBtnCopySuccessMsg;
 	public static String tablesDetailInfoPartBtnCopySuccessFailed;
 	public static String tablesDetailInfoPartNotEstimated;
+	public static String tablesDetailInfoPartNotRunColumn;
+	public static String tablesDetailInfoPartNotRunKey;
+	public static String tablesDetailInfoPartNotRunSize;
+
 	public static String tablesDetailInfoPartRefreshConfirm;
 	public static String tablesDetailInfoPartRefreshBtn;
 	public static String tablesDetailInfoPartCloseMenu;
@@ -751,6 +762,16 @@ public class Messages extends
 	public static String tablesDetailInfoPartRefreshMenu;
 	public static String tablesDetailInfoLoadingDataTitle;
 	public static String tablesDetailInfoLoadingData;
+
+	public static String loadTableRecordCountsProgressTaskName;
+	public static String loadTableColumnsProgressTaskName;
+	public static String loadTableKeysProgressTaskName;
+	public static String loadTableRecordSizeProgressTaskName;
+	public static String loadTableRecordCountsProgressSubTaskName;
+	public static String loadTableColumnsProgressSubTaskName;
+	public static String loadTableKeysProgressSubTaskName;
+	public static String loadTableRecordSizeProgressSubTaskName;
+
 	
 	public static String errGetSchemaInfo;
 	

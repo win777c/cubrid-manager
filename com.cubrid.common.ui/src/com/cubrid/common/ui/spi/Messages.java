@@ -198,8 +198,6 @@ public class Messages extends
 	public static String brokerLogTopMergeProgressSuccess;
 
 	public static String tablesDetailInfoPartProgressTaskName;
-	public static String loadTableRecordCountsProgressTaskName;
-	public static String loadTableRecordCountsProgressSubTaskName;
 
 	//table cell editor
 	public static String msgFileExist;
@@ -266,5 +264,6 @@ public class Messages extends
 	public static String msgConfirmLogoutConnwithJob;
 	public static String msgConfirmDeleteConnwithJob;
 	
+	public static String moreNodeLabel;
 
 }

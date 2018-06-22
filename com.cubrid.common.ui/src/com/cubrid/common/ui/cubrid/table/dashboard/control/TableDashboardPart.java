@@ -128,8 +128,12 @@ import com.cubrid.common.ui.spi.model.NodeType;
 import com.cubrid.common.ui.spi.part.CubridEditorPart;
 import com.cubrid.common.ui.spi.progress.CommonTaskExec;
 import com.cubrid.common.ui.spi.progress.ExecTaskWithProgress;
+import com.cubrid.common.ui.spi.progress.LoadTableColumnsProgress;
 import com.cubrid.common.ui.spi.progress.LoadTableDetailInfoTask;
+import com.cubrid.common.ui.spi.progress.LoadTableKeysProgress;
+import com.cubrid.common.ui.spi.progress.LoadTableProgress;
 import com.cubrid.common.ui.spi.progress.LoadTableRecordCountsProgress;
+import com.cubrid.common.ui.spi.progress.LoadTableRecordSizeProgress;
 import com.cubrid.common.ui.spi.progress.OpenTablesDetailInfoPartProgress;
 import com.cubrid.common.ui.spi.table.button.ITableButtonSupportEvent;
 import com.cubrid.common.ui.spi.table.button.InputTextDialog;
@@ -188,9 +192,107 @@ public class TableDashboardPart extends CubridEditorPart implements ITableButton
 				}
 
 				if (CommonUITool.openConfirmBox(Messages.tablesDetailInfoPartBtnEsitmateRecordAlert)) {
-					LoadTableRecordCountsProgress progress = new LoadTableRecordCountsProgress(
-							database, list);
-					progress.getTableCounts();
+					LoadTableProgress progress = new LoadTableRecordCountsProgress(
+							database, list,
+							Messages.loadTableRecordCountsProgressTaskName,
+							Messages.loadTableRecordCountsProgressSubTaskName);
+					progress.getCount();
+					tableListView.refresh();
+				}
+			}
+		});
+
+		new ToolItem(toolBar, SWT.SEPARATOR);
+		ToolItem columnItem = new ToolItem(toolBar, SWT.PUSH);
+		columnItem.setText(Messages.tablesDetailInfoPartBtnEsitmateColumn);
+		columnItem.setToolTipText(Messages.tablesDetailInfoPartBtnEsitmateColumnTip);
+		columnItem.setImage(CommonUIPlugin.getImage("icons/action/table_column_item.png"));
+		columnItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				List<TableDetailInfo> list = new ArrayList<TableDetailInfo>();
+				TableItem[] items = tableListView.getTable().getSelection();
+				for (TableItem item : items) {
+					list.add((TableDetailInfo) item.getData());
+				}
+
+				// Check selected size and confirm
+				if (list.size() == 0) {
+					CommonUITool.openWarningBox(Messages.tablesDetailInfoPartAlertNotSelected);
+					return;
+				}
+
+				if (CommonUITool.openConfirmBox(Messages.bind(
+						Messages.tablesDetailInfoPartBtnEsitmateAlert, "Columns"))) {
+					LoadTableProgress progress = new LoadTableColumnsProgress(
+							database, list,
+							Messages.loadTableColumnsProgressTaskName,
+							Messages.loadTableColumnsProgressSubTaskName);
+					progress.getCount();
+					tableListView.refresh();
+				}
+			}
+		});
+
+		new ToolItem(toolBar, SWT.SEPARATOR);
+		ToolItem keyItem = new ToolItem(toolBar, SWT.PUSH);
+		keyItem.setText(Messages.tablesDetailInfoPartBtnEsitmateKey);
+		keyItem.setToolTipText(Messages.tablesDetailInfoPartBtnEsitmateKeyTip);
+		keyItem.setImage(CommonUIPlugin.getImage("icons/action/key.png"));
+		keyItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				List<TableDetailInfo> list = new ArrayList<TableDetailInfo>();
+				TableItem[] items = tableListView.getTable().getSelection();
+				for (TableItem item : items) {
+					list.add((TableDetailInfo) item.getData());
+				}
+
+				// Check selected size and confirm
+				if (list.size() == 0) {
+					CommonUITool.openWarningBox(Messages.tablesDetailInfoPartAlertNotSelected);
+					return;
+				}
+
+				if (CommonUITool.openConfirmBox(Messages.bind(
+						Messages.tablesDetailInfoPartBtnEsitmateAlert, "Keys"))) {
+					LoadTableProgress progress = new LoadTableKeysProgress(
+							database, list,
+							Messages.loadTableKeysProgressTaskName,
+							Messages.loadTableKeysProgressSubTaskName);
+					progress.getCount();
+					tableListView.refresh();
+				}
+			}
+		});
+
+		new ToolItem(toolBar, SWT.SEPARATOR);
+		ToolItem recordSizeItem = new ToolItem(toolBar, SWT.PUSH);
+		recordSizeItem.setText(Messages.tablesDetailInfoPartBtnEsitmateRecordSize);
+		recordSizeItem.setToolTipText(Messages.tablesDetailInfoPartBtnEsitmateRecordSizeTip);
+		recordSizeItem.setImage(CommonUIPlugin.getImage("icons/action/record_size.png"));
+		recordSizeItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				List<TableDetailInfo> list = new ArrayList<TableDetailInfo>();
+				TableItem[] items = tableListView.getTable().getSelection();
+				for (TableItem item : items) {
+					list.add((TableDetailInfo) item.getData());
+				}
+
+				// Check selected size and confirm
+				if (list.size() == 0) {
+					CommonUITool.openWarningBox(Messages.tablesDetailInfoPartAlertNotSelected);
+					return;
+				}
+
+				if (CommonUITool.openConfirmBox(Messages.bind(
+						Messages.tablesDetailInfoPartBtnEsitmateAlert, "Record size"))) {
+					LoadTableProgress progress = new LoadTableRecordSizeProgress(
+							database, list,
+							Messages.loadTableRecordSizeProgressTaskName,
+							Messages.loadTableRecordSizeProgressSubTaskName);
+					progress.getCount();
 					tableListView.refresh();
 				}
 			}

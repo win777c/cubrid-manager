@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2013 Search Solution Corporation. All rights reserved by Search
- * Solution.
+ * Copyright (C) 2018 CUBRID Co., Ltd. All rights reserved by CUBRID Co., Ltd.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: -
@@ -34,31 +33,36 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.cubrid.common.core.common.model.TableDetailInfo;
-import com.cubrid.common.core.util.QuerySyntax;
 import com.cubrid.common.core.util.QueryUtil;
 import com.cubrid.common.ui.query.control.QueryExecuter;
 import com.cubrid.common.ui.spi.model.CubridDatabase;
 import com.cubrid.jdbc.proxy.driver.CUBRIDPreparedStatementProxy;
 
-public class LoadTableRecordCountsProgress extends LoadTableProgress {
+/**
+ * The Progress class that gets the number of columns in the table.
+ *
+ * @author hun-a
+ *
+ */
+public class LoadTableColumnsProgress extends LoadTableProgress {
 
-	public LoadTableRecordCountsProgress(CubridDatabase database,
+	public LoadTableColumnsProgress(CubridDatabase database,
 			List<TableDetailInfo> tableList, String taskName, String subTaskName) {
 		super(database, tableList, taskName, subTaskName);
 	}
 
 	@Override
 	protected Object count(Connection conn, String tableName) {
-		int recordsCount = 0;
+		int columnsCount = 0;
 		try {
 			if (conn == null || conn.isClosed()) {
-				return recordsCount;
+				return columnsCount;
 			}
 		} catch (SQLException e) {
 			LOGGER.error("", e);
 		}
 
-		String sql = "SELECT COUNT(*) FROM " + QuerySyntax.escapeKeyword(tableName);
+		String sql = "SELECT COUNT(*) FROM db_attribute WHERE class_name =?";
 
 		// [TOOLS-2425]Support shard broker
 		if (CubridDatabase.hasValidDatabaseInfo(database)) {
@@ -69,9 +73,10 @@ public class LoadTableRecordCountsProgress extends LoadTableProgress {
 		ResultSet rs = null;
 		try {
 			stmt = QueryExecuter.getStatement(conn, sql, false, false);
+			stmt.setString(1, tableName);
 			rs = stmt.executeQuery();
 			if (rs.next()) {
-				recordsCount = rs.getInt(1);
+				columnsCount = rs.getInt(1);
 			}
 		} catch (SQLException e) {
 			LOGGER.error("", e);
@@ -80,11 +85,11 @@ public class LoadTableRecordCountsProgress extends LoadTableProgress {
 			QueryUtil.freeQuery(stmt, rs);
 		}
 
-		return recordsCount;
+		return columnsCount;
 	}
 
 	@Override
 	protected void setCount(TableDetailInfo tablesDetailInfo, Object count) {
-		tablesDetailInfo.setRecordsCount((int) count);
+		tablesDetailInfo.setColumnsCount((int) count);
 	}
 }

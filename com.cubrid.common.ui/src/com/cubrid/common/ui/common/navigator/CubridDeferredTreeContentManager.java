@@ -38,6 +38,7 @@ import com.cubrid.common.ui.common.Messages;
 import com.cubrid.common.ui.spi.action.ActionManager;
 import com.cubrid.common.ui.spi.model.ICubridNode;
 import com.cubrid.common.ui.spi.model.NodeType;
+import com.cubrid.common.ui.spi.model.loader.schema.event.MoreNodeTreeEvent;
 
 /**
  * 
@@ -54,6 +55,7 @@ public class CubridDeferredTreeContentManager extends DeferredTreeContentManager
 	public CubridDeferredTreeContentManager(AbstractTreeViewer viewer) {
 		super(viewer);
 		treeViewer = viewer;
+		addHostListeners();
 	}
 
 	/**
@@ -182,5 +184,9 @@ public class CubridDeferredTreeContentManager extends DeferredTreeContentManager
 			}
 			treeViewer.expandToLevel(children[i], 1);
 		}
+	}
+
+	private void addHostListeners() {
+		treeViewer.addTreeListener(new MoreNodeTreeEvent(treeViewer));
 	}
 }

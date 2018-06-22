@@ -30,6 +30,8 @@ package com.cubrid.common.ui.spi.model.loader.schema;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
@@ -163,30 +165,17 @@ public class CubridTablesFolderLoader extends
 			List<ClassInfo> allClassInfoList, int level,
 			IProgressMonitor monitor) {
 		List<String> tables = new ArrayList<String>();
-		for (ClassInfo classInfo : allClassInfoList) {
+		final int TABLE_COUNT = allClassInfoList.size() <= 100 ? allClassInfoList.size() : 100;
+		for (int i = 0; i < TABLE_COUNT; i++) {
+			ClassInfo classInfo = allClassInfoList.get(i);
 			String id = parent.getId() + NODE_SEPARATOR
 					+ classInfo.getClassName();
-			ICubridNode classNode = new DefaultSchemaNode(id,
-					classInfo.getClassName(),
-					"icons/navigator/schema_table_item.png");
-			classNode.setEditorId(SchemaInfoEditorPart.ID);
-			classNode.setContainer(true);
-			classNode.setModelObj(classInfo);
-			classNode.setType(NodeType.USER_TABLE);
+			ICubridNode classNode = createClassNode(id, classInfo, level);
 			parent.addChild(classNode);
-
-			ICubridNodeLoader loader = null;
-			if (classInfo.isPartitionedClass()) {
-				classNode.setType(NodeType.USER_PARTITIONED_TABLE_FOLDER);
-				classNode.setIconPath("icons/navigator/schema_table_partition.png");
-				classNode.setContainer(true);
-				loader = new CubridPartitionedTableLoader();
-			} else {
-				loader = new CubridUserTableLoader();
-			}
-			loader.setLevel(level);
-			classNode.setLoader(loader);
 			tables.add(classInfo.getClassName());
+		}
+		if (allClassInfoList.size() > TABLE_COUNT) {
+			parent.addChild(createMoreNode(parent, TABLE_COUNT));
 		}
 		if (level == DEFINITE_LEVEL) {
 			CubridDatabase database = ((ISchemaNode) parent).getDatabase();
@@ -227,6 +216,44 @@ public class CubridTablesFolderLoader extends
 		}
 	}
 
+	public static ICubridNode createClassNode(String id, ClassInfo classInfo, int level) {
+		ICubridNode classNode = new DefaultSchemaNode(id,
+				classInfo.getClassName(),
+				"icons/navigator/schema_table_item.png");
+		classNode.setEditorId(SchemaInfoEditorPart.ID);
+		classNode.setContainer(true);
+		classNode.setModelObj(classInfo);
+		classNode.setType(NodeType.USER_TABLE);
+
+		ICubridNodeLoader loader = null;
+		if (classInfo.isPartitionedClass()) {
+			classNode.setType(NodeType.USER_PARTITIONED_TABLE_FOLDER);
+			classNode.setIconPath("icons/navigator/schema_table_partition.png");
+			classNode.setContainer(true);
+			loader = new CubridPartitionedTableLoader();
+		} else {
+			loader = new CubridUserTableLoader();
+		}
+		loader.setLevel(level);
+		classNode.setLoader(loader);
+
+		return classNode;
+	}
+
+	public static ICubridNode createMoreNode(ICubridNode parent, int endOfNodePosition) {
+		String id = parent.getId() + NODE_SEPARATOR + endOfNodePosition;
+		ICubridNode classNode = new DefaultSchemaNode(id,
+				Messages.moreNodeLabel, "icons/navigator/schema_table_item.png");
+		classNode.setEditorId(SchemaInfoEditorPart.ID);
+		classNode.setType(NodeType.MORE);
+		classNode.setContainer(true);
+		classNode.setParent(parent);
+		CubridDatabase database = ((DefaultSchemaNode) parent).getDatabase();
+		((DefaultSchemaNode) classNode).setDatabase(database);
+		((DefaultSchemaNode) classNode).setServer(database.getServer());
+		return classNode;
+	}
+
 	/**
 	 * 
 	 * Create user table node for other type
@@ -240,30 +267,20 @@ public class CubridTablesFolderLoader extends
 	 */
 	public static ICubridNode createUserTableNode(ICubridNode parent,
 			String id, ClassInfo classInfo, int level, IProgressMonitor monitor) {
-		ICubridNode classNode = new DefaultSchemaNode(id,
-				classInfo.getClassName(),
-				"icons/navigator/schema_table_item.png");
-		classNode.setEditorId(SchemaInfoEditorPart.ID);
-		classNode.setContainer(true);
-		classNode.setModelObj(classInfo);
-		classNode.setType(NodeType.USER_TABLE);
+		ICubridNode classNode = createClassNode(id, classInfo, level);
 		parent.addChild(classNode);
-
-		ICubridNodeLoader loader = null;
-		if (classInfo.isPartitionedClass()) {
-			classNode.setType(NodeType.USER_PARTITIONED_TABLE_FOLDER);
-			classNode.setIconPath("icons/navigator/schema_table_partition.png");
-			classNode.setContainer(true);
-			loader = new CubridPartitionedTableLoader();
-		} else {
-			loader = new CubridUserTableLoader();
-		}
-		loader.setLevel(level);
-		classNode.setLoader(loader);
 		if (level == DEFINITE_LEVEL) {
 			classNode.getChildren(monitor);
 		}
 		return classNode;
 	}
 
+	public static int moreNodeIndex(String input) {
+		Pattern pattern = Pattern.compile("\\/\\d+$");
+		Matcher matcher = pattern.matcher(input);
+		if (matcher.find()) {
+			return Integer.parseInt(matcher.group().substring(1));
+		}
+		return 0;
+	}
 }
