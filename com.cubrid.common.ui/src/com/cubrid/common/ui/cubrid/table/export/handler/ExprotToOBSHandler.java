@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -75,6 +74,7 @@ public class ExprotToOBSHandler extends
 
 		String schemaFile = exportConfig.getSchemaFilePath();
 		String indexFile = exportConfig.getIndexFilePath();
+		String triggerFile = exportConfig.getTriggerFilePath();
 		Set<String> tableSet = new HashSet<String>();
 		tableSet.addAll(exportConfig.getTableNameList());
 
@@ -88,9 +88,13 @@ public class ExprotToOBSHandler extends
 					exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(indexFile));
 				}
 
+				if (exportConfig.isExportTrigger()) {
+					exportDataEventHandler.handleEvent(new ExportDataBeginOneTableEvent(triggerFile));
+				}
+
 				exportSchemaToOBSFile(dbInfo, exportDataEventHandler, tableSet, schemaFile,
-						indexFile, exportConfig.getFileCharset(),
-						exportConfig.isExportSerialStartValue());
+						indexFile, triggerFile, exportConfig.getFileCharset(),
+						exportConfig.isExportSerialStartValue(), false);
 
 				if (exportConfig.isExportSchema()) {
 					exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(schemaFile));
@@ -99,6 +103,10 @@ public class ExprotToOBSHandler extends
 				if (exportConfig.isExportIndex()) {
 					exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(indexFile));
 					exportDataEventHandler.handleEvent(new ExportDataFinishOneTableEvent(indexFile));
+				}
+				if (exportConfig.isExportTrigger()) {
+					exportDataEventHandler.handleEvent(new ExportDataSuccessEvent(triggerFile));
+					exportDataEventHandler.handleEvent(new ExportDataFinishOneTableEvent(triggerFile));
 				}
 
 				if (exportConfig.isExportData()) { //data

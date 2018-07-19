@@ -57,7 +57,9 @@ import org.slf4j.Logger;
 
 import com.cubrid.common.core.common.model.SchemaInfo;
 import com.cubrid.common.core.common.model.SerialInfo;
+import com.cubrid.common.core.common.model.Trigger;
 import com.cubrid.common.core.util.Closer;
+import com.cubrid.common.core.util.CompatibleUtil;
 import com.cubrid.common.core.util.FileUtil;
 import com.cubrid.common.core.util.LogUtil;
 import com.cubrid.common.core.util.QuerySyntax;
@@ -70,8 +72,12 @@ import com.cubrid.common.ui.query.control.QueryExecuter;
 import com.cubrid.common.ui.spi.util.FieldHandlerUtils;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
+import com.cubrid.cubridmanager.core.cubrid.serial.task.GetSerialInfoListTask;
 import com.cubrid.cubridmanager.core.cubrid.table.model.SchemaChangeManager;
 import com.cubrid.cubridmanager.core.cubrid.table.model.SchemaDDL;
+import com.cubrid.cubridmanager.core.cubrid.trigger.model.TriggerDDL;
+import com.cubrid.cubridmanager.core.cubrid.trigger.task.GetTriggerListTask;
+import com.cubrid.cubridmanager.core.cubrid.trigger.task.JDBCGetTriggerInfoTask;
 import com.cubrid.jdbc.proxy.driver.CUBRIDBlobProxy;
 import com.cubrid.jdbc.proxy.driver.CUBRIDClobProxy;
 import com.cubrid.jdbc.proxy.driver.CUBRIDPreparedStatementProxy;
@@ -432,7 +438,8 @@ public abstract class AbsExportDataHandler {
 	 */
 	public static void exportSchemaToOBSFile(DatabaseInfo databaseInfo,
 			IExportDataEventHandler exportDataEventHandler, Set<String> tableNameList,
-			String schemaFile, String indexFile, String fileCharset, boolean exportStartValue) throws SQLException,
+			String schemaFile, String indexFile, String triggerFile, String fileCharset,
+			boolean exportStartValue, boolean isLoadDB) throws SQLException,
 			IOException { // FIXME move this logic to core module
 		if (schemaFile == null && indexFile == null) {
 			return;
@@ -441,7 +448,9 @@ public abstract class AbsExportDataHandler {
 		Connection conn = null;
 		BufferedWriter schemaWriter = null;
 		BufferedWriter indexWriter = null;
+		BufferedWriter triggerWriter = null;
 		LinkedList<SchemaInfo> schemaInfoList = null;
+		List<Trigger> triggerList = null;
 		boolean hasDataInIndexFile = false;
 		try {
 			if (schemaFile != null) {
@@ -451,6 +460,11 @@ public abstract class AbsExportDataHandler {
 			if (indexFile != null) {
 				indexWriter = getBufferedWriter(indexFile, fileCharset);
 				schemaInfoList = new LinkedList<SchemaInfo>();
+			}
+
+			if (triggerFile != null) {
+				triggerWriter = getBufferedWriter(triggerFile, fileCharset);
+				triggerList = new ArrayList<Trigger>();
 			}
 
 			SchemaDDL schemaDDL = new SchemaDDL(new SchemaChangeManager(databaseInfo, true),
@@ -492,6 +506,18 @@ public abstract class AbsExportDataHandler {
 				}
 
 				schemaInfoList.add(schemaInfo);
+			}
+
+			// TOOLS-4299, write the serial to the schema file
+			if (isLoadDB) {
+				GetSerialInfoListTask task = new GetSerialInfoListTask(databaseInfo);
+				task.execute();
+				boolean isSupportCache = CompatibleUtil.isSupportCache(databaseInfo);
+				for (SerialInfo serial : task.getSerialInfoList()) {
+					schemaWriter.write(QueryUtil.createSerialSQLScript(serial, isSupportCache));
+					schemaWriter.write(StringUtil.NEWLINE);
+				}
+				schemaWriter.flush();
 			}
 
 			// write PKs, indexes to a file
@@ -537,10 +563,24 @@ public abstract class AbsExportDataHandler {
 					indexWriter.flush();
 				}
 			}
+
+			// TOOLS-4299 export the triggers
+			if (triggerList != null) {
+				GetTriggerListTask triggerNameTask = new GetTriggerListTask(databaseInfo.getServerInfo());
+				triggerNameTask.setDbName(databaseInfo.getDbName());
+				triggerNameTask.execute();
+				triggerList = triggerNameTask.getTriggerInfoList();
+				for (Trigger t: triggerList) {
+					triggerWriter.write(TriggerDDL.getDDL(t));
+					triggerWriter.write(StringUtil.NEWLINE);
+				}
+				triggerWriter.flush();
+			}
 		} finally {
 			QueryUtil.freeQuery(conn);
 			FileUtil.close(schemaWriter);
 			FileUtil.close(indexWriter);
+			FileUtil.close(triggerWriter);
 			if (!hasDataInIndexFile) {
 				FileUtil.delete(indexFile);
 			}
