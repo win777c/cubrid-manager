@@ -32,15 +32,13 @@
       <macosx icon="/com.cubrid.cubridmanager.app/icons/cubridmanager.icns"/>
       <solaris/>
       <win useIco="true">
-         <ico path="/com.cubrid.cubridmanager.app/icons/cubridmanager.ico"/>
+         <ico path="/com.cubrid.cubridmanager.app/icons/cubridmanager_6layers.ico"/>
          <bmp/>
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
    </plugins>
