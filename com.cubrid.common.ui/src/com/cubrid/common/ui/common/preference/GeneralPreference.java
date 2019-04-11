@@ -63,13 +63,12 @@ public final class GeneralPreference {
 	public static final String EXTERNAL_CM_PATH = ".external_cm_path";
 	public static final String EXTERNAL_CQB_PATH = ".external_cqb_path";
 	public static final String MAX_QUERY_TUNER_WINDOW=".max_query_tuner_window";
-		
 	private static IPreferenceStore pref = null;
 
 	static {
 		pref = CommonUIPlugin.getDefault().getPreferenceStore();
 		pref.setDefault(CHECK_NEW_INFO_ON_START_UP, true);
-		pref.setDefault(IS_AUTO_CHECK_UPDATE, ALWAYS);
+		pref.setDefault(IS_AUTO_CHECK_UPDATE, PROMPT);
 		pref.setDefault(USE_CLICK_SINGLE, false);
 		pref.setDefault(AUTO_COMPLETE_KEYWORD, true);
 		pref.setDefault(AUTO_COMPLETE_TABLESORCOLUMNS, true);
