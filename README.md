@@ -1,7 +1,7 @@
 # CUBRID Manager
-[CUBRID Manager](https://github.com/CUBRID/cubrid-manager) is a [CUBRID](https://github.com/CUBRID/cubrid) database management tool that provides CUBRID functions for database management and executing query in GUI environment. The management function of the CUBRID Manager can be easily performed by using the GUI. In addition, the query function of the CUBRID Manager provides a query editor tool for application development.
+[CUBRID Manager](https://github.com/CUBRID/cubrid-manager) (CM) is a database management tool that provides CUBRID functions for database management and executing query in GUI environment. The management function of the CUBRID Manager can be easily performed by using the GUI. In addition, the query function of the CUBRID Manager provides a query editor tool for application development.
 
-The management function of CUBRID Manager can only be used in the environment where the [CUBRID Manager server](https://github.com/CUBRID/cubrid-manager-server) running on the server on which the CUBRID DBMS is installed, but the query function can be executed without running the CUBRID Manager server.
+The CUBRID Manager can only be used in the environment where the [CUBRID Manager server](https://github.com/CUBRID/cubrid-manager-server) is running on the server that has installed the CUBRID DBMS, but the query function can be executed without running the CUBRID Manager server.
 
 The CUBRID Manager is a Java application based on [Eclipse RCP](https://wiki.eclipse.org/Rich_Client_Platform) that runs only on JRE or JDK 1.6 or later, and the recommended JRE version is 1.7.
 
