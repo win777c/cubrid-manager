@@ -21,9 +21,9 @@
 ;!define INFILE_PATH 'cubridmanager'
 ;!define OUTFILE_PATH '.'
 
-!define PRODUCT_NAME 'CUBRID Manager'
+!define PRODUCT_NAME 'CUBRID Admin'
 !define PRODUCT_VERSION '10.2.0'
-!define PRODUCT_EXE_NAME 'cubridmanager'
+!define PRODUCT_EXE_NAME 'cubridadmin'
 !define INSTALLER_ARCH 'x64'
 
 !define SHORTCUT_NAME '${PRODUCT_NAME}'
@@ -41,7 +41,7 @@
 ###################################################
 
 Name '${PRODUCT_NAME} ${PRODUCT_VERSION}'
-OutFile '${OUTFILE_PATH}\CUBRIDManager-${INTERNAL_VERSION}-windows-x64.exe'
+OutFile '${OUTFILE_PATH}\CUBRIDAdmin-${INTERNAL_VERSION}-windows-x64.exe'
 BrandingText 'http://www.cubrid.org'
 
 ;---------------------------------------------------
@@ -171,7 +171,7 @@ RequestExecutionLevel user
 # Install section
 ###################################################
 
-Section 'CUBRIDManager' SEC_CUBRIDManager
+Section 'CUBRIDAdmin' SEC_CUBRIDManager
   Call WindowsArchCheck
   Call CUBRIDManagerExist
 
@@ -290,12 +290,12 @@ Function .onInit
 
   StrCmp $R1 '' 0 lable_cubrid_env_set_x86
     Strcpy $R2 $WINDIR 2
-    StrCpy $INSTDIR '$R2\CUBRID\cubridmanager'
+    StrCpy $INSTDIR '$R2\CUBRID\cubridadmin'
     Return
   lable_cubrid_env_set_x86:
     ${StrReplace} $R1 "//" "\"
   	Strcpy $R3 $0
-    StrCpy $INSTDIR '$R3\cubridmanager'
+    StrCpy $INSTDIR '$R3\cubridadmin'
     Return
 FunctionEnd
 
