@@ -1656,6 +1656,25 @@ public class SchemaDDL {
 	}
 
 	/**
+	 * Return the DDL of changing owner (ALTER TABLE Statement)
+	 *
+	 * @param tableName String the table name
+	 * @param newOwner String the new Owner
+	 * @return String a string indicates change owner statement
+	 */
+	public String getChangeOwnerDDLWithAlterStatement(String tableName, String newOwner) {
+		// ALTER TABLE class_name OWNER TO newOwner
+		StringBuffer bf = new StringBuffer();
+		bf.append(StringUtil.NEWLINE);
+		bf.append("ALTER TABLE ");
+		bf.append(tableName);
+		bf.append(" OWNER TO ");
+		bf.append(newOwner);
+		bf.append(StringUtil.NEWLINE);
+		return bf.toString();
+	}
+
+	/**
 	 * Return the DDL of dropping PK
 	 *
 	 * @param tableName String the given table name
