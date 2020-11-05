@@ -551,8 +551,14 @@ public class CreateViewDialog extends
 			boolean isSameOwner = StringUtil.isEqualIgnoreCase(ownerOld, ownerNew);
 			if (!isSameOwner) {
 				sql = makeChangeOwnerSQLScript();
+
 				sql = DatabaseInfo.wrapShardQuery(databaseInfo, sql);
-				task.addCallSqls(sql);
+
+				if (CompatibleUtil.isSupportChangeOwnerWithAlterStatement(dbInfo)) {
+					task.addSqls(sql);
+				} else {
+					task.addCallSqls(sql);
+				}
 			}
 
 			addGrantAuthSQLScriptToTask(authMap, tableText.getText(), task);
@@ -1068,21 +1074,38 @@ public class CreateViewDialog extends
 	private String makeChangeOwnerSQLScript() { // FIXME move this logic to core module
 		DatabaseInfo dbInfo = database.getDatabaseInfo();
 
-		String tableName = tableText.getText();
+		String viewName = tableText.getText();
 		String ownerNew = ownerCombo.getText();
 		String ownerOld = dbInfo.getAuthLoginedDbUserInfo().getName();
 
 		if (ownerOld.equalsIgnoreCase(ownerNew)) {
 			return null;
-		} else if (StringUtil.isEmpty(tableName) && StringUtil.isEmpty(ownerNew)) {
+		} else if (StringUtil.isEmpty(viewName) && StringUtil.isEmpty(ownerNew)) {
 			return null;
 		}
 
 		StringBuffer bf = new StringBuffer();
+
+		if (CompatibleUtil.isSupportChangeOwnerWithAlterStatement(dbInfo)) {
+			createAlterStatementForChangingOwner(bf, viewName, ownerNew);
+		} else {
+			createMethodCallForChangingOwner(bf, viewName, ownerNew);
+		}
+
+		return bf.toString();
+	}
+
+	/**
+	 * createMethodCallForChangingOwner
+	 * @param bf
+	 * @param viewName
+	 * @param ownerNew
+	 */
+	private void createMethodCallForChangingOwner(StringBuffer bf, String viewName, String ownerNew) {
 		bf.append("CALL CHANGE_OWNER ('");
 
-		if (tableName != null) {
-			bf.append(tableName);
+		if (viewName != null) {
+			bf.append(viewName);
 		}
 
 		bf.append("','");
@@ -1092,8 +1115,26 @@ public class CreateViewDialog extends
 		}
 
 		bf.append("') ON CLASS db_authorizations");
+	}
 
-		return bf.toString();
+	/**
+	 * createAlterStatementForChangingOwner
+	 * @param bf
+	 * @param viewName
+	 * @param ownerNew
+	 */
+	private void createAlterStatementForChangingOwner(StringBuffer bf, String viewName, String ownerNew) {
+		bf.append("ALTER VIEW ");
+
+		if (viewName != null) {
+			bf.append(viewName);
+		}
+
+		bf.append(" OWNER TO ");
+
+		if (ownerNew != null) {
+			bf.append(ownerNew);
+		}
 	}
 
 	/**
