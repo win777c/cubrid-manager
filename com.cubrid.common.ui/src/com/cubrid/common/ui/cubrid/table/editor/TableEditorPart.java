@@ -149,6 +149,7 @@ import com.cubrid.common.ui.spi.util.TableViewUtil;
 import com.cubrid.common.ui.spi.util.ValidateUtil;
 import com.cubrid.common.ui.spi.util.WidgetUtil;
 import com.cubrid.cubridmanager.core.common.jdbc.JDBCConnectionManager;
+import com.cubrid.cubridmanager.core.common.model.ServerInfo;
 import com.cubrid.cubridmanager.core.common.task.CommonSQLExcuterTask;
 import com.cubrid.cubridmanager.core.cubrid.database.model.Collation;
 import com.cubrid.cubridmanager.core.cubrid.database.model.DatabaseInfo;
@@ -427,7 +428,11 @@ public class TableEditorPart extends
 		String changeOwnerDDL = getChangeOwnerDDL();
 		if (StringUtil.isNotEmpty(changeOwnerDDL)) {
 			changeOwnerDDL = dbInfo.wrapShardQuery(changeOwnerDDL);
-			commonSqlTask.addCallSqls(changeOwnerDDL);
+			if (CompatibleUtil.isSupportChangeOwnerWithAlterStatement(dbInfo)) {
+				commonSqlTask.addSqls(changeOwnerDDL);
+			} else {
+				commonSqlTask.addCallSqls(changeOwnerDDL);
+			}
 			isExecuteCommonSqlTask = true;
 		}
 
@@ -666,7 +671,13 @@ public class TableEditorPart extends
 		}
 
 		String tableName = tableNameText.getText();
-		return schemaDDL.getChangeOwnerDDL(tableName, newOwner);
+
+		ServerInfo serverInfo = database.getServer().getServerInfo();
+		if (CompatibleUtil.isSupportChangeOwnerWithAlterStatement(serverInfo)) {
+			return schemaDDL.getChangeOwnerDDLWithAlterStatement(tableName, newOwner);
+		} else {
+			return schemaDDL.getChangeOwnerDDL(tableName, newOwner);
+		}
 	}
 
 	/**
@@ -735,7 +746,6 @@ public class TableEditorPart extends
 			}
 			ownerCombo.setVisibleItemCount(10);
 			fillOwnerCombo();
-
 			if (supportCharset) {
 				final Label collationLabel = new Label(tableNameComp, SWT.NONE);
 				collationLabel.setText(Messages.lblCollation);
