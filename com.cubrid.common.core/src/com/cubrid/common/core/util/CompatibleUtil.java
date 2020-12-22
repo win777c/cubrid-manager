@@ -1291,4 +1291,12 @@ public final class CompatibleUtil {
 	public static boolean isSupportFuncIndex(IServerSpec serverInfo) {
 		return isAfter900(serverInfo);
 	}
+
+	public static boolean isSupportChangeOwnerWithAlterStatement(IDatabaseSpec databaseSpec) {
+		return isAfter900(databaseSpec);
+	}
+
+	public static boolean isSupportChangeOwnerWithAlterStatement(IServerSpec serverInfo) {
+		return isAfter900(serverInfo);
+	}
 }

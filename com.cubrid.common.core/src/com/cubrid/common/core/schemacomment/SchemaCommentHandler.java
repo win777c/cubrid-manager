@@ -139,10 +139,14 @@ public class SchemaCommentHandler {
 		} finally {
 			QueryUtil.freeQuery(stmt);
 		}
-		
-		sql = "CALL CHANGE_OWNER('" + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE + "', 'PUBLIC')"
-				+ " ON CLASS db_authorizations";
 
+		boolean isSupportChangeOwnerWithAlterStatement = CompatibleUtil.isSupportChangeOwnerWithAlterStatement(dbSpec);
+		if (isSupportChangeOwnerWithAlterStatement) {
+			sql = "ALTER TABLE " + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE + " OWNER TO PUBLIC";
+		} else {
+			sql = "CALL CHANGE_OWNER('" + ConstantsUtil.SCHEMA_DESCRIPTION_TABLE + "', 'PUBLIC')"
+					+ " ON CLASS db_authorizations";
+		}
 		// [TOOLS-2425]Support shard broker
 		if (dbSpec.isShard()) {
 			sql = dbSpec.wrapShardQuery(sql);
@@ -150,7 +154,11 @@ public class SchemaCommentHandler {
 
 		try {
 			stmt = conn.createStatement();
-			stmt.executeQuery(sql);
+			if (isSupportChangeOwnerWithAlterStatement) {
+				stmt.executeUpdate(sql);
+			} else {
+				stmt.executeQuery(sql);
+			}
 		} catch (Exception e) {
 			QueryUtil.rollback(conn);
 			LOGGER.error(e.getMessage(), e);

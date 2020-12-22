@@ -122,7 +122,7 @@ public class CreateViewDialog extends
 	private Composite parentComp;
 	private StyledText sqlText;
 	private Combo ownerCombo;
-	private Text tableText;
+	private Text viewNameText;
 	private Text querydescText;
 	private Text viewDescriptionText;
 	private final CubridDatabase database;
@@ -183,7 +183,7 @@ public class CreateViewDialog extends
 				boolean isFirstTab = tabFolder.getSelectionIndex() == 0;
 				boolean isLastTab = tabFolder.getSelectionIndex() == tabFolder.getItemCount() - 1;
 				if (isFirstTab) {
-					tableText.setFocus();
+					viewNameText.setFocus();
 				} else if (isLastTab) {
 					StringBuilder sb = new StringBuilder();
 					String dropSql = makeDropSQLScript();
@@ -219,7 +219,7 @@ public class CreateViewDialog extends
 		});
 
 		init();
-		tableText.setFocus();
+		viewNameText.setFocus();
 
 		return parent;
 	}
@@ -268,11 +268,11 @@ public class CreateViewDialog extends
 		final Label tableNameLabel = new Label(group, SWT.SHADOW_IN);
 		tableNameLabel.setText(Messages.lblViewName);
 
-		tableText = new Text(group, SWT.BORDER);
-		tableText.setTextLimit(ValidateUtil.MAX_SCHEMA_NAME_LENGTH);
+		viewNameText = new Text(group, SWT.BORDER);
+		viewNameText.setTextLimit(ValidateUtil.MAX_SCHEMA_NAME_LENGTH);
 		final GridData gdTableText = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		gdTableText.horizontalIndent = 30;
-		tableText.setLayoutData(gdTableText);
+		viewNameText.setLayoutData(gdTableText);
 
 		if (isCommentSupport) {
 			final Label viewDescriptionLabel = new Label(group, SWT.SHADOW_IN);
@@ -551,11 +551,17 @@ public class CreateViewDialog extends
 			boolean isSameOwner = StringUtil.isEqualIgnoreCase(ownerOld, ownerNew);
 			if (!isSameOwner) {
 				sql = makeChangeOwnerSQLScript();
+
 				sql = DatabaseInfo.wrapShardQuery(databaseInfo, sql);
-				task.addCallSqls(sql);
+
+				if (CompatibleUtil.isSupportChangeOwnerWithAlterStatement(dbInfo)) {
+					task.addSqls(sql);
+				} else {
+					task.addCallSqls(sql);
+				}
 			}
 
-			addGrantAuthSQLScriptToTask(authMap, tableText.getText(), task);
+			addGrantAuthSQLScriptToTask(authMap, viewNameText.getText(), task);
 
 			execTask(-1, new ITask[] { task }, true, getParentShell());
 			if (task.getErrorMsg() != null) {
@@ -567,7 +573,7 @@ public class CreateViewDialog extends
 					: Messages.msgSuccessEditView;
 			CommonUITool.openInformationBox(title, message);
 		}
-		viewName = tableText.getText();
+		viewName = viewNameText.getText();
 
 		super.buttonPressed(buttonId);
 	}
@@ -579,8 +585,8 @@ public class CreateViewDialog extends
 		String ownerOld = null;
 		fillOwnerCombo();
 		if (isNewTableFlag) {
-			tableText.setText("");
-			tableText.addModifyListener(new ModifyListener() {
+			viewNameText.setText("");
+			viewNameText.addModifyListener(new ModifyListener() {
 				public void modifyText(ModifyEvent event) {
 					valid();
 				}
@@ -593,8 +599,8 @@ public class CreateViewDialog extends
 			if (classInfo == null) {
 				return;
 			}
-			tableText.setEditable(false);
-			tableText.setText(classInfo.getClassName());
+			viewNameText.setEditable(false);
+			viewNameText.setText(classInfo.getClassName());
 
 			if (isCommentSupport) {
 				if (!classInfo.isSystemClass()) {
@@ -715,7 +721,7 @@ public class CreateViewDialog extends
 		Statement stmt = null;
 		ResultSet rs = null;
 		SchemaComment schemaComment = null;
-		String viewName = tableText.getText();
+		String viewName = viewNameText.getText();
 
 		try {
 			DatabaseInfo dbInfo = database.getDatabaseInfo();
@@ -804,11 +810,11 @@ public class CreateViewDialog extends
 	 * @return string
 	 */
 	private String makeDropSQLScript() {
-		if (classInfo == null || "".equals(tableText.getText())) {
+		if (classInfo == null || "".equals(viewNameText.getText())) {
 			return "";
 		}
 		String classNameOld = classInfo.getClassName();
-		String classNameNew = tableText.getText();
+		String classNameNew = viewNameText.getText();
 		boolean isSameClass = StringUtil.isEqualIgnoreCase(classNameOld, classNameNew);
 		if (isNewTableFlag || isSameClass) {
 			return "";
@@ -828,7 +834,7 @@ public class CreateViewDialog extends
 			GetUserAuthorizationsTask privilegeTask = new GetUserAuthorizationsTask(
 					database.getDatabaseInfo());
 			return privilegeTask.getViewAuthorizationsByViewName(ownerCombo.getText(),
-					tableText.getText());
+					viewNameText.getText());
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 		}
@@ -847,7 +853,7 @@ public class CreateViewDialog extends
 			ddl.append("CREATE VIEW ");
 		} else {
 			boolean isSameClass = StringUtil.isEqualIgnoreCase(classInfo.getClassName(),
-					tableText.getText());
+					viewNameText.getText());
 			boolean canSupport = CompatibleUtil.isSupportReplaceView(database.getDatabaseInfo());
 			if (canSupport && isSameClass) {
 				ddl.append("CREATE OR REPLACE VIEW ");
@@ -857,10 +863,10 @@ public class CreateViewDialog extends
 		}
 
 		String viewName = "";
-		if (tableText == null || StringUtil.isEmpty(tableText.getText())) {
+		if (viewNameText == null || StringUtil.isEmpty(viewNameText.getText())) {
 			ddl.append("[VIEWNAME]");
 		} else {
-			viewName = tableText.getText();
+			viewName = viewNameText.getText();
 		}
 		if (viewName != null) {
 			ddl.append(QuerySyntax.escapeKeyword(viewName));
@@ -1068,21 +1074,38 @@ public class CreateViewDialog extends
 	private String makeChangeOwnerSQLScript() { // FIXME move this logic to core module
 		DatabaseInfo dbInfo = database.getDatabaseInfo();
 
-		String tableName = tableText.getText();
+		String viewName = viewNameText.getText();
 		String ownerNew = ownerCombo.getText();
 		String ownerOld = dbInfo.getAuthLoginedDbUserInfo().getName();
 
 		if (ownerOld.equalsIgnoreCase(ownerNew)) {
 			return null;
-		} else if (StringUtil.isEmpty(tableName) && StringUtil.isEmpty(ownerNew)) {
+		} else if (StringUtil.isEmpty(viewName) && StringUtil.isEmpty(ownerNew)) {
 			return null;
 		}
 
 		StringBuffer bf = new StringBuffer();
+
+		if (CompatibleUtil.isSupportChangeOwnerWithAlterStatement(dbInfo)) {
+			createAlterStatementForChangingOwner(bf, viewName, ownerNew);
+		} else {
+			createMethodCallForChangingOwner(bf, viewName, ownerNew);
+		}
+
+		return bf.toString();
+	}
+
+	/**
+	 * createMethodCallForChangingOwner
+	 * @param bf
+	 * @param viewName
+	 * @param ownerNew
+	 */
+	private void createMethodCallForChangingOwner(StringBuffer bf, String viewName, String ownerNew) {
 		bf.append("CALL CHANGE_OWNER ('");
 
-		if (tableName != null) {
-			bf.append(tableName);
+		if (viewName != null) {
+			bf.append(viewName);
 		}
 
 		bf.append("','");
@@ -1092,8 +1115,26 @@ public class CreateViewDialog extends
 		}
 
 		bf.append("') ON CLASS db_authorizations");
+	}
 
-		return bf.toString();
+	/**
+	 * createAlterStatementForChangingOwner
+	 * @param bf
+	 * @param viewName
+	 * @param ownerNew
+	 */
+	private void createAlterStatementForChangingOwner(StringBuffer bf, String viewName, String ownerNew) {
+		bf.append("ALTER VIEW ");
+
+		if (viewName != null) {
+			bf.append(viewName);
+		}
+
+		bf.append(" OWNER TO ");
+
+		if (ownerNew != null) {
+			bf.append(ownerNew);
+		}
 	}
 
 	/**
@@ -1168,7 +1209,7 @@ public class CreateViewDialog extends
 			getButton(BUTTON_DROP_ID).setEnabled(false);
 			getButton(BUTTON_EDIT_ID).setEnabled(false);
 			getButton(IDialogConstants.OK_ID).setEnabled(false);
-			tableText.setEditable(false);
+			viewNameText.setEditable(false);
 			ownerCombo.setEnabled(false);
 		}
 	}
@@ -1248,17 +1289,17 @@ public class CreateViewDialog extends
 				getButton(IDialogConstants.OK_ID).setEnabled(false);
 			}
 
-			if (StringUtil.isEmpty(tableText.getText())) {
+			if (StringUtil.isEmpty(viewNameText.getText())) {
 				setErrorMessage(Messages.errInputViewName);
 				return false;
 			}
 
-			if (!ValidateUtil.isValidIdentifier(tableText.getText())) {
-				setErrorMessage(Messages.bind(Messages.errInputValidViewName, tableText.getText()));
+			if (!ValidateUtil.isValidIdentifier(viewNameText.getText())) {
+				setErrorMessage(Messages.bind(Messages.errInputValidViewName, viewNameText.getText()));
 				return false;
 			}
 
-			if (tableText.getText().length() > ValidateUtil.MAX_SCHEMA_NAME_LENGTH) {
+			if (viewNameText.getText().length() > ValidateUtil.MAX_SCHEMA_NAME_LENGTH) {
 				setErrorMessage(Messages.bind(Messages.errInputNameLength,
 						ValidateUtil.MAX_SCHEMA_NAME_LENGTH));
 				return false;
